@@ -6,7 +6,7 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>Development Environment Admin</name>
 	<artifactId>dev-env-admin</artifactId>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<description>Management of the Development Environment for EWI @ TU-Delft.</description>
 
@@ -20,19 +20,13 @@
 		<maven.compiler.target>1.6</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<jetty.version>8.1.5.v20120716</jetty.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
-			<groupId>com.google.inject.extensions</groupId>
-			<artifactId>guice-servlet</artifactId>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
 			<version>3.0</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -48,69 +42,10 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.6</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-websocket</artifactId>
-			<version>${jetty.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-server</artifactId>
-			<version>${jetty.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-servlet</artifactId>
-			<version>${jetty.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-servlets</artifactId>
-			<version>${jetty.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.jersey.contribs</groupId>
-			<artifactId>jersey-guice</artifactId>
-			<version>1.13</version>
-		</dependency>
+		</dependency>		
 	</dependencies>
-
-	<build>
-		<plugins>
-			<!-- The maven app assembler plugin will generate a script that sets up 
-				the classpath and runs your project -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>appassembler-maven-plugin</artifactId>
-				<version>1.2.2</version>
-				<configuration>
-					<assembleDirectory>target</assembleDirectory>
-					<programs>
-						<program>
-							<mainClass>nl.tudelft.ewi.dea.ServerStartup</mainClass>
-							<name>dev-env-admin</name>
-						</program>
-					</programs>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>assemble</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.2.1</version>
-				<configuration>
-					<mainClass>nl.tudelft.ewi.dea.ServerStartup</mainClass>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+	
+	<modules>
+		<module>dev-env-admin-web</module>
+	</modules>
 </project>

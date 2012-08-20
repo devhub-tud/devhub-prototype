@@ -14,10 +14,11 @@ You will need to set the `REPO` environment variable, so the execution wrapper s
 
 Now you can run your webapp with:
 
-    $ sh target/bin/webapp
+    $ sh dev-env-admin-web/target/bin/webapp
 
 (the wrapper script is not executable by default).
 
 # Develop
-You can start the application with maven from the commanline using
+You can start the application with maven by first installing from the parent project, and then browsing to the web project and executing:
+
 	# mvn exec:java
