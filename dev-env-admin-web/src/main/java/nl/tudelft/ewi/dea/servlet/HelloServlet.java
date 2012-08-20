@@ -1,4 +1,4 @@
-package nl.tudelft.ewi.dea.di;
+package nl.tudelft.ewi.dea.servlet;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

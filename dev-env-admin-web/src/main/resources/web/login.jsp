@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>Login</title>
+<link href="//static.e-btc.eu/bootstrap-2.0.3/css/bootstrap.min.css"
+	rel="stylesheet">
+<link
+	href="//static.e-btc.eu/bootstrap-2.0.3/css/bootstrap-responsive.min.css"
+	rel="stylesheet">
+<style>
+.hero-unit {
+	width: 500px;
+	margin: 80px auto 25px auto;
+}
+
+.logintable .span3 {
+	height: 30px;
+}
+
+footer {
+	text-align: center;
+	color: #ccc;
+}
+</style>
+</head>
+
+<body>
+	<div class="hero-unit">
+		<h1>Dev Environment log</h1>
+		<p>Login with username and password</p>
+
+		<form method='POST'>
+			<table class='logintable'>
+				<tr>
+					<td><input class='span3' type='text' name='username'
+						placeholder='Username'></td>
+				</tr>
+				<tr>
+					<td><input class='span3' type='password' name='password'
+						placeholder='Password' /></td>
+				</tr>
+				<tr>
+					<td><label class="checkbox"><input type='checkbox'
+							name='rememberMe' /> Remember me on this computer. </label></td>
+				</tr>
+				<tr>
+					<td colspan='2'><input class="btn btn-primary btn-large"
+						name="submit" type="submit" /></td>
+				</tr>
+			</table>
+		</form>
+		<%
+			String errorDescription = (String) request.getAttribute("shiroLoginFailure");
+			if (errorDescription != null) {
+		%>
+		<div class="alert alert-error">
+			<p>Username or password was incorrect</p>
+		</div>
+		<%
+			}
+		%>
+	</div>
+	<%
+		String version = getServletContext().getInitParameter("version");
+		if (version.contains("SNAPSHOT")) {
+			version = version + " @ " + getServletContext().getInitParameter("build");
+		}
+	%>
+	<footer>Version <%=version%></footer>
+</body>
+</html>

@@ -23,7 +23,7 @@ public class ServerStartup {
 		ServletContextHandler sch = new ServletContextHandler(server, "/");
 
 		// Add our Guice listener that includes our bindings
-		sch.addEventListener(new GuiceServletConfig());
+		sch.addEventListener(new GuiceServletConfig(sch.getServletContext()));		
 
 		// Then add GuiceFilter and configure the server to
 		// reroute all requests through this filter.
@@ -33,6 +33,8 @@ public class ServerStartup {
 		// Failing to do this will cause 404 errors.
 		// This is not needed if web.xml is used instead.
 		sch.addServlet(DefaultServlet.class, "/");
+		
+		sch.setResourceBase("web");
 
 		// Start the server
 		server.start();
