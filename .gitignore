@@ -1,0 +1,10 @@
+.checkstyle
+.classpath
+.pmd
+.project
+.settings/
+target/
+war/
+src/main/webapp/WEB-INF/lib/
+run.cmd
+debug.cmd
