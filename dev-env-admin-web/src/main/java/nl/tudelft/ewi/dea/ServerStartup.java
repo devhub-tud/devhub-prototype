@@ -3,6 +3,7 @@ package nl.tudelft.ewi.dea;
 import nl.tudelft.ewi.dea.di.GuiceServletConfig;
 
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
@@ -23,7 +24,7 @@ public class ServerStartup {
 		ServletContextHandler sch = new ServletContextHandler(server, "/");
 
 		// Add our Guice listener that includes our bindings
-		sch.addEventListener(new GuiceServletConfig(sch.getServletContext()));		
+		sch.addEventListener(new GuiceServletConfig(sch.getServletContext()));
 
 		// Then add GuiceFilter and configure the server to
 		// reroute all requests through this filter.
@@ -33,8 +34,10 @@ public class ServerStartup {
 		// Failing to do this will cause 404 errors.
 		// This is not needed if web.xml is used instead.
 		sch.addServlet(DefaultServlet.class, "/");
-		
-		sch.setResourceBase("web");
+
+		sch.setResourceBase(ServerStartup.class.getResource("/web").getPath());
+
+		sch.setSessionHandler(new SessionHandler());
 
 		// Start the server
 		server.start();
