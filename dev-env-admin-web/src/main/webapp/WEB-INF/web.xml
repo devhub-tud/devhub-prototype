@@ -1,0 +1,33 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+	<display-name>Dev Env Admin</display-name>
+
+	<context-param>
+		<param-name>version</param-name>
+		<param-value>${project.version}</param-value>
+	</context-param>
+	<context-param>
+		<param-name>build</param-name>
+		<param-value>${buildDate}</param-value>
+	</context-param>
+
+	<filter>
+		<filter-name>guiceFilter</filter-name>
+		<filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>guiceFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<listener>
+		<listener-class>nl.tudelft.ewi.dea.di.ServerStartupListener</listener-class>
+	</listener>
+
+
+
+</web-app>

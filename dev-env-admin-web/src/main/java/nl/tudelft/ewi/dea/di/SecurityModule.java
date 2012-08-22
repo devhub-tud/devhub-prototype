@@ -29,7 +29,7 @@ public class SecurityModule extends ShiroWebModule {
 		addFilterChain("/logout", LOGOUT);
 		addFilterChain("/login.jsp", AUTHC);
 		addFilterChain("/*.html", AUTHC);
-		addFilterChain("/hello*", AUTHC);
+		addFilterChain("/api/*", AUTHC);
 		addFilterChain("/", AUTHC);
 	}
 
