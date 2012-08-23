@@ -20,6 +20,8 @@
 		<maven.compiler.target>1.6</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<maven.build.timestamp.format>dd MMM yyyy HH:mm</maven.build.timestamp.format>
+		<buildDate>${maven.build.timestamp}</buildDate>
 	</properties>
 
 	<dependencies>
@@ -42,9 +44,9 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.6</version>
-		</dependency>		
+		</dependency>
 	</dependencies>
-	
+
 	<modules>
 		<module>dev-env-admin-web</module>
 	</modules>

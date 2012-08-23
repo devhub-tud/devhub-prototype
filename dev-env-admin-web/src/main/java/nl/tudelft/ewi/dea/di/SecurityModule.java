@@ -32,6 +32,7 @@ public class SecurityModule extends ShiroWebModule {
 		super(sc);
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void configureShiroWeb() {
 		LOG.debug("Configuring Shiro Security module");
 		install(new ShiroAopModule());

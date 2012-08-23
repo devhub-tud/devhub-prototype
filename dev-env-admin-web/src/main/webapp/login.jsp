@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML>
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -10,7 +10,7 @@
 	rel="stylesheet">
 <style>
 .hero-unit {
-	width: 500px;
+	width: 666px;
 	margin: 80px auto 25px auto;
 }
 
@@ -24,10 +24,9 @@ footer {
 }
 </style>
 </head>
-
 <body>
 	<div class="hero-unit">
-		<h1>Dev Environment log</h1>
+		<h1>Dev Environment Admin</h1>
 		<p>Login with username and password</p>
 
 		<form method='POST'>
