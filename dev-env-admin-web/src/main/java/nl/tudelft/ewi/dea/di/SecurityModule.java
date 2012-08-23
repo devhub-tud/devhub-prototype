@@ -39,14 +39,11 @@ public class SecurityModule extends ShiroWebModule {
 		bindRealm().to(IniRealm.class);
 
 		addFilterChain("/", AUTHC);
-		
-		addFilterChain("/welcome", AUTHC);
-		
+
 		addFilterChain("/logout", LOGOUT);
 		addFilterChain("/login.jsp", AUTHC);
 		addFilterChain("/*.html", AUTHC);
 		addFilterChain("/api/*", AUTHC);
-
 	}
 
 	@Provides
