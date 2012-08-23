@@ -10,6 +10,10 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
 
+/**
+ * This listener is started when the server starts. It should be the ONLY
+ * listener so that the startup of the system can be configured from here.
+ */
 public class ServerStartupListener extends GuiceServletContextListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ServerStartupListener.class);
