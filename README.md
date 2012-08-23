@@ -27,4 +27,4 @@ Because this is a blocking thread, it cannot be run together with jetty:run, hen
 # Develop
 Make sure you use the codestile you can find in the root folder. The best way is to enable this as a post-save action in Eclipse.
 
-To work with Coffeescript in Eclipse, [this Eclipse Coffeescript plugin can be used](http://coffeescript-editor.eclipselabs.org.codespot.com/hg/).
+To work with Coffeescript in Eclipse, [this Eclipse Coffeescript plugin can be used](https://github.com/adamschmideg/coffeescript-eclipse). Note that this plugin depends on XText which can be found in the Eclipse Market place.
