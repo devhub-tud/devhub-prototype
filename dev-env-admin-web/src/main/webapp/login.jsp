@@ -3,10 +3,8 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Login</title>
-<link href="//static.e-btc.eu/bootstrap-2.0.3/css/bootstrap.min.css"
-	rel="stylesheet">
 <link
-	href="//static.e-btc.eu/bootstrap-2.0.3/css/bootstrap-responsive.min.css"
+	href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.1.0/css/bootstrap-combined.min.css"
 	rel="stylesheet">
 <style>
 .hero-unit {
@@ -66,6 +64,8 @@ footer {
 			version = version + " @ " + getServletContext().getInitParameter("build");
 		}
 	%>
-	<footer>Version <%=version%></footer>
+	<footer>
+		Version
+		<%=version%></footer>
 </body>
 </html>
