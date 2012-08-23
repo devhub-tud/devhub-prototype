@@ -8,3 +8,5 @@ war/
 src/main/webapp/WEB-INF/lib/
 run.cmd
 debug.cmd
+
+*.js

@@ -15,6 +15,29 @@
 		<url>http://ewi.tudelft.nl</url>
 	</organization>
 
+	<inceptionYear>2012</inceptionYear>
+
+	<developers>
+		<developer>
+			<name>Alex Nederlof</name>
+			<email>alex@nederlof.com</email>
+		</developer>
+		<developer>
+			<name>Michael de Jong</name>
+			<email>michael__de__jong@hotmail.com</email>
+		</developer>
+		<developer>
+			<name>David Hartveld</name>
+			<email>david@hartveld.net</email>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:ssh://git@bitbucket.org:alexnederlof/dev-env-admin.git</connection>
+		<developerConnection>scm:git:ssh://git@bitbucket.org:alexnederlof/dev-env-admin.git</developerConnection>
+		<url>https://bitbucket.org/alexnederlof/dev-env-admin</url>
+	</scm>
+
 	<properties>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
@@ -33,7 +56,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>12.0.1</version>
+			<version>13.0</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>

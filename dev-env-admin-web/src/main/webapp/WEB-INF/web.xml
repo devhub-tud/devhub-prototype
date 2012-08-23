@@ -28,6 +28,4 @@
 		<listener-class>nl.tudelft.ewi.dea.di.ServerStartupListener</listener-class>
 	</listener>
 
-
-
 </web-app>

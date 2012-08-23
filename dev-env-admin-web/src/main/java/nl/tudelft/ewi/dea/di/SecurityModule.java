@@ -23,7 +23,6 @@ import com.google.inject.Provides;
  */
 public class SecurityModule extends ShiroWebModule {
 
-	
 	private static final Logger LOG = LoggerFactory.getLogger(SecurityModule.class);
 	private static final int NUMBER_OF_HASH_ITERATIONS = 1024;
 	public static final ByteSource SALT = new SimpleByteSource("skjhdf9834hj");
@@ -36,13 +35,18 @@ public class SecurityModule extends ShiroWebModule {
 	protected void configureShiroWeb() {
 		LOG.debug("Configuring Shiro Security module");
 		install(new ShiroAopModule());
+
 		bindRealm().to(IniRealm.class);
 
+		addFilterChain("/", AUTHC);
+		
+		addFilterChain("/welcome", AUTHC);
+		
 		addFilterChain("/logout", LOGOUT);
 		addFilterChain("/login.jsp", AUTHC);
 		addFilterChain("/*.html", AUTHC);
 		addFilterChain("/api/*", AUTHC);
-		addFilterChain("/", AUTHC);
+
 	}
 
 	@Provides

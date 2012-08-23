@@ -1,24 +1,30 @@
+This application is meant for Teachers from the TU-Delft to manage git repositories combined with a Jenkins and Sonar instance. 
+
+The project is sponsored by Arie van Deursen and was initially developed by David Hartveld, Michael de Jong and Alex Nederlof.
+
+![image](http://home.tudelft.nl/fileadmin/Default/Templates/images/logo.gif)
+
 # Build
 
 Build the project with
 
-    $ mvn install
+    $ mvn clean package
 
-# Configure
+In the web application module you will find the working Jar.
 
-You will need to set the `REPO` environment variable, so the execution wrapper script knows where to find the maven dependencies. For example:
+# Run for development
 
-    $ export REPO=$HOME/.m2/repository
+Now you can run your webapp by going to the dev-env-admin-web folder and commanding maven with:
 
-# Run
+    $ mvn brew:compile jetty:run
 
-Now you can run your webapp with:
-
-    $ sh dev-env-admin-web/target/bin/webapp
-
-(the wrapper script is not executable by default).
+This will start the application on port 8080. The coffee scripts will be compiled but not updated if you change them. If you plan to develop coffeescript, open a seperate command window and run. 
+	
+	$ mvn brew:compile -Dbrew.watch=true
+	
+Because this is a blocking thread, it cannot be run together with jetty:run, hence the two windows.
 
 # Develop
-You can start the application with maven by first installing from the parent project, and then browsing to the web project and executing:
+Make sure you use the codestile you can find in the root folder. The best way is to enable this as a post-save action in Eclipse.
 
-	# mvn exec:java
+To work with Coffeescript in Eclipse, [this Eclipse Coffeescript plugin can be used](http://coffeescript-editor.eclipselabs.org.codespot.com/hg/).
