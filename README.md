@@ -24,6 +24,14 @@ This will start the application on port 8080. The coffee scripts will be compile
 	
 Because this is a blocking thread, it cannot be run together with jetty:run, hence the two windows.
 
+# Test
+
+All tests are run by Maven except for the Jasmine Javascript tests. They are started by running
+
+	$ mvn jasmine:bdd
+	
+This will be automated sometime in the furute, when the Jasmine plugin is functioning properly.
+
 # Develop
 Make sure you use the codestile you can find in the root folder. The best way is to enable this as a post-save action in Eclipse.
 
