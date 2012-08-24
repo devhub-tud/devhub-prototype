@@ -22,9 +22,9 @@ import org.slf4j.LoggerFactory;
  * Test if you are working with Java 7.
  * 
  */
-public class Java7Compatibility {
+public class Java7CompatibilityTest {
 
-	private static final Logger LOG = LoggerFactory.getLogger(Java7Compatibility.class);
+	private static final Logger LOG = LoggerFactory.getLogger(Java7CompatibilityTest.class);
 
 	@Test
 	public void testStringSwitch() {
