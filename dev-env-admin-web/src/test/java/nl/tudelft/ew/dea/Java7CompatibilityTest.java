@@ -55,7 +55,7 @@ public class Java7CompatibilityTest {
 	@Test
 	public void testMultiCatch() {
 		try {
-			Class string = Class.forName("java.lang.String");
+			Class<?> string = Class.forName("java.lang.String");
 			string.getMethod("length").invoke("test");
 		} catch (ClassNotFoundException |
 				IllegalAccessException |
