@@ -6,6 +6,9 @@ import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import nl.tudelft.ewi.dea.servlet.util.Get;
+import nl.tudelft.ewi.dea.servlet.util.Post;
+import nl.tudelft.ewi.dea.servlet.util.Response;
 import nl.tudelft.ewi.dea.servlet.util.Servlet;
 
 import com.google.common.collect.Lists;
@@ -29,7 +32,26 @@ public class OverviewServlet extends Servlet {
 		getRenderer()
 			.setValue("invitations", invitations)
 			.setValue("projects", projects)
+			.setValue("scripts", Lists.newArrayList("overview.js"))
 			.render("index.tpl");
+	}
+	
+	@Get
+	public Response checkProjectName(HttpServletRequest request, HttpServletResponse response) {
+		boolean isValid = false;
+		String name = request.getParameter("name");
+		if (name != null && name.matches("[a-zA-Z0-9]{4,}")) {
+			isValid = true;
+		}
+		return new Response(isValid);
+	}
+	
+	@Post
+	public Response provisionNewProject(HttpServletRequest request, HttpServletResponse response) {
+		
+		
+		
+		return new Response(true);
 	}
 	
 	public class Project {

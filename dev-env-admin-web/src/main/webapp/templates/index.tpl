@@ -31,7 +31,7 @@
 				</div>
 #end
 
-				<h3>Your projects <a class="btn btn-primary btn-mini">Sign-up for a new project</a></h3>
+				<h3>Your projects <a id="create-new-project" class="btn btn-primary btn-mini">Sign-up for a new project</a></h3>
 				<table class="table table-striped table-bordered table-hover">
 					<thead>
 						<tr>
@@ -48,6 +48,52 @@
 #end
 					</tbody>
 				</table>	
+			</div>
+		</div>
+		
+		<div id="create-new-project-modal" class="modal hide fade">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3>Create a new project</h3>
+			</div>
+			<div class="step-1">
+				<div class="modal-body">
+					<form id="create-new-project-form" class="form-horizontal">
+						<div class="control-group">
+							<label class="control-label" for="project-name">Project name</label>
+							<div class="controls">
+								<input type="text" id="project-name" placeholder="Project name" />
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<a href="#" id="cancel-create-new-project-modal" class="btn">Cancel</a>
+					<a href="#" id="provision-new-project" class="btn btn-primary">Create project</a>
+				</div>
+			</div>
+			<div class="step-2 hide">
+				<div class="modal-body">
+					<div id="create-new-project-progress">
+						<strong>Creating project...</strong>
+						<div class="progress progress-striped active">
+							<div class="bar" style="width: 100%;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="step-3 hide">
+				<div class="modal-body">
+					<div id="create-new-project-message">
+						<strong></strong>
+						<div class="progress">
+							<div class="bar" style="width: 100%;"></div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a href="#" id="close-create-new-project-modal" class="btn btn-primary">Close</a>
+				</div>
 			</div>
 		</div>
 		
