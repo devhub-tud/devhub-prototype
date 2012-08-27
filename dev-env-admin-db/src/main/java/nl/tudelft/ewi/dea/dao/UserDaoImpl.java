@@ -23,7 +23,12 @@ class UserDaoImpl implements UserDao {
 	@Override
 	@Transactional
 	public User getById(long id) {
-		return em.find(User.class, id);
+		User user = em.find(User.class, id);
+		if (user == null) {
+			throw new UserNotFoundException(id);
+		} else {
+			return user;
+		}
 	}
 
 	@Override
@@ -39,6 +44,11 @@ class UserDaoImpl implements UserDao {
 		Root<User> userRoot = criteria.from(User.class);
 		criteria.select(userRoot).where(builder.equal(userRoot.get(User_.mailAddress), emailAddres));
 		return em.createQuery(criteria).getSingleResult();
+	}
+
+	@Override
+	public void delete(User firstUser) {
+		em.remove(firstUser);
 	}
 
 }
