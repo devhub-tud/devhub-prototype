@@ -1,0 +1,42 @@
+body {
+	margin-bottom: 20px;
+}
+
+.content {
+	margin-top: 30px;
+}
+
+.alert {
+	padding: 8px 28px;
+}
+
+.alert-info td {
+	border-top-color: #b1c4d2;
+}
+
+.alert-info tr:hover {
+	background-color: #cae3f5;
+	color: #164a70;
+}
+
+.navbar-fixed-top {
+	position: inherit !important;
+}
+
+table .btn-panel {
+	float: right;
+}
+
+h3 .btn {
+	float: right;
+}
+
+h3 .btn-mini {
+	margin-top: 11px;
+}
+
+@media (max-width: 320px) {
+	body, .btn, .label {
+		font-size: 9px !important;
+	}
+}

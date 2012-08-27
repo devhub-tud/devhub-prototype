@@ -19,8 +19,6 @@
 		<jetty.version>8.1.5.v20120716</jetty.version>
 	</properties>
 
-
-
 	<dependencies>
 		<dependency>
 			<groupId>com.google.inject.extensions</groupId>
@@ -56,18 +54,9 @@
 			<version>1.6.6</version>
 		</dependency>
 		<dependency>
-			<groupId>com.google.sitebricks</groupId>
-			<artifactId>sitebricks</artifactId>
-			<version>0.8.6</version>
-			<exclusions>
-				<exclusion>
-					<!-- This artifact creats an error and is therefore excluded. We may 
-						find out we need it in the feature, then a newer version than the one currently 
-						in sitebricks should be included. More info: http://jira.codehaus.org/browse/JETTY-1201 -->
-					<artifactId>icu4j</artifactId>
-					<groupId>com.ibm.icu</groupId>
-				</exclusion>
-			</exclusions>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
 		</dependency>
 	</dependencies>
 

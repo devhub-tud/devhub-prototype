@@ -24,14 +24,14 @@ footer {
 </head>
 <body>
 	<div class="hero-unit">
-		<h1>Dev Environment Admin</h1>
-		<p>Login with username and password</p>
+		<h1>DevHub</h1>
+		<p>Login with TU Delft e-mail and password</p>
 
 		<form method='POST'>
 			<table class='logintable'>
 				<tr>
 					<td><input class='span3' type='text' name='username'
-						placeholder='Username'></td>
+						placeholder='E-mail address'></td>
 				</tr>
 				<tr>
 					<td><input class='span3' type='password' name='password'
@@ -43,7 +43,7 @@ footer {
 				</tr>
 				<tr>
 					<td colspan='2'><input class="btn btn-primary btn-large"
-						name="submit" type="submit" /></td>
+						name="submit" type="submit" value="Log me in"/></td>
 				</tr>
 			</table>
 		</form>
