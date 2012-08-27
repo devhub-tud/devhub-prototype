@@ -3,6 +3,7 @@
 .pmd
 .project
 .settings/
+.factorypath
 target/
 war/
 src/main/webapp/WEB-INF/lib/

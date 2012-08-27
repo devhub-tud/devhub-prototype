@@ -91,5 +91,6 @@
 
 	<modules>
 		<module>dev-env-admin-web</module>
+		<module>dev-env-admin-db</module>
 	</modules>
 </project>
