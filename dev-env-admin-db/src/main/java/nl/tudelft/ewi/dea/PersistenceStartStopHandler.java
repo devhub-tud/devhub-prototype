@@ -1,4 +1,4 @@
-package nl.tudelft.ewi.dea.dao;
+package nl.tudelft.ewi.dea;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -12,14 +12,14 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.persist.PersistService;
 
 @Singleton
-public class DatabaseStartStopHandler {
+public class PersistenceStartStopHandler {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DatabaseStartStopHandler.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PersistenceStartStopHandler.class);
 	private final PersistService persistService;
 	private final Lock startStopLock = new ReentrantLock();
 
 	@Inject
-	DatabaseStartStopHandler(PersistService persistService) {
+	PersistenceStartStopHandler(PersistService persistService) {
 		this.persistService = persistService;
 	}
 

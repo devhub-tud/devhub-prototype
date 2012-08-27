@@ -28,6 +28,10 @@ public class User {
 		return mailAddress;
 	}
 
+	public long getId() {
+		return id;
+	}
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", mailAddress=" + mailAddress + "]";
