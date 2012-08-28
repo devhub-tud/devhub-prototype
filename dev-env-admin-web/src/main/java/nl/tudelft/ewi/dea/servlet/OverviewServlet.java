@@ -68,7 +68,7 @@ public class OverviewServlet extends Servlet {
 			return gitProvisioning;
 		}
 		
-		return provisionJenkins(name, "", "");
+		return provisionJenkins(name, "git@dea.hartveld.com:" + name, "M.deJong-2@student.tudelft.nl");
 	}
 	
 	//TODO: david implement this...
