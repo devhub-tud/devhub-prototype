@@ -117,6 +117,17 @@
 					<coffeeOutputDir>${basedir}/src/main/webapp/js</coffeeOutputDir>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>tomcat-maven-plugin</artifactId>
+				<version>1.1</version>
+				<configuration>
+					<url>http://dea.hartveld.com/manager/text</url>
+					<path>/devhub</path>
+					<update>true</update>
+					<server>tomcat-devhub</server>
+				</configuration>
+			</plugin>
 		</plugins>
 
 		<pluginManagement>
