@@ -49,6 +49,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
 				<configuration>
 					<!-- This is for the JPA model generation -->
 					<compilerArgument>-proc:none</compilerArgument>
@@ -57,6 +58,7 @@
 			<plugin>
 				<groupId>org.bsc.maven</groupId>
 				<artifactId>maven-processor-plugin</artifactId>
+				<version>2.0.6</version>
 				<executions>
 					<execution>
 						<id>process</id>
