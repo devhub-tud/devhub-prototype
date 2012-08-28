@@ -30,6 +30,9 @@ public class UserDaoImplTest {
 	@Before
 	public void before() {
 		dao = injector.getInstance(UserDao.class);
+		for (User user : dao.list()) {
+			dao.delete(user);
+		}
 	}
 
 	@Test

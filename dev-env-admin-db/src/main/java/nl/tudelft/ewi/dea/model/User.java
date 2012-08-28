@@ -14,6 +14,9 @@ public class User {
 
 	@Column(unique = true, nullable = false) private String mailAddress;
 
+	@SuppressWarnings("unused")
+	private User() {}
+	
 	public User(long id, String username, String mailAddress) {
 		this.id = id;
 		this.username = username;

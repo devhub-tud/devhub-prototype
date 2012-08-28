@@ -1,6 +1,5 @@
 package nl.tudelft.ewi.dea.servlet.util;
 
-@SuppressWarnings("unused")
 public class Response {
 	
 	private final boolean ok;
@@ -13,6 +12,14 @@ public class Response {
 	public Response(boolean ok, String message) {
 		this.ok = ok;
 		this.message = message;
+	}
+
+	public boolean isOk() {
+		return ok;
+	}
+	
+	public String getMessage() {
+		return message;
 	}
 	
 }

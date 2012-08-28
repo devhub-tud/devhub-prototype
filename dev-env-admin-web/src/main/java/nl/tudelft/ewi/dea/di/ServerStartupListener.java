@@ -25,6 +25,7 @@ public class ServerStartupListener extends GuiceServletContextListener {
 		try {
 			if (injector == null) {
 				injector = Guice.createInjector(
+						new ProvisioningModule(),
 						new SecurityModule(servletContext),
 						new WebModule(servletContext));
 			}

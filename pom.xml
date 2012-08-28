@@ -37,6 +37,25 @@
 		<developerConnection>scm:git:ssh://git@bitbucket.org:alexnederlof/dev-env-admin.git</developerConnection>
 		<url>https://bitbucket.org/alexnederlof/dev-env-admin</url>
 	</scm>
+	
+	<distributionManagement>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>Internal snapshots</name>
+			<url>http://dea.hartveld.com/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>central</id>
+			<url>http://dea.hartveld.com/nexus/content/repositories/central/</url>
+		</repository>
+		<repository>
+			<id>snapshots</id>
+			<url>http://dea.hartveld.com/nexus/content/repositories/snapshots/</url>
+		</repository>
+	</repositories>	
 
 	<properties>
 		<maven.compiler.source>1.7</maven.compiler.source>

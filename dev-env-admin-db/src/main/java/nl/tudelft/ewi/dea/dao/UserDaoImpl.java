@@ -1,5 +1,7 @@
 package nl.tudelft.ewi.dea.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -49,6 +51,15 @@ class UserDaoImpl implements UserDao {
 	@Override
 	public void delete(User firstUser) {
 		em.remove(firstUser);
+	}
+
+	@Override
+	public List<User> list() {
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<User> criteria = builder.createQuery(User.class);
+		Root<User> userRoot = criteria.from(User.class);
+		criteria.select(userRoot).orderBy(builder.asc(userRoot.get(User_.mailAddress)));
+		return em.createQuery(criteria).getResultList();
 	}
 
 }
