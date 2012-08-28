@@ -58,20 +58,25 @@ public class OverviewServlet extends Servlet {
 	
 	@Post
 	public Response provisionNewProject(HttpServletRequest request, HttpServletResponse response) {
-		Response gitProvisioning = provisionGitRepository(request);
-		if (!gitProvisioning.isOk()) {
-			return gitProvisioning;
-		}
-		
-		return new Response(true); // Do Jenkins provisioning here...
-	}
-
-	private Response provisionGitRepository(HttpServletRequest request) {
 		String name = request.getParameter("name");
 		if (!isValidProjectName(name)) {
 			return new Response(false, "Project name is not valid!");
 		}
 		
+		Response gitProvisioning = provisionGitRepository(name);
+		if (!gitProvisioning.isOk()) {
+			return gitProvisioning;
+		}
+		
+		return provisionJenkins(name, "", "");
+	}
+	
+	//TODO: david implement this...
+	private Response provisionJenkins(String projectName, String gitUrl, String email) {
+		return null;
+	}
+
+	private Response provisionGitRepository(String name) {
 		Config config = null;
 		try {
 			config = gitoliteManager.getConfig();
