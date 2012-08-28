@@ -5,6 +5,7 @@ import java.nio.file.Paths;
 import javax.servlet.ServletContext;
 
 import nl.tudelft.ewi.dea.servlet.OverviewServlet;
+import nl.tudelft.ewi.dea.servlet.util.RedirectServlet;
 import nl.tudelft.ewi.dea.template.TemplateEngine;
 
 import org.apache.shiro.guice.web.GuiceShiroFilter;
@@ -35,7 +36,8 @@ public class WebModule extends ServletModule {
 		LOG.debug("Configuring servlets and URLs");
 		filter("/*").through(GuiceShiroFilter.class);
 		
-		serve("/").with(OverviewServlet.class);
+		serve("/").with(new RedirectServlet("/overview"));
+		serve("/overview").with(OverviewServlet.class);
 
 		// filter("/api/*").through(GuiceContainer.class);
 	}

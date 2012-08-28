@@ -1,6 +1,7 @@
 package nl.tudelft.ewi.dea.model;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 import java.util.Random;
@@ -35,7 +36,7 @@ public class User {
 		return Integer.toString(new Random().nextInt());
 	}
 
-	@Id @GeneratedValue private long id;
+	@Id @GeneratedValue private final long id;
 
 	@Column(unique = true, nullable = false) private String displayName;
 
@@ -47,16 +48,25 @@ public class User {
 
 	@Column(nullable = false) UserRole role;
 
+	/**
+	 * Constructor required by Hibernate.
+	 */
+	private User() {
+		id = 0;
+	}
+
 	private User(long id, String username, String mailAddress, String salt, String password, UserRole user) {
 		checkArgument(!isNullOrEmpty(username));
 		checkArgument(!isNullOrEmpty(mailAddress));
 		checkArgument(!isNullOrEmpty(password));
+		checkArgument(!isNullOrEmpty(salt));
+		checkNotNull(user);
 		this.id = id;
 		this.displayName = username;
 		this.mailAddress = mailAddress;
 		this.salt = salt;
 		this.password = password;
-		role = user;
+		this.role = user;
 	}
 
 	public String getDisplayName() {
@@ -94,37 +104,50 @@ public class User {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		User other = (User) obj;
 		if (displayName == null) {
-			if (other.displayName != null)
+			if (other.displayName != null) {
 				return false;
-		} else if (!displayName.equals(other.displayName))
+			}
+		} else if (!displayName.equals(other.displayName)) {
 			return false;
-		if (id != other.id)
+		}
+		if (id != other.id) {
 			return false;
+		}
 		if (mailAddress == null) {
-			if (other.mailAddress != null)
+			if (other.mailAddress != null) {
 				return false;
-		} else if (!mailAddress.equals(other.mailAddress))
+			}
+		} else if (!mailAddress.equals(other.mailAddress)) {
 			return false;
+		}
 		if (password == null) {
-			if (other.password != null)
+			if (other.password != null) {
 				return false;
-		} else if (!password.equals(other.password))
+			}
+		} else if (!password.equals(other.password)) {
 			return false;
-		if (role != other.role)
+		}
+		if (role != other.role) {
 			return false;
+		}
 		if (salt == null) {
-			if (other.salt != null)
+			if (other.salt != null) {
 				return false;
-		} else if (!salt.equals(other.salt))
+			}
+		} else if (!salt.equals(other.salt)) {
 			return false;
+		}
 		return true;
 	}
 
