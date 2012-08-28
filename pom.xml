@@ -37,7 +37,7 @@
 		<developerConnection>scm:git:ssh://git@bitbucket.org:alexnederlof/dev-env-admin.git</developerConnection>
 		<url>https://bitbucket.org/alexnederlof/dev-env-admin</url>
 	</scm>
-	
+
 	<distributionManagement>
 		<snapshotRepository>
 			<id>snapshots</id>
@@ -55,7 +55,7 @@
 			<id>snapshots</id>
 			<url>http://dea.hartveld.com/nexus/content/repositories/snapshots/</url>
 		</repository>
-	</repositories>	
+	</repositories>
 
 	<properties>
 		<maven.compiler.source>1.7</maven.compiler.source>
@@ -87,23 +87,31 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.6</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.10</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.9.0</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-library</artifactId>
 			<version>1.3</version>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit-dep</artifactId>
+			<version>4.10</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>hamcrest-core</artifactId>
+					<groupId>org.hamcrest</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.9.0</version>
 		</dependency>
 
 		<dependency>
