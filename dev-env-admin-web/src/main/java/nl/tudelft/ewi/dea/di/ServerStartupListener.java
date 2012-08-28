@@ -3,6 +3,8 @@ package nl.tudelft.ewi.dea.di;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
+import nl.tudelft.jenkins.guice.JenkinsWsClientGuiceModule;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +29,8 @@ public class ServerStartupListener extends GuiceServletContextListener {
 				injector = Guice.createInjector(
 						new ProvisioningModule(),
 						new SecurityModule(servletContext),
-						new WebModule(servletContext));
+						new WebModule(servletContext),
+						new JenkinsWsClientGuiceModule("http://dea.hartveld.com/jenkins"));
 			}
 			return injector;
 		} catch (Exception e) {

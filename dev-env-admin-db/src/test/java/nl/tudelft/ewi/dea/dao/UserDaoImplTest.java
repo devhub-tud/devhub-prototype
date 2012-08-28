@@ -38,7 +38,7 @@ public class UserDaoImplTest {
 	@Test
 	public void whenAUserIsSavedItCanAlsoBeFound() {
 
-		User user = new User(0, "User", "test@abc.com");
+		User user = User.newUserWithRandomSalt("User", "test@abc.com", "pass123");
 
 		dao.persist(user);
 
@@ -50,15 +50,15 @@ public class UserDaoImplTest {
 
 	@Test(expected = PersistenceException.class)
 	public void whenADuplicateEmailAdressIsCreatedAnErrorIsThrown() {
-		User firstUser = new User(0, "First user", "test@abc.com");
-		User secondUser = new User(0, "Second user", "test@abc.com");
+		User firstUser = User.newUserWithRandomSalt("First user", "test@abc.com", "pass123");
+		User secondUser = User.newUserWithRandomSalt("Second user", "test@abc.com", "pass123");
 		dao.persist(firstUser);
 		dao.persist(secondUser);
 	}
 
 	@Test(expected = UserNotFoundException.class)
 	public void whenAUserIsDeletedItShouldntBeFoundAnymore() {
-		User firstUser = new User(0, "First user", "userToDelete@abc.com");
+		User firstUser = User.newUserWithRandomSalt("First user", "userToDelete@abc.com", "pass123");
 		dao.persist(firstUser);
 
 		dao.delete(firstUser);
