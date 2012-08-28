@@ -1,18 +1,23 @@
 package nl.tudelft.ewi.dea.di;
 
 import java.nio.file.Paths;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 
-import nl.tudelft.ewi.dea.servlet.OverviewServlet;
-import nl.tudelft.ewi.dea.servlet.util.RedirectServlet;
+import nl.tudelft.ewi.dea.jaxrs.projects.ProjectResource;
 import nl.tudelft.ewi.dea.template.TemplateEngine;
 
 import org.apache.shiro.guice.web.GuiceShiroFilter;
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Maps;
+import com.google.inject.Scopes;
 import com.google.inject.servlet.ServletModule;
+import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import com.sun.jersey.spi.container.servlet.ServletContainer;
 
 /**
  * This module configures the web settings for the application. Some settings
@@ -22,7 +27,7 @@ import com.google.inject.servlet.ServletModule;
 public class WebModule extends ServletModule {
 
 	private static final Logger LOG = LoggerFactory.getLogger(WebModule.class);
-	
+
 	private final ServletContext servletContext;
 
 	public WebModule(ServletContext servletContext) {
@@ -32,14 +37,16 @@ public class WebModule extends ServletModule {
 	@Override
 	protected void configureServlets() {
 		bind(TemplateEngine.class).toInstance(new TemplateEngine(Paths.get(servletContext.getRealPath("/templates/"))));
-		
+
 		LOG.debug("Configuring servlets and URLs");
 		filter("/*").through(GuiceShiroFilter.class);
 		
-		serve("/").with(new RedirectServlet("/overview"));
-		serve("/overview").with(OverviewServlet.class);
-
-		// filter("/api/*").through(GuiceContainer.class);
+		bind(ProjectResource.class);
+		bind(JacksonJsonProvider.class).in(Scopes.SINGLETON);
+		
+		Map<String, String> params = Maps.newHashMap();
+		params.put(ServletContainer.PROPERTY_WEB_PAGE_CONTENT_REGEX, "/.*\\.(html|js|css|jsp)");
+		filter("/*").through(GuiceContainer.class, params); 
 	}
 
 }

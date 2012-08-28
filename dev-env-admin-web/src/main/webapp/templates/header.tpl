@@ -8,7 +8,7 @@
 		<meta name="author" content="">
 
 		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.0/css/bootstrap-combined.min.css">
-		<link rel="stylesheet" href="css/main.css">
+		<link rel="stylesheet" href="/css/main.css">
 
 <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
 <!--[if lt IE 9]>

@@ -1,9 +1,8 @@
-package nl.tudelft.ewi.dea.servlet.util;
+package nl.tudelft.ewi.dea.jaxrs.utils;
 
-import java.io.IOException;
+import java.io.StringWriter;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
 
 import nl.tudelft.ewi.dea.template.TemplateEngine;
 
@@ -14,13 +13,11 @@ import com.google.inject.servlet.RequestScoped;
 @RequestScoped
 public class Renderer {
 	
-	private final HttpServletResponse response;
 	private final TemplateEngine engine;
 	private final VelocityContext context;
 
 	@Inject
-	public Renderer(HttpServletResponse response, TemplateEngine engine) {
-		this.response = response;
+	public Renderer(TemplateEngine engine) {
 		this.engine = engine;
 		this.context = new VelocityContext();
 	}
@@ -30,7 +27,10 @@ public class Renderer {
 		return this;
 	}
 	
-	public void render(String template) throws IOException {
-		engine.getTemplate(template).merge(context, response.getWriter());
+	public String render(String template) {
+		StringWriter writer = new StringWriter();
+		engine.getTemplate(template).merge(context, writer);
+		writer.flush();
+		return writer.toString();
 	}
 }

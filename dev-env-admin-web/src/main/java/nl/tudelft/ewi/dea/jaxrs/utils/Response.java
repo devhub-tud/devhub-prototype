@@ -1,4 +1,5 @@
-package nl.tudelft.ewi.dea.servlet.util;
+package nl.tudelft.ewi.dea.jaxrs.utils;
+
 
 public class Response {
 	
