@@ -29,7 +29,7 @@
         </createTable>
     </changeSet>
     
-    <changeSet id="2" author="michalej">
+    <changeSet id="2" author="michaelj">
     	<insert tableName="user">
     		<column name="display_name">Administrator</column>
     		<column name="mail_address">test@test.com</column>
