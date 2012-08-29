@@ -1,4 +1,4 @@
-package nl.tudelft.ewi.dea;
+package nl.tudelft.ewi.dea.liquibase;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -6,6 +6,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import liquibase.Liquibase;
 import liquibase.database.jvm.JdbcConnection;
@@ -21,40 +25,48 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Maps;
 
-public class Database {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(Database.class);
-	
-	public void createDatabaseStructure(String persistenceUnit) {
-		createDatabaseStructure(persistenceUnit, null);
+public class DatabaseStructure {
+
+	private static final Logger LOG = LoggerFactory.getLogger(DatabaseStructure.class);
+
+	private final String persistenceUnit;
+	private final String context;
+
+	@Inject
+	public DatabaseStructure(@Named("persistenceUnit") String persistenceUnit, @Nullable @Named("liquibaseContext") String context) {
+		this.persistenceUnit = persistenceUnit;
+		this.context = context;
 	}
 
-	public void createDatabaseStructure(String persistenceUnit, String context) {
-		Map<String, Object> properties = readPersistenceXmlProperties(persistenceUnit);
-		
-		String driver = getValue(properties, "hibernate.connection.driver_class");
-		String url = getValue(properties, "javax.persistence.jdbc.url");
-		String user = getValue(properties, "javax.persistence.jdbc.user");
-		String pass = getValue(properties, "javax.persistence.jdbc.password");
-		
-		try (Connection conn = DriverManager.getConnection(url, user, pass)) {
-			Class.forName(driver);
+	public void upgrade() {
+		try (Connection conn = createConnection()) {
 			Liquibase liquibase = new Liquibase("liquibase.xml", new ClassLoaderResourceAccessor(), new JdbcConnection(conn));
 			liquibase.update(context);
-		} 
-		catch (LiquibaseException | ClassNotFoundException | SQLException e) {
+		} catch (LiquibaseException | ClassNotFoundException | SQLException e) {
 			LOG.error(e.getMessage(), e);
 			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
-	
+
+	private Connection createConnection() throws ClassNotFoundException, SQLException {
+		Map<String, Object> properties = readPersistenceXmlProperties(persistenceUnit);
+
+		String driver = getValue(properties, "hibernate.connection.driver_class");
+		String url = getValue(properties, "javax.persistence.jdbc.url");
+		String user = getValue(properties, "javax.persistence.jdbc.user");
+		String pass = getValue(properties, "javax.persistence.jdbc.password");
+
+		Class.forName(driver);
+		return DriverManager.getConnection(url, user, pass);
+	}
+
 	private Map<String, Object> readPersistenceXmlProperties(String persistenceUnit) {
 		Map<String, Object> properties = Maps.newHashMap();
 
 		try {
 			Document doc = new SAXBuilder().build(getClass().getResource("/META-INF/persistence.xml"));
 			Element root = doc.getRootElement();
-			
+
 			for (Element element : root.getChildren()) {
 				if ("persistence-unit".equals(element.getName()) && persistenceUnit.equals(element.getAttributeValue("name"))) {
 					for (Element pElement : element.getChildren()) {
@@ -68,12 +80,11 @@ public class Database {
 					break;
 				}
 			}
-		}
-		catch (IOException | JDOMException e) {
+		} catch (IOException | JDOMException e) {
 			LOG.error(e.getMessage(), e);
 			throw new RuntimeException(e.getMessage(), e);
 		}
-		
+
 		return properties;
 	}
 
@@ -83,5 +94,14 @@ public class Database {
 		}
 		return null;
 	}
-	
+
+	public void tearDown() {
+		try (Connection conn = createConnection()) {
+			conn.createStatement().executeUpdate("DROP ALL OBJECTS");
+		} catch (ClassNotFoundException | SQLException e) {
+			LOG.error(e.getMessage(), e);
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
+
 }
