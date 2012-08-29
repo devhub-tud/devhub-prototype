@@ -36,7 +36,7 @@ public class WebModule extends ServletModule {
 
 	@Override
 	protected void configureServlets() {
-		install(new PersistenceModule("test-h2"));
+		install(new PersistenceModule("test-h2", ""));
 
 		install(new SecurityModule(servletContext));
 
