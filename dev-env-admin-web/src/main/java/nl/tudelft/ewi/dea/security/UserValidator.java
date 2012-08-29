@@ -30,8 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class validates the user. It is used by Shiro to validate users. In
- * Shiro terms, this class is a {@link Realm}.
+ * This class validates the {@link User}. It is used by Shiro to validate users.
+ * In Shiro terms, this class is a {@link Realm}.
  * 
  */
 public class UserValidator extends AuthorizingRealm {

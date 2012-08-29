@@ -24,7 +24,7 @@ class UserDaoImpl implements UserDao {
 
 	@Override
 	@Transactional
-	public User getById(long id) {
+	public User findById(long id) {
 		User user = em.find(User.class, id);
 		if (user == null) {
 			throw new UserNotFoundException(id);

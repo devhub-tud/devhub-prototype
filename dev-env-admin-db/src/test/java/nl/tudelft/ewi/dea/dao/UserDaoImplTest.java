@@ -69,6 +69,6 @@ public class UserDaoImplTest {
 
 		dao.delete(firstUser);
 
-		dao.getById(firstUser.getId());
+		dao.findById(firstUser.getId());
 	}
 }
