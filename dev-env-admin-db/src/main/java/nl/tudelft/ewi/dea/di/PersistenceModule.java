@@ -4,6 +4,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import javax.inject.Inject;
 
+import nl.tudelft.ewi.dea.liquibase.DatabaseStructure;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +40,7 @@ public class PersistenceModule extends AbstractModule {
 		bind(String.class).annotatedWith(Names.named("liquibaseContext")).toInstance(liquibaseContext);
 
 		install(new JpaPersistModule(dbName));
+		bind(DatabaseStructure.class).asEagerSingleton();
 		bind(PersistenceStarter.class).asEagerSingleton();
 	}
 

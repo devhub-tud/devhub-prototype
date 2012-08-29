@@ -36,9 +36,16 @@ public class DatabaseStructure {
 	public DatabaseStructure(@Named("persistenceUnit") String persistenceUnit, @Nullable @Named("liquibaseContext") String context) {
 		this.persistenceUnit = persistenceUnit;
 		this.context = context;
+
+		create();
 	}
 
-	public void upgrade() {
+	public void dropAndCreate() {
+		drop();
+		create();
+	}
+
+	public void create() {
 		try (Connection conn = createConnection()) {
 			Liquibase liquibase = new Liquibase("liquibase.xml", new ClassLoaderResourceAccessor(), new JdbcConnection(conn));
 			liquibase.update(context);
@@ -95,7 +102,7 @@ public class DatabaseStructure {
 		return null;
 	}
 
-	public void tearDown() {
+	public void drop() {
 		try (Connection conn = createConnection()) {
 			conn.createStatement().executeUpdate("DROP ALL OBJECTS");
 		} catch (ClassNotFoundException | SQLException e) {
