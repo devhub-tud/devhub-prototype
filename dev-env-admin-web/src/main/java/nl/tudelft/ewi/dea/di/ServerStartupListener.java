@@ -3,7 +3,6 @@ package nl.tudelft.ewi.dea.di;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
-import nl.tudelft.ewi.dea.TestDataLoader;
 import nl.tudelft.jenkins.guice.JenkinsWsClientGuiceModule;
 
 import org.slf4j.Logger;
@@ -54,8 +53,6 @@ public class ServerStartupListener extends GuiceServletContextListener {
 	}
 
 	private void startApplication() {
-		LOG.debug("Injection finished. Now doing post-injection stuff");
-		injector.getInstance(TestDataLoader.class).insertTestData();
 		LOG.info("Application is now fully started");
 	}
 

@@ -14,6 +14,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import nl.minicom.gitolite.manager.ConfigManager;
 import nl.minicom.gitolite.manager.models.Config;
@@ -21,7 +23,6 @@ import nl.minicom.gitolite.manager.models.Permission;
 import nl.minicom.gitolite.manager.models.Repository;
 import nl.minicom.gitolite.manager.models.User;
 import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
-import nl.tudelft.ewi.dea.jaxrs.utils.Response;
 import nl.tudelft.jenkins.auth.UserImpl;
 import nl.tudelft.jenkins.client.JenkinsClient;
 
@@ -34,9 +35,9 @@ import com.google.common.collect.Lists;
 @Path("projects")
 @Produces(MediaType.APPLICATION_JSON)
 public class ProjectResource {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(ProjectResource.class);
-	
+
 	private final ConfigManager gitManager;
 	private final JenkinsClient jenkinsClient;
 	private final Provider<Renderer> renderers;
@@ -53,25 +54,28 @@ public class ProjectResource {
 	public String servePage() {
 		List<Project> invitations = Lists.newArrayList(
 				new Project("IN2610 Advanced Algorithms - Group 22")
-		);
+				);
 
 		List<Project> projects = Lists.newArrayList(
 				new Project("IN2010 Algorithms - Group 5"),
 				new Project("IN2105 Software Quality & Testing - Group 8"),
 				new Project("IN2505 Context project 1 - Group 7")
-		);
+				);
 
 		return renderers.get()
-			.setValue("invitations", invitations)
-			.setValue("projects", projects)
-			.setValue("scripts", Lists.newArrayList("projects.js"))
-			.render("projects.tpl");
+				.setValue("invitations", invitations)
+				.setValue("projects", projects)
+				.setValue("scripts", Lists.newArrayList("projects.js"))
+				.render("projects.tpl");
 	}
-	
+
 	@GET
 	@Path("checkName")
 	public Response checkProjectName(@QueryParam("name") String name) {
-		return new Response(isValidProjectName(name));
+		if (isValidProjectName(name)) {
+			return Response.ok().build();
+		}
+		return Response.status(Status.CONFLICT).build();
 	}
 
 	@POST
@@ -80,14 +84,14 @@ public class ProjectResource {
 	public Response provisionNewProject(CreateProjectRequest request) {
 		String name = request.getName();
 		if (!isValidProjectName(name)) {
-			return new Response(false, "Project name is not valid!");
+			return Response.status(Status.CONFLICT).entity("Project name is not valid!").build();
 		}
 
 		Response gitProvisioning = provisionGitRepository(name);
-		if (!gitProvisioning.isOk()) {
+		if (gitProvisioning.getStatus() != Status.OK.getStatusCode()) {
 			return gitProvisioning;
 		}
-		
+
 		return provisionJenkins(name, "git@dea.hartveld.com:" + name, "M.deJong-2@student.tudelft.nl");
 	}
 
@@ -99,54 +103,52 @@ public class ProjectResource {
 			jenkinsClient.createJob(projectName, gitUrl, owners);
 		} catch (final Exception e) {
 			LOG.warn("Failed to create job", e);
-			return new Response(false, "Failed to create job: " + e.getMessage());
+			return Response.serverError().entity("Failed to create job: " + e.getMessage()).build();
 		}
 
-		return new Response(true, "Job created successfully");
+		return Response.ok().build();
 	}
 
 	private Response provisionGitRepository(String name) {
 		Config config = null;
 		try {
 			config = gitManager.getConfig();
-		}
-		catch (IOException e) {
-			return new Response(false, "Currently unable to create git repositories!");
+		} catch (IOException e) {
+			return Response.serverError().entity("Currently unable to create git repositories!").build();
 		}
 
 		if (config.hasRepository(name)) {
-			return new Response(false, "Repository alreay exists!");
+			return Response.status(Status.CONFLICT).entity("Repository alreay exists!").build();
 		}
-		
+
 		User admin = config.ensureUserExists("git");
 		Repository repo = config.createRepository(name);
 		repo.setPermission(admin, Permission.ALL);
 
 		try {
 			gitManager.applyConfig();
-		} 
-		catch (IOException e) {
-			return new Response(false, "Could not create git repository!");
+		} catch (IOException e) {
+			return Response.serverError().entity("Could not create git repository!").build();
 		}
 
-		return new Response(true);
+		return Response.ok().build();
 	}
 
 	private boolean isValidProjectName(String name) {
 		if (name == null || !name.matches("[a-zA-Z0-9]{4,}")) {
 			return false;
 		}
-		
+
 		try {
 			return !gitManager.getConfig().hasRepository(name);
-		} 
-		catch (IOException e) {
+		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
 		}
 		return false;
 	}
-	
-	//TODO: Temp class, this should be replaced with something reading from the database...
+
+	// TODO: Temp class, this should be replaced with something reading from the
+	// database...
 	public static class Project {
 		private final String name;
 
@@ -158,5 +160,5 @@ public class ProjectResource {
 			return name;
 		}
 	}
-	
+
 }
