@@ -1,0 +1,31 @@
+Promote a regular user to teacher
+---
+
+As a teacher,
+I want to promote a regular user to teacher,
+So that the students can work as teaching assistants.
+
+---
+
+Given
+	I am logged in as teacher, and
+	I am on the administrator dashboard (e.g.. /dashboard/admin),
+When
+	I click on 'promote user to teacher',
+Then
+	I am presented with a list of users (possibly in a pop-up) that can be promoted.
+
+
+Given
+	I am presented with a list of users that can be promoted,
+When
+	I choose one or more users,
+	And I click on 'promote users to teacher',
+Then
+	The chosen users are promoted, and
+	They receive an email notification, and
+	I am presented with a success message.
+
+---
+
+- We need an administrator dashboard

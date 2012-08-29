@@ -19,10 +19,13 @@ Given
 	I have not logged in to the system,
 When
 	I am presented with the signup screen, and
-	I supply my TUD email,
+	I click on 'sign up', and
+	I supply my TUD email, and
+	I click on 'sign up',
 Then
-	I receive an email on that account,
-	Which contains a one-time valid URL to my account page (e.g. http://dea.hartveld.com/devhub/account/accountId/).
+	I am presented with a screen that tells me to check my email, and
+	I receive an email on that account, which contains a one-time valid URL to my account page
+		(e.g. http://dea.hartveld.com/devhub/account/{accountId}/{one-time-valid-auth-token}).
 
 
 Given
@@ -33,3 +36,11 @@ When
 Then
 	My account is activated, and
 	I receive an email that confirms this.
+
+---
+
+- Accounts are located under /account/${accountId}. What is an account ID? A number? Or netid? Or email username?
+  - Account creation on /account/create?
+- User account has properties: id, email, display name, student number, netid. Other properties? See answer Arie.
+  - Email is not editable.
+- Valid TUD email addresses are @student.tudelft.nl, and @tudelft.nl.
