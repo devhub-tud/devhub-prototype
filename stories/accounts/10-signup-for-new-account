@@ -1,4 +1,4 @@
-Sign up for new account
+Sign up for new account with two-step identification
 ---
 
 As a new user,
@@ -7,6 +7,8 @@ So that I can use the system.
 
 ---
 
+
+-- Browse to homepage
 Given
 	I have not logged in to the system,
 When
@@ -15,6 +17,7 @@ Then
 	I am presented with a login / signup screen.
 
 
+-- Sign up and wait for confirmation email
 Given
 	I have not logged in to the system,
 When
@@ -28,11 +31,13 @@ Then
 		(e.g. http://dea.hartveld.com/devhub/account/{accountId}/{one-time-valid-auth-token}).
 
 
+-- Activate account through link in confirmation email
 Given
 	I have browsed to my account page with my one-time valid URL,
 When
 	I supply my display name, and
-	I set up a password,
+	I set up a password, and
+	I click 'activate',
 Then
 	My account is activated, and
 	I receive an email that confirms this.
