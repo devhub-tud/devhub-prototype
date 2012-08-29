@@ -13,6 +13,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -113,8 +114,8 @@ public class ProjectResource {
 		Config config = null;
 		try {
 			config = gitManager.getConfig();
-		} catch (IOException e) {
-			return Response.serverError().entity("Currently unable to create git repositories!").build();
+		} catch (/* TODO: Fix this in gitolite-admin */NullPointerException | IOException e) {
+			return Response.serverError().entity(new GenericEntity<String>("Currently unable to create git repositories!", String.class)).build();
 		}
 
 		if (config.hasRepository(name)) {
@@ -139,12 +140,14 @@ public class ProjectResource {
 			return false;
 		}
 
-		try {
-			return !gitManager.getConfig().hasRepository(name);
-		} catch (IOException e) {
-			LOG.error(e.getMessage(), e);
-		}
-		return false;
+		return true;
+
+		// try {
+		// return !gitManager.getConfig().hasRepository(name);
+		// } catch (IOException e) {
+		// LOG.error(e.getMessage(), e);
+		// }
+		// return false;
 	}
 
 	// TODO: Temp class, this should be replaced with something reading from the

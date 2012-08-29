@@ -34,8 +34,15 @@ $(document).ready(function() {
 	function checkProjectName(projectName, callback) {
 		if (projectName != lastValue) {
 			lastValue = projectName;
-			$.get("/projects/checkName", { "name": projectName }, function(data) {
-				callback.call(this, data.ok);
+			$.ajax({
+					url: "/projects/checkName", 
+					data: { "name": projectName }, 
+					success: function(data) {
+						callback.call(this, true);
+					},
+					error: function(data) {
+						callback.call(this, false);
+					}
 			});
 		}
 	}
@@ -66,7 +73,7 @@ $(document).ready(function() {
 		
 		$.ajax({
 				type: "post",
-				dataType: "json",
+				dataType: "text/plain",
 				contentType: "application/json",
 				url: "/projects/create", 
 				data: JSON.stringify({ "name": projectName }), 
@@ -74,11 +81,15 @@ $(document).ready(function() {
 					step2.hide();
 					step3.show();
 					
-					var message = data.ok ? "Project successfully created!" : data.message;
-					var progressBarColor = data.ok ? "bar-success" : "bar-danger";
+					newProjectMessage.find('strong').text("Project successfully created!");
+					newProjectMessage.find('.bar').addClass("bar-success");
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					step2.hide();
+					step3.show();
 					
-					newProjectMessage.find('strong').text(message);
-					newProjectMessage.find('.bar').addClass(progressBarColor);
+					newProjectMessage.find('strong').text(jqXHR.responseText);
+					newProjectMessage.find('.bar').addClass("bar-danger");
 				}
 		});
 	});
