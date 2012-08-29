@@ -1,0 +1,35 @@
+Sign up for new account
+---
+
+As a new user,
+I want to sign up for an account on the homepage,
+So that I can use the system.
+
+---
+
+Given
+	I have not logged in to the system,
+When
+	I browse to the system home page (e.g. http://dea.hartveld.com/devhub/),
+Then
+	I am presented with a login / signup screen.
+
+
+Given
+	I have not logged in to the system,
+When
+	I am presented with the signup screen, and
+	I supply my TUD email,
+Then
+	I receive an email on that account,
+	Which contains a one-time valid URL to my account page (e.g. http://dea.hartveld.com/devhub/account/accountId/).
+
+
+Given
+	I have browsed to my account page with my one-time valid URL,
+When
+	I supply my display name, and
+	I set up a password,
+Then
+	My account is activated, and
+	I receive an email that confirms this.
