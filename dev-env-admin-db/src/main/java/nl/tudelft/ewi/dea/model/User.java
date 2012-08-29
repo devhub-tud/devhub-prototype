@@ -9,6 +9,8 @@ import java.util.Random;
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
@@ -36,17 +38,26 @@ public class User {
 		return Integer.toString(new Random().nextInt());
 	}
 
-	@Id @GeneratedValue private final long id;
+	@Id 
+	@GeneratedValue
+	@Column(name = "id")
+	private final long id;
 
-	@Column(unique = true, nullable = false) private String displayName;
+	@Column(name = "display_name", unique = true, nullable = false) 
+	private String displayName;
 
-	@Column(unique = true, nullable = false) private String mailAddress;
+	@Column(name = "mail_address", unique = true, nullable = false) 
+	private String mailAddress;
 
-	@Column(nullable = false) String salt;
+	@Column(name = "salt", nullable = false) 
+	private String salt;
 
-	@Column(nullable = false) String password;
+	@Column(name = "password", nullable = false)
+	private String password;
 
-	@Column(nullable = false) UserRole role;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "role", nullable = false)
+	private UserRole role;
 
 	/**
 	 * Constructor required by Hibernate.
