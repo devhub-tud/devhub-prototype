@@ -9,7 +9,7 @@ public class ProvisioningModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		ConfigManager configManager = ConfigManager.create("git@localhost:gitolite-admin", new PassphraseCredentialsProvider("passphrase"));
+		ConfigManager configManager = ConfigManager.create("git@dea.hartveld.com:gitolite-admin", new PassphraseCredentialsProvider("AXovmeBy1"));
 		bind(ConfigManager.class).toInstance(configManager);
 	}
 

@@ -1,0 +1,51 @@
+Sign up for new account with two-step identification
+---
+
+As a new user,
+I want to sign up for an account on the homepage,
+So that I can use the system.
+
+---
+
+
+-- Browse to homepage
+Given
+	I have not logged in to the system,
+When
+	I browse to the system home page (e.g. http://dea.hartveld.com/devhub/),
+Then
+	I am presented with a login / signup screen.
+
+
+-- Sign up and wait for confirmation email
+Given
+	I have not logged in to the system,
+When
+	I am presented with the signup screen, and
+	I click on 'sign up', and
+	I supply my TUD email, and
+	I click on 'sign up',
+Then
+	I am presented with a screen that tells me to check my email, and
+	I receive an email on that account, which contains a one-time valid URL to my account page
+		(e.g. http://dea.hartveld.com/devhub/account/{accountId}/{one-time-valid-auth-token}).
+
+
+-- Activate account through link in confirmation email
+Given
+	I have browsed to my account page with my one-time valid URL,
+When
+	I supply my display name, and
+	I set up a password, and
+	I click 'activate',
+Then
+	My account is activated, and
+	I receive an email that confirms this.
+
+---
+
+- Accounts are located under /account/${accountId}. What is an account ID? A number? Or netid? Or email username?
+  - Account creation on /account/create?
+- User account has properties: id, email, display name, student number, netid. Other properties? See answer Arie.
+  - Email is not editable.
+- Valid TUD email addresses are @student.tudelft.nl, and @tudelft.nl.

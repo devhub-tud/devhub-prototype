@@ -1,0 +1,34 @@
+Creating a course context
+---
+
+As a teacher,
+I want to create a course context for my course,
+So that students can enroll for my course.
+
+---
+
+-- Move to course context creation screen
+Given
+	I am logged in as teacher, and
+	I am at my dashboard page (e.g. /dashboard),
+When
+	I click on 'create course context ...',
+Then
+	I am presented with a course context creation screen (e.g. /course/create).
+
+-- Fill in details and create context
+Given
+	I am presented with the course context creation screen,
+When
+	I enter the required information, and
+	I click on 'create course context',
+Then
+	The course context is created, and
+	The course context becomes visible on the enroll screen, and
+	I am presented with a success notification, and
+	I am redirected to the page of the newly created course (/course/${courseId}).
+
+---
+
+- What information should be kept on courses?
+  - Code, name, description, responsible teacher, other teachers/assistents.

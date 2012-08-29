@@ -1,0 +1,95 @@
+Enroll in course
+---
+
+As a student,
+I want to sign up for a course with my group,
+So that I can do the practical work of the course.
+
+Note: this could be split into two stories from an implementor's perspective: sign up for course, for individual work, and extend invitations to other students. But the parts each on their own don't have value w.r.t. the testing course.
+
+---
+
+-- Viewing the courses that I can enroll in
+Given
+	I am logged in as student, and
+	I am viewing my dashboard (e.g. /dashboard),
+When
+	I click on 'enroll for course...',
+Then
+	I am presented with a list of courses for which I can enroll.
+
+
+-- Enrolling in a specific course from the list
+Given
+	I am viewing the list of courses for which I can enroll,
+When
+	I select one course from the list, and
+	I click on 'enroll',
+Then
+	I am presented with the course project screen (e.g. /course/{courseId})
+
+
+-- Opening list of other students to invite
+Given
+	I am viewing the course project screen,
+When
+	I click on 'invite other students...'
+Then
+	I am presented with a list of students that I can invite.
+
+
+-- Inviting other students from list
+Given
+	I am viewing the list of students to invite,
+When
+	I select one or more students, and
+	I click 'invite',
+Then
+	An invitation email is sent to the invited students, and
+	I am presented with a success notification.
+
+
+-- Receiving an invitation and acting on it
+Given
+	I have received a course project invitation email,
+When
+	I click on the link in the email,
+Then
+	I am presented with an invitation acceptance screen (e.g. /invitations/${invitationId}).
+
+
+-- On the invitation screen, choose whether to accept 
+Given
+	I am presented with an invitation acceptance screen,
+When
+	I click accept,
+Then
+	I am added as member to the course project, and
+	The user who invited me is notified, and
+	I am presented with the project screen (e.g. /projects/${projectId}).
+
+
+-- Kicking off the project
+Given
+	All invitations are either accepted or rejected,
+When
+	A project member clicks 'provision project' on the project screen,
+Then
+	The project becomes immutable, and
+	The project state becomes 'provisioning', and
+	The system provisions the project.
+
+
+-- After completion of provisioning, inform project members
+Given
+	The system has provisioned the project,
+Then
+	The system sends notification information to all project members.
+
+---
+
+- Only students with existing accounts can be invited.
+- What information is sent to project members after notification?
+  - Git url
+  - Jenkins job url
+  - Sonar project url
