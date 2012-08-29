@@ -7,6 +7,7 @@ So that students can enroll for my course.
 
 ---
 
+-- Move to course context creation screen
 Given
 	I am logged in as teacher, and
 	I am at my dashboard page (e.g. /dashboard),
@@ -15,6 +16,7 @@ When
 Then
 	I am presented with a course context creation screen (e.g. /course/create).
 
+-- Fill in details and create context
 Given
 	I am presented with the course context creation screen,
 When
@@ -23,7 +25,8 @@ When
 Then
 	The course context is created, and
 	The course context becomes visible on the enroll screen, and
-	I am presented with a success notification.
+	I am presented with a success notification, and
+	I am redirected to the page of the newly created course (/course/${courseId}).
 
 ---
 

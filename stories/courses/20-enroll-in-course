@@ -9,6 +9,7 @@ Note: this could be split into two stories from an implementor's perspective: si
 
 ---
 
+-- Viewing the courses that I can enroll in
 Given
 	I am logged in as student, and
 	I am viewing my dashboard (e.g. /dashboard),
@@ -18,6 +19,7 @@ Then
 	I am presented with a list of courses for which I can enroll.
 
 
+-- Enrolling in a specific course from the list
 Given
 	I am viewing the list of courses for which I can enroll,
 When
@@ -27,6 +29,7 @@ Then
 	I am presented with the course project screen (e.g. /course/{courseId})
 
 
+-- Opening list of other students to invite
 Given
 	I am viewing the course project screen,
 When
@@ -35,6 +38,7 @@ Then
 	I am presented with a list of students that I can invite.
 
 
+-- Inviting other students from list
 Given
 	I am viewing the list of students to invite,
 When
@@ -45,6 +49,7 @@ Then
 	I am presented with a success notification.
 
 
+-- Receiving an invitation and acting on it
 Given
 	I have received a course project invitation email,
 When
@@ -53,6 +58,7 @@ Then
 	I am presented with an invitation acceptance screen (e.g. /invitations/${invitationId}).
 
 
+-- On the invitation screen, choose whether to accept 
 Given
 	I am presented with an invitation acceptance screen,
 When
@@ -63,6 +69,7 @@ Then
 	I am presented with the project screen (e.g. /projects/${projectId}).
 
 
+-- Kicking off the project
 Given
 	All invitations are either accepted or rejected,
 When
@@ -72,6 +79,8 @@ Then
 	The project state becomes 'provisioning', and
 	The system provisions the project.
 
+
+-- After completion of provisioning, inform project members
 Given
 	The system has provisioned the project,
 Then
