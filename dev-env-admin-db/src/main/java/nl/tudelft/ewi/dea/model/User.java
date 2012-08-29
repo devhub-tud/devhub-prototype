@@ -16,33 +16,13 @@ import javax.persistence.Id;
 @NotThreadSafe
 public class User {
 
-	/**
-	 * @return A new {@link User} with the role {@link UserRole#USER} a Random
-	 *         generated Salt.
-	 */
-	public static User newUserWithRandomSalt(String username, String mailAddress, String password) {
-		return new User(0, username, mailAddress, generateSalt(), password, UserRole.USER);
-	}
-
-	/**
-	 * @return A new with the role {@link UserRole#USER} user with a Random
-	 *         generated Salt.
-	 */
-	public static User newAdminWithRandomSalt(String username, String mailAddress, String password) {
-		return new User(0, username, mailAddress, generateSalt(), password, UserRole.ADMIN);
-	}
-
-	private static String generateSalt() {
-		return Integer.toString(new Random().nextInt());
-	}
-
 	@Id @GeneratedValue private final long id;
 
 	@Column(unique = true, nullable = false) private String displayName;
 
 	@Column(unique = true, nullable = false) private String mailAddress;
 
-	@Column(nullable = false) String salt;
+	@Column(nullable = false) private final String salt;
 
 	@Column(nullable = false) String password;
 
@@ -51,17 +31,19 @@ public class User {
 	/**
 	 * Constructor required by Hibernate.
 	 */
+	@SuppressWarnings("unused")
 	private User() {
 		id = 0;
+		salt = "";
 	}
 
-	private User(long id, String username, String mailAddress, String salt, String password, UserRole user) {
+	public User(String username, String mailAddress, String salt, String password, UserRole user) {
 		checkArgument(!isNullOrEmpty(username));
 		checkArgument(!isNullOrEmpty(mailAddress));
 		checkArgument(!isNullOrEmpty(password));
 		checkArgument(!isNullOrEmpty(salt));
 		checkNotNull(user);
-		this.id = id;
+		this.id = 0;
 		this.displayName = username;
 		this.mailAddress = mailAddress;
 		this.salt = salt;
@@ -85,8 +67,16 @@ public class User {
 		return salt;
 	}
 
-	public UserRole getRole() {
+	UserRole getRole() {
 		return role;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public boolean isAdmin() {
+		return role == UserRole.ADMIN;
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package nl.tudelft.ewi.dea.di;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
+import nl.tudelft.ewi.dea.TestDataLoader;
 import nl.tudelft.jenkins.guice.JenkinsWsClientGuiceModule;
 
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.persist.PersistService;
 import com.google.inject.servlet.GuiceServletContextListener;
 
 /**
@@ -27,9 +29,8 @@ public class ServerStartupListener extends GuiceServletContextListener {
 		try {
 			if (injector == null) {
 				injector = Guice.createInjector(
-						new ProvisioningModule(),
-						new SecurityModule(servletContext),
 						new WebModule(servletContext),
+						new ProvisioningModule(),
 						new JenkinsWsClientGuiceModule("http://dea.hartveld.com/jenkins"));
 			}
 			return injector;
@@ -39,7 +40,7 @@ public class ServerStartupListener extends GuiceServletContextListener {
 	}
 
 	private RuntimeException createStartupException(Exception e) {
-		String msg = "FATAL: Unexpected error while starting the application";
+		String msg = "FATAL: Unexpected error while starting the application: " + e.getMessage();
 		LOG.error(msg, e);
 		return new RuntimeException(msg, e);
 
@@ -53,6 +54,17 @@ public class ServerStartupListener extends GuiceServletContextListener {
 	}
 
 	private void startApplication() {
+		LOG.debug("Injection finished. Now doing post-injection stuff");
+		injector.getInstance(TestDataLoader.class).insertTestData();
 		LOG.info("Application is now fully started");
+	}
+
+	@Override
+	public void contextDestroyed(ServletContextEvent servletContextEvent) {
+		LOG.info("Shutting down application");
+		LOG.debug("Stopping persist unit");
+		injector.getInstance(PersistService.class).stop();
+		super.contextDestroyed(servletContextEvent);
+		LOG.debug("Clean shutdown completed");
 	}
 }

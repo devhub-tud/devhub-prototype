@@ -1,16 +1,13 @@
 package nl.tudelft.ewi.dea.di;
 
-import javax.inject.Singleton;
 import javax.servlet.ServletContext;
 
+import nl.tudelft.ewi.dea.security.UserValidator;
+
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.config.Ini;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.guice.aop.ShiroAopModule;
 import org.apache.shiro.guice.web.ShiroWebModule;
-import org.apache.shiro.realm.text.IniRealm;
-import org.apache.shiro.util.ByteSource;
-import org.apache.shiro.util.SimpleByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,22 +21,22 @@ import com.google.inject.Provides;
 public class SecurityModule extends ShiroWebModule {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SecurityModule.class);
-	private static final int NUMBER_OF_HASH_ITERATIONS = 1024;
-	public static final ByteSource SALT = new SimpleByteSource("skjhdf9834hj");
+	public static final int NUMBER_OF_HASH_ITERATIONS = 1024;
 
-	SecurityModule(ServletContext sc) {
+	public SecurityModule(ServletContext sc) {
 		super(sc);
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	protected void configureShiroWeb() {
 		LOG.debug("Configuring Shiro Security module");
 		install(new ShiroAopModule());
 
-		bindRealm().to(IniRealm.class);
+		bindRealm().to(UserValidator.class);
 
 		addFilterChain("/", AUTHC);
-		
+
 		addFilterChain("/logout", LOGOUT);
 		addFilterChain("/login.jsp", AUTHC);
 		addFilterChain("/login/", ANON);
@@ -48,27 +45,10 @@ public class SecurityModule extends ShiroWebModule {
 	}
 
 	@Provides
-	@Singleton
-	IniRealm loadIniRealm(Ini ini) {
-		IniRealm realm = new IniRealm(ini);
+	public HashedCredentialsMatcher matcher() {
 		HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher(Sha256Hash.ALGORITHM_NAME);
 		hashedCredentialsMatcher.setHashIterations(NUMBER_OF_HASH_ITERATIONS);
-		realm.setCredentialsMatcher(hashedCredentialsMatcher);
-		return realm;
+		return hashedCredentialsMatcher;
 	}
 
-	@Provides
-	@Singleton
-	Ini loadShiroIni() {
-		return Ini.fromResourcePath("classpath:shiro.ini");
-	}
-
-	/**
-	 * Use this main method to generate passwords.
-	 */
-	public static void main(String[] args) {
-		// TODO Add SALT here.
-		Sha256Hash hash = new Sha256Hash("test", null, NUMBER_OF_HASH_ITERATIONS);
-		System.out.println(hash);
-	}
 }

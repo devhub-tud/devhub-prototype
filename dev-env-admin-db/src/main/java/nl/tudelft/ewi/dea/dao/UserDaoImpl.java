@@ -45,7 +45,12 @@ class UserDaoImpl implements UserDao {
 		CriteriaQuery<User> criteria = builder.createQuery(User.class);
 		Root<User> userRoot = criteria.from(User.class);
 		criteria.select(userRoot).where(builder.equal(userRoot.get(User_.mailAddress), emailAddres));
-		return em.createQuery(criteria).getSingleResult();
+		User user = em.createQuery(criteria).getSingleResult();
+		if (user == null) {
+			throw new UserNotFoundException();
+		} else {
+			return user;
+		}
 	}
 
 	@Override

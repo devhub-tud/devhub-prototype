@@ -1,4 +1,4 @@
-package nl.tudelft.ew.dea;
+package nl.tudelft.ewi.dea;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;

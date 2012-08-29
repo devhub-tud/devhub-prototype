@@ -9,8 +9,8 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(UserDaoImpl.class)
 public interface UserDao extends Dao<User> {
 
-	User findByEmail(String emailAddres);
-	
+	User findByEmail(String emailAddres) throws UserNotFoundException;
+
 	List<User> list();
 
 	void delete(User firstUser);

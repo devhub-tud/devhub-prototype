@@ -22,7 +22,7 @@ import com.google.inject.servlet.ServletModule;
 public class WebModule extends ServletModule {
 
 	private static final Logger LOG = LoggerFactory.getLogger(WebModule.class);
-	
+
 	private final ServletContext servletContext;
 
 	public WebModule(ServletContext servletContext) {
@@ -31,15 +31,18 @@ public class WebModule extends ServletModule {
 
 	@Override
 	protected void configureServlets() {
+		install(new PersistenceModule("test-h2"));
+
+		install(new SecurityModule(servletContext));
+
 		bind(TemplateEngine.class).toInstance(new TemplateEngine(Paths.get(servletContext.getRealPath("/templates/"))));
-		
+
 		LOG.debug("Configuring servlets and URLs");
 		filter("/*").through(GuiceShiroFilter.class);
-		
+
 		serve("/").with(new RedirectServlet("/overview"));
 		serve("/overview").with(OverviewServlet.class);
 
 		// filter("/api/*").through(GuiceContainer.class);
 	}
-
 }

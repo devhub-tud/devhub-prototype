@@ -6,9 +6,9 @@ import static org.junit.Assert.assertThat;
 
 import javax.persistence.PersistenceException;
 
-import nl.tudelft.ewi.dea.PersistenceStartStopHandler;
-import nl.tudelft.ewi.dea.di.DatabaseModule;
+import nl.tudelft.ewi.dea.di.PersistenceModule;
 import nl.tudelft.ewi.dea.model.User;
+import nl.tudelft.ewi.dea.model.UserRole;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -23,8 +23,7 @@ public class UserDaoImplTest {
 
 	@BeforeClass
 	public static void beforeClass() {
-		injector = createInjector(new DatabaseModule("test-h2"));
-		injector.getInstance(PersistenceStartStopHandler.class).start();
+		injector = createInjector(new PersistenceModule("test-h2"));
 	}
 
 	@Before
@@ -38,27 +37,32 @@ public class UserDaoImplTest {
 	@Test
 	public void whenAUserIsSavedItCanAlsoBeFound() {
 
-		User user = User.newUserWithRandomSalt("User", "test@abc.com", "pass123");
+		User user = newTestUser("harry");
 
 		dao.persist(user);
 
-		User foundUser = dao.findByEmail("test@abc.com");
+		User foundUser = dao.findByEmail(user.getMailAddress());
 
 		assertThat(foundUser, is(user));
 
 	}
 
+	private User newTestUser(String ident) {
+		User user = new User(ident, ident + "@unittest.com", "abc", "pass", UserRole.USER);
+		return user;
+	}
+
 	@Test(expected = PersistenceException.class)
 	public void whenADuplicateEmailAdressIsCreatedAnErrorIsThrown() {
-		User firstUser = User.newUserWithRandomSalt("First user", "test@abc.com", "pass123");
-		User secondUser = User.newUserWithRandomSalt("Second user", "test@abc.com", "pass123");
+		User firstUser = newTestUser("harry");
+		User secondUser = newTestUser("harry");
 		dao.persist(firstUser);
 		dao.persist(secondUser);
 	}
 
 	@Test(expected = UserNotFoundException.class)
 	public void whenAUserIsDeletedItShouldntBeFoundAnymore() {
-		User firstUser = User.newUserWithRandomSalt("First user", "userToDelete@abc.com", "pass123");
+		User firstUser = newTestUser("deleteUser");
 		dao.persist(firstUser);
 
 		dao.delete(firstUser);
