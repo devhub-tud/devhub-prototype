@@ -140,14 +140,12 @@ public class ProjectResource {
 			return false;
 		}
 
-		return true;
-
-		// try {
-		// return !gitManager.getConfig().hasRepository(name);
-		// } catch (IOException e) {
-		// LOG.error(e.getMessage(), e);
-		// }
-		// return false;
+		try {
+			return !gitManager.getConfig().hasRepository(name);
+		} catch (IOException e) {
+			LOG.error(e.getMessage(), e);
+		}
+		return false;
 	}
 
 	// TODO: Temp class, this should be replaced with something reading from the

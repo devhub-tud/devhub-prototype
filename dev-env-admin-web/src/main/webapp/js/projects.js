@@ -73,11 +73,11 @@ $(document).ready(function() {
 		
 		$.ajax({
 				type: "post",
-				dataType: "text/plain",
+				dataType: "text",
 				contentType: "application/json",
 				url: "/projects/create", 
 				data: JSON.stringify({ "name": projectName }), 
-				success: function(data) {
+				success: function() {
 					step2.hide();
 					step3.show();
 					
