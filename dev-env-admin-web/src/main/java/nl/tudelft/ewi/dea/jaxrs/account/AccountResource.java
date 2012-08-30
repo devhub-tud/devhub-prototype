@@ -20,7 +20,6 @@ import javax.ws.rs.core.Response;
 
 import nl.tudelft.ewi.dea.dao.RegistrationTokenDao;
 import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
-import nl.tudelft.ewi.dea.model.RegistrationToken;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,16 +50,17 @@ public class AccountResource {
 
 		checkArgument(isNotEmpty(token));
 
-		final RegistrationToken registrationToken;
 		try {
-			registrationToken = registrationTokenDao.findByToken(token);
+			registrationTokenDao.findByToken(token);
 		} catch (final NoResultException e) {
 			LOG.trace("Token not found in database, so not active: {}", token, e);
-			// TODO: Handle missing token.
+			// TODO: Render page with 'unknown token' message.
+			return renderers.get()
+					.setValue("scripts", Lists.newArrayList("activate-unknown-token.js"))
+					.render("activate-unknown-token.tpl");
 		}
 
 		// TODO: Render page with account input form.
-
 		return renderers.get()
 				.setValue("scripts", Lists.newArrayList("activate.js"))
 				.render("activate.tpl");
