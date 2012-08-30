@@ -1,42 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
- 
-<databaseChangeLog
-  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-    <changeSet id="1" author="michaelj">
-        <createTable tableName="users">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="display_name" type="varchar(32)">
-                <constraints nullable="false" unique="true" />
-            </column>
-            <column name="mail_address" type="varchar(255)">
-                <constraints nullable="false" unique="true" />
-            </column>
-            <column name="salt" type="varchar(8)">
-                <constraints nullable="false" />
-            </column>
-            <column name="password" type="varchar(64)">
-                <constraints nullable="false" />
-            </column>
-            <column name="role" type="varchar(16)">
-                <constraints nullable="false" />
-            </column>
-        </createTable>
-    </changeSet>
-    
-    <changeSet id="2" author="michaelj">
-    	<insert tableName="users">
-    		<column name="display_name">Administrator</column>
-    		<column name="mail_address">test@test.com</column>
-    		<column name="salt">cafc393e</column>
-    		<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c</column>
-    		<column name="role">ADMIN</column>
-    	</insert>
-    </changeSet>
-    
+	<changeSet id="1" author="michaelj">
+		<createTable tableName="users">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="display_name" type="varchar(32)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="mail_address" type="varchar(255)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="salt" type="varchar(8)">
+				<constraints nullable="false" />
+			</column>
+			<column name="password" type="varchar(64)">
+				<constraints nullable="false" />
+			</column>
+			<column name="role" type="varchar(16)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+
+	<changeSet id="2" author="michaelj">
+		<insert tableName="users">
+			<column name="display_name">Administrator</column>
+			<column name="mail_address">test@test.com</column>
+			<column name="salt">cafc393e</column>
+			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c</column>
+			<column name="role">ADMIN</column>
+		</insert>
+	</changeSet>
+
+	<changeSet id="3" author="david">
+		<createTable tableName="registrationtoken">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="email" type="varchar(255)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="token" type="bytea"> <!-- This should really be uuid, but JPA/Hibernate doesn't understand it -->
+				<constraints nullable="true" unique="true" />
+			</column>
+		</createTable>
+	</changeSet>
+
 </databaseChangeLog>
