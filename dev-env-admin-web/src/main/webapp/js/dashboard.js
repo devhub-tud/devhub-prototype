@@ -35,7 +35,7 @@ $(document).ready(function() {
 		if (projectName != lastValue) {
 			lastValue = projectName;
 			$.ajax({
-					url: "/projects/checkName", 
+					url: "/dashboard/checkName", 
 					data: { "name": projectName }, 
 					success: function(data) {
 						callback.call(this, true);
@@ -75,7 +75,7 @@ $(document).ready(function() {
 				type: "post",
 				dataType: "text",
 				contentType: "application/json",
-				url: "/projects/create", 
+				url: "/dashboard/create", 
 				data: JSON.stringify({ "name": projectName }), 
 				success: function() {
 					step2.hide();
