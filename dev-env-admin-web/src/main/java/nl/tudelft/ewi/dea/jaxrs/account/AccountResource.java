@@ -1,6 +1,7 @@
 package nl.tudelft.ewi.dea.jaxrs.account;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.net.URI;
@@ -17,9 +18,14 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import nl.tudelft.ewi.dea.dao.RegistrationTokenDao;
+import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
+import nl.tudelft.ewi.dea.model.RegistrationToken;
+import nl.tudelft.ewi.dea.model.User;
+import nl.tudelft.ewi.dea.security.UserFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,12 +39,18 @@ public class AccountResource {
 	private static final Logger LOG = LoggerFactory.getLogger(AccountResource.class);
 
 	private final Provider<Renderer> renderers;
+
 	private final RegistrationTokenDao registrationTokenDao;
+	private final UserDao userDao;
+
+	private final UserFactory userFactory;
 
 	@Inject
-	public AccountResource(final Provider<Renderer> renderers, final RegistrationTokenDao registrationTokenDao) {
+	public AccountResource(final Provider<Renderer> renderers, final RegistrationTokenDao registrationTokenDao, final UserDao userDao, final UserFactory userFactory) {
 		this.renderers = renderers;
 		this.registrationTokenDao = registrationTokenDao;
+		this.userDao = userDao;
+		this.userFactory = userFactory;
 	}
 
 	@GET
@@ -70,14 +82,56 @@ public class AccountResource {
 	@Path("activate/{token}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response processActivation(@PathParam("token") final String token, final ActivationRequest request) {
-		// TODO: check if token is still valid, and account doesn't exist yet.
-		// TODO: delete token from database, and create account from request (in
-		// single transaction).
+
+		LOG.trace("Processing activation with token {} and request {}", token, request);
+
+		checkArgument(isNotEmpty(token));
+		checkNotNull(request);
+
+		// TODO: The following code should be run inside a method annotated with
+		// @Transactional.
+
+		// check if token is still valid, and account doesn't exist yet.
+		RegistrationToken registrationToken;
+		try {
+			registrationToken = registrationTokenDao.findByToken(token);
+		} catch (final NoResultException e) {
+			LOG.trace("Token not found in database, so not active: {}", token, e);
+			return Response.status(Status.FORBIDDEN).entity("Token is not active").build();
+		}
+
+		assert registrationToken.getEmail() != null;
+
+		if (!registrationToken.getEmail().equals(request.getEmail())) {
+			// TODO: Error: token email and request email should be the same.
+		}
+
+		final String email = registrationToken.getEmail();
+
+		boolean userExists = true;
+		try {
+			userDao.findByEmail(email);
+		} catch (final NoResultException e) {
+			LOG.trace("No user found with email: {}", email);
+			userExists = false;
+		}
+
+		if (userExists) {
+			// TODO: user already exists. Something is wrong. Handle this.
+		}
+
+		// TODO: Not all user fields are already there, fix this.
+		final User u = userFactory.createUser(email, request.getDisplayName(), request.getPassword());
+
+		registrationTokenDao.remove(registrationToken);
+		userDao.persist(u);
+
 		// TODO: automatically log user in, and send a confirmation email.
 
-		final long accountId = 0;
+		final long accountId = u.getId();
 
 		return Response.seeOther(URI.create("/account/" + accountId)).build();
+
 	}
 
 	@GET
