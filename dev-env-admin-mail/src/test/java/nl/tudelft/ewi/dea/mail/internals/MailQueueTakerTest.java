@@ -2,7 +2,7 @@ package nl.tudelft.ewi.dea.mail.internals;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
@@ -17,6 +17,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
 
+import nl.tudelft.ewi.dea.mail.MailException;
 import nl.tudelft.ewi.dea.mail.MailProperties;
 import nl.tudelft.ewi.dea.mail.SimpleMessage;
 
@@ -41,6 +42,21 @@ public class MailQueueTakerTest {
 	@Before
 	public void setup() {
 		mQueueTaker = new MailQueueTaker(mailQueue, transport, mailProps, session);
+	}
+
+	@Test
+	public void whenConnectionIsTestedTheTakerOpensAndClosesTheTransport() throws MessagingException {
+		mQueueTaker.testConnection();
+		InOrder order = inOrder(mailQueue, transport, mailProps);
+		order.verify(transport).connect(anyString(), anyString(), anyString());
+		order.verify(transport).close();
+		order.verifyNoMoreInteractions();
+	}
+
+	@Test(expected = MailException.class)
+	public void whenConnectionTestFailsTheMethodInterrups() throws MessagingException {
+		doThrow(new MessagingException()).when(transport).connect(anyString(), anyString(), anyString());
+		mQueueTaker.testConnection();
 	}
 
 	@Test
