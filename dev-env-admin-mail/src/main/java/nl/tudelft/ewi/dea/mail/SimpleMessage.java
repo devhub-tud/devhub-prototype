@@ -6,6 +6,7 @@ import static com.google.common.collect.ImmutableSet.copyOf;
 
 import java.util.Set;
 
+import javax.annotation.concurrent.Immutable;
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -16,6 +17,12 @@ import javax.mail.internet.MimeMessage;
 
 import com.google.common.collect.ImmutableSet;
 
+/**
+ * Wrapper for a simple mail message. It is immutable an can be used to extract
+ * a {@link MimeMessage} for javax.mail stuff.
+ * 
+ */
+@Immutable
 public class SimpleMessage {
 
 	public final ImmutableSet<String> to;
@@ -29,6 +36,10 @@ public class SimpleMessage {
 		this.to = copyOf(to);
 		this.subject = checkNotNull(subject);
 		this.body = checkNotNull(body);
+	}
+
+	public SimpleMessage(String to, String subject, String body, String from) {
+		this(ImmutableSet.of(checkNotNull(to)), subject, body, from);
 	}
 
 	public MimeMessage asMimeMessage(Session session) {

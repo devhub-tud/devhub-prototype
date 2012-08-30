@@ -172,4 +172,8 @@ public class User {
 		return "User [id=" + id + ", displayName=" + displayName + ", mailAddress=" + email + ", role=" + role + "]";
 	}
 
+	public void makeAdmin() {
+		role = UserRole.ADMIN;
+	}
+
 }

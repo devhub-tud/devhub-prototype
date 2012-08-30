@@ -3,6 +3,9 @@ package nl.tudelft.ewi.dea.mail;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import javax.annotation.concurrent.Immutable;
+
+@Immutable
 public class MailProperties {
 
 	/**

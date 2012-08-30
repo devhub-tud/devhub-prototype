@@ -24,7 +24,7 @@ public class SecurityModule extends ShiroWebModule {
 	private static final Logger LOG = LoggerFactory.getLogger(SecurityModule.class);
 	public static final int NUMBER_OF_HASH_ITERATIONS = 1024;
 
-	public SecurityModule(ServletContext sc) {
+	public SecurityModule(final ServletContext sc) {
 		super(sc);
 	}
 
@@ -45,11 +45,12 @@ public class SecurityModule extends ShiroWebModule {
 		addFilterChain("/logout", LOGOUT);
 		addFilterChain("/login", AUTHC);
 		addFilterChain("/**", AUTHC);
+
 	}
 
 	@Provides
 	public HashedCredentialsMatcher matcher() {
-		HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher(Sha256Hash.ALGORITHM_NAME);
+		final HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher(Sha256Hash.ALGORITHM_NAME);
 		hashedCredentialsMatcher.setHashIterations(NUMBER_OF_HASH_ITERATIONS);
 		return hashedCredentialsMatcher;
 	}

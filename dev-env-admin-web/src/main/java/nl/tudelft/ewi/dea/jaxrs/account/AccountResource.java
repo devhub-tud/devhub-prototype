@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -25,12 +26,15 @@ import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
 import nl.tudelft.ewi.dea.model.RegistrationToken;
 import nl.tudelft.ewi.dea.model.User;
+import nl.tudelft.ewi.dea.model.UserRole;
 import nl.tudelft.ewi.dea.security.UserFactory;
 
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
+import com.google.inject.persist.Transactional;
 
 @Singleton
 @Path("account")
@@ -81,15 +85,13 @@ public class AccountResource {
 	@POST
 	@Path("activate/{token}")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Transactional
 	public Response processActivation(@PathParam("token") final String token, final ActivationRequest request) {
 
 		LOG.trace("Processing activation with token {} and request {}", token, request);
 
 		checkArgument(isNotEmpty(token));
 		checkNotNull(request);
-
-		// TODO: The following code should be run inside a method annotated with
-		// @Transactional.
 
 		// check if token is still valid, and account doesn't exist yet.
 		RegistrationToken registrationToken;
@@ -126,7 +128,8 @@ public class AccountResource {
 		registrationTokenDao.remove(registrationToken);
 		userDao.persist(u);
 
-		// TODO: automatically log user in, and send a confirmation email.
+		// TODO: automatically log user in
+		// TODO: send a confirmation email.
 
 		final long accountId = u.getId();
 
@@ -137,16 +140,29 @@ public class AccountResource {
 	@GET
 	@Path("email/{email}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response findByEmail(@PathParam("email") final String email) {
-		// TODO: Return a list of users with a matching email address.
-		return Response.serverError().build();
+	public List<User> findByEmail(@PathParam("email") final String email) {
+
+		LOG.trace("Find accounts by email: {}", email);
+
+		final List<User> users = userDao.findByEmailSubString(email);
+
+		return users;
+
 	}
 
 	@POST
 	@Path("{id}/promote")
+	@RequiresRoles(UserRole.ROLE_ADMIN)
+	@Transactional
 	public Response promoteUserToTeacher(@PathParam("id") final long id) {
-		// TODO: Promote user to teacher status.
-		return Response.serverError().build();
+
+		LOG.trace("Promote user to admin: {}", id);
+
+		final User u = userDao.findById(id);
+		u.makeAdmin();
+
+		return Response.ok().build();
+
 	}
 
 }
