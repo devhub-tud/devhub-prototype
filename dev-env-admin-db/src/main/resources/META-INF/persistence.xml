@@ -22,6 +22,24 @@
 		</properties>
 	</persistence-unit>
 
+	<persistence-unit name="test-postgresql">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+			<property name="hibernate.connection.driver_class" value="org.postgresql.Driver" />
+			<property name="hibernate.hbm2ddl.auto" value="validate" />
+
+			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost/devhub-test" />
+			<property name="javax.persistence.jdbc.user" value="devhub-test" />
+			<property name="javax.persistence.jdbc.password" value="TestIt!" />
+
+			<!-- Auto detect annotated model classes -->
+			<property name="hibernate.archive.autodetection" value="class" />
+			<property name="hibernate.format_sql" value="true" />
+		</properties>
+	</persistence-unit>
+
 	<persistence-unit name="test-h2" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 
