@@ -7,6 +7,8 @@ import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import nl.tudelft.ewi.dea.liquibase.DatabaseStructure;
@@ -33,8 +35,9 @@ public class PostgreSQLSmokeTest {
 			LOG.debug("Running test...");
 		} else {
 			LOG.warn("Not running test.");
-			assumeThat(hostname, is(postgresqlHost));
 		}
+
+		assumeThat(hostname, is(postgresqlHost));
 
 		LOG.debug("Creating database structure...");
 		new DatabaseStructure("test-postgresql", "");
@@ -45,7 +48,12 @@ public class PostgreSQLSmokeTest {
 		LOG.debug("Dropping database contents...");
 		final Map<String, String> properties = new HashMap<>();
 		properties.put("hibernate.hbm2ddl.auto", "create-drop");
-		Persistence.createEntityManagerFactory("test-postgresql", properties).close();
+		final EntityManagerFactory emf = Persistence.createEntityManagerFactory("test-postgresql", properties);
+		final EntityManager em = emf.createEntityManager();
+		em.createNativeQuery("DROP TABLE public.databasechangelog").executeUpdate();
+		em.createNativeQuery("DROP TABLE public.databasechangeloglock").executeUpdate();
+		em.close();
+		emf.close();
 
 	}
 
