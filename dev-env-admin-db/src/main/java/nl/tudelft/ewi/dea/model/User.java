@@ -10,13 +10,16 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @NotThreadSafe
+@Table(name = "Users")
 public class User {
 
-	@Id @GeneratedValue @Column(name = "id") private final long id;
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "id") private final long id;
 
 	@Column(name = "display_name", unique = true, nullable = false) private String displayName;
 

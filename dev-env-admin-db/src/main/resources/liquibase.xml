@@ -7,8 +7,8 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
     <changeSet id="1" author="michaelj">
-        <createTable tableName="user">
-            <column name="id" type="bigint unsigned" autoIncrement="true">
+        <createTable tableName="users">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="display_name" type="varchar(32)">
@@ -30,7 +30,7 @@
     </changeSet>
     
     <changeSet id="2" author="michaelj">
-    	<insert tableName="user">
+    	<insert tableName="users">
     		<column name="display_name">Administrator</column>
     		<column name="mail_address">test@test.com</column>
     		<column name="salt">cafc393e</column>

@@ -66,7 +66,18 @@ $(document).ready(function() {
 	}
 	
 	function triggerCheckEmail(email) {
-		
+		var current = $('#register').find('input[name="email"]').val();
+		if (email == current) {
+			$.ajax({
+				type: "post",
+				data: { "username": email, "password": password, "rememberMe": remember },
+				dataType: "text",
+				success: function(data) {
+					window.location.replace("/dashboard");
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+			});
+		}
 	}
 	
 	
