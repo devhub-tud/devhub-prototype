@@ -52,7 +52,7 @@ public class PersistenceModule extends AbstractModule {
 		PersistenceStarter(PersistService service) {
 			log.info("Starting persistence!");
 			service.start();
-			log.debug("Persistence started");
+			log.info("Persistence started");
 		}
 	}
 

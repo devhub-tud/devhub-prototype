@@ -36,7 +36,6 @@ public class WebModule extends ServletModule {
 	@Override
 	protected void configureServlets() {
 		install(new PersistenceModule("production", ""));
-
 		install(new SecurityModule(servletContext));
 
 		bind(TemplateEngine.class).toInstance(new TemplateEngine(Paths.get(servletContext.getRealPath("/templates/"))));
