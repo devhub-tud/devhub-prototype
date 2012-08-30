@@ -1,4 +1,4 @@
-package nl.tudelft.ewi.dea.mail;
+package nl.tudelft.ewi.dea.mail.templates;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -20,7 +20,7 @@ public class VerifyRegistrationMailFactory {
 		this.engine = engine;
 	}
 
-	String newMail(String mailAddress, String verifyUrl) {
+	public String newMail(String mailAddress, String verifyUrl) {
 		checkArgument(!isNullOrEmpty(mailAddress));
 		checkArgument(!isNullOrEmpty(verifyUrl));
 
