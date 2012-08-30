@@ -53,8 +53,8 @@ public class RegisterResource {
 	public Response processSignupRequest(SignupRequest request) {
 		// TODO: Implement this.
 		LOG.info("Request: {}", request);
-		return Response.ok().build();
 		// return Response.serverError().entity("Hello world").build();
+		return Response.ok().build();
 	}
 
 	@GET

@@ -1,11 +1,11 @@
 $(document).ready(function() {
 	
-	$('#login').submit(function(e) {
+	$('#signin').submit(function(e) {
 		e.preventDefault();
 		
-		var email = $('#login').find('input[name="email"]').val();
-		var password = $('#login').find('input[name="password"]').val();
-		var remember = $('#login').find('input[name="rememberMe"]').attr('checked') ? true: false;
+		var email = $('#signin').find('input[name="email"]').val();
+		var password = $('#signin').find('input[name="password"]').val();
+		var remember = $('#signin').find('input[name="rememberMe"]').attr('checked') ? true: false;
 		
 		$.ajax({
 			type: "post",
@@ -23,10 +23,11 @@ $(document).ready(function() {
 		});
 	});
 	
-	$('#register').submit(function(e) {
+	$('#signup').submit(function(e) {
 		e.preventDefault();
 		
-		var email = $('#register').find('input[name="email"]').val();
+		var emailField = $('#signup').find('input[name="email"]');
+		var email = emailField.val();
 		
 		$.ajax({
 			type: "post",
@@ -35,51 +36,20 @@ $(document).ready(function() {
 			dataType: "text",
 			contentType: "application/json",
 			success: function(data) {
-				$('.hero-unit').hide();
-				$('#successful-registration').show();
+				emailField.val("");
+				showAlert("alert-success", "An e-mail has been sent to <strong>" + email 
+						+ "</strong>.<br/>This e-mail contains futher instructions on how to complete your registration.");
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				alert(jqXHR.responseText);
+				showAlert("alert-info", jqXHR.responseText);
 			}
 		});
 	});
 	
-	setInterval(function() {
-		checkEmailFieldInRegistrationForm();
-	}, 100);
-	
-	
-	var previousEmailValueOnRegistrationForm = "";
-	
-	function checkEmailFieldInRegistrationForm() {
-		var email = $('#register').find('input[name="email"]').val();
-		if (email == undefined || email == null || email == "") {
-			return;
-		}
-		
-		if (previousEmailValueOnRegistrationForm == email) {
-			return;
-		}
-		previousEmailValueOnRegistrationForm = email;
-		
-		setTimeout(function() { triggerCheckEmail(email); }, 200);
-	}
-	
-	function triggerCheckEmail(email) {
-		var current = $('#register').find('input[name="email"]').val();
-		if (email == current) {
-			$.ajax({
-				type: "get",
-				url: "/register/checkEmail?email=" + email,
-				dataType: "text",
-				success: function(data) {
-					console.log("OK: " + data);
-				},
-				error: function(jqXHR, textStatus, errorThrown) {
-					console.log("FAIL: " + jqXHR.responseText);
-				}
-			});
-		}
+	function showAlert(type, message) {
+		var alerts = $('.alerts');
+		var alert = "<div class=\"alert " + type + "\"><a class=\"close\" data-dismiss=\"alert\" href=\"#\">&times;</a>" + message + "</div>";
+		alerts.empty().append(alert);
 	}
 	
 });

@@ -1,11 +1,16 @@
 package nl.tudelft.ewi.dea.jaxrs.register;
 
-import lombok.AccessLevel;
-import lombok.Setter;
-import lombok.experimental.Value;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
-@Value
-@Setter(AccessLevel.NONE)
+@Getter
+@EqualsAndHashCode
+@ToString
 public class SignupRequest {
-	String email;
+	private final String email;
+
+	public SignupRequest() {
+		this.email = null;
+	}
 }
