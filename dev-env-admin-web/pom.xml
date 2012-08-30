@@ -137,6 +137,7 @@
 					<path>/devhub</path>
 					<update>true</update>
 					<server>tomcat-devhub</server>
+					<failOnError>false</failOnError>
 				</configuration>
 			</plugin>
 		</plugins>

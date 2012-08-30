@@ -4,6 +4,24 @@
    http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
 	version="2.0">
 
+	<persistence-unit name="production" transaction-type="JTA">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+			<property name="hibernate.connection.driver_class" value="org.postgresql.Driver" />
+			<property name="hibernate.hbm2ddl.auto" value="validate" />
+
+			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost/devhub" />
+			<property name="javax.persistence.jdbc.user" value="devhub" />
+			<property name="javax.persistence.jdbc.password" value="BuildIt!" />
+
+			<!-- Auto detect annotated model classes -->
+			<property name="hibernate.archive.autodetection" value="class" />
+			<property name="hibernate.format_sql" value="true" />
+		</properties>
+	</persistence-unit>
+
 	<persistence-unit name="test-h2" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 
