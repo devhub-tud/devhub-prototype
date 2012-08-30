@@ -40,12 +40,12 @@ public class PostgreSQLSmokeTest {
 		new DatabaseStructure("test-postgresql", "");
 
 		LOG.debug("Verifying database structure...");
-		Persistence.createEntityManagerFactory("test-postgresql");
+		Persistence.createEntityManagerFactory("test-postgresql").close();
 
 		LOG.debug("Dropping database contents...");
 		final Map<String, String> properties = new HashMap<>();
 		properties.put("hibernate.hbm2ddl.auto", "create-drop");
-		Persistence.createEntityManagerFactory("test-postgresql", properties);
+		Persistence.createEntityManagerFactory("test-postgresql", properties).close();
 
 	}
 
