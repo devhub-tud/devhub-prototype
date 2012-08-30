@@ -44,4 +44,30 @@ $(document).ready(function() {
 		});
 	});
 	
+	setInterval(function() {
+		checkEmailFieldInRegistrationForm();
+	}, 100);
+	
+	
+	var previousEmailValueOnRegistrationForm = "";
+	
+	function checkEmailFieldInRegistrationForm() {
+		var email = $('#register').find('input[name="email"]').val();
+		if (email == undefined || email == null || email == "") {
+			return;
+		}
+		
+		if (previousEmailValueOnRegistrationForm == email) {
+			return;
+		}
+		previousEmailValueOnRegistrationForm = email;
+		
+		setTimeout(function() { triggerCheckEmail(email); }, 200);
+	}
+	
+	function triggerCheckEmail(email) {
+		
+	}
+	
+	
 });

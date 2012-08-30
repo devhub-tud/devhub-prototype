@@ -66,8 +66,8 @@ public class DashboardResource {
 		return renderers.get()
 				.setValue("invitations", invitations)
 				.setValue("projects", projects)
-				.setValue("scripts", Lists.newArrayList("projects.js"))
-				.render("projects.tpl");
+				.setValue("scripts", Lists.newArrayList("dashboard.js"))
+				.render("dashboard.tpl");
 	}
 
 	@GET

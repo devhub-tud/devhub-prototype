@@ -16,18 +16,11 @@ import javax.ws.rs.core.Response;
 
 import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.collect.Lists;
 
 @Singleton
 @Path("account")
 public class AccountResource {
-
-	private static final Logger LOG = LoggerFactory.getLogger(AccountResource.class);
 
 	private final Provider<Renderer> renderers;
 
@@ -59,52 +52,6 @@ public class AccountResource {
 		long accountId = 0;
 
 		return Response.seeOther(URI.create("/account/" + accountId)).build();
-	}
-
-	public static class ActivationRequest {
-		private final String email;
-		private final String password;
-		private final String displayName;
-		private final String netId;
-		private final int studentNumber;
-
-		public ActivationRequest() {
-			this.email = null;
-			this.password = null;
-			this.displayName = null;
-			this.netId = null;
-			this.studentNumber = 0;
-		}
-
-		public String getEmail() {
-			return email;
-		}
-
-		public String getPassword() {
-			return password;
-		}
-
-		public String getDisplayName() {
-			return displayName;
-		}
-
-		public String getNetId() {
-			return netId;
-		}
-
-		public int getStudentNumber() {
-			return studentNumber;
-		}
-
-		@Override
-		public String toString() {
-			ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
-			builder.append("email", email);
-			builder.append("displayName", displayName);
-			builder.append("netId", netId);
-			builder.append("studentNumber", studentNumber);
-			return builder.toString();
-		}
 	}
 
 }

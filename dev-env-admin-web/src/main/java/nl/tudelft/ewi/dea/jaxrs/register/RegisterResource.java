@@ -10,9 +10,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +21,8 @@ import org.slf4j.LoggerFactory;
 public class RegisterResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RegisterResource.class);
+
+	private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$";
 
 	@GET
 	public Response servePage() {
@@ -46,32 +47,29 @@ public class RegisterResource {
 	 * 
 	 * @return
 	 */
-	// TODO: Implement this.
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response processSignupRequest(SignupRequest request) {
+		// TODO: Implement this.
 		LOG.info("Request: {}", request);
 		return Response.ok().build();
 		// return Response.serverError().entity("Hello world").build();
 	}
 
-	public static class SignupRequest {
-		private final String email;
-
-		public SignupRequest() {
-			this.email = null;
+	@GET
+	@Path("checkEmail")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response checkEmail(CheckEmailRequest request) {
+		String email = request.getEmail();
+		if (!email.matches(EMAIL_REGEX)) {
+			return Response.status(Status.CONFLICT).entity("The provided email address is not valid!").build();
 		}
 
-		public String getEmail() {
-			return email;
+		if (!email.endsWith("tudelft.nl")) {
+			return Response.status(Status.CONFLICT).entity("You must enter a valid tudelft email address!").build();
 		}
 
-		@Override
-		public String toString() {
-			ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
-			builder.append("email", email);
-			return builder.toString();
-		}
+		// TODO: Check if account is already registered.
+		return Response.ok().build();
 	}
-
 }
