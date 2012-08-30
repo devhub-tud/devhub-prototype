@@ -46,7 +46,7 @@ public class UserDaoImplTest extends DatabaseTest {
 		try {
 			dao.persist(secondUser);
 		} catch (final PersistenceException e) {
-			LOG.debug("Intentional exception caught: {}", e.getMessage(), e);
+			LOG.trace("Intentional exception caught: {}", e.getMessage(), e);
 			exceptionWasThrown = true;
 			markTransactionForRollback();
 		}
@@ -70,7 +70,7 @@ public class UserDaoImplTest extends DatabaseTest {
 		try {
 			dao.findById(firstUser.getId());
 		} catch (final NoResultException e) {
-			LOG.debug("Expected exception caught: {}", e.getMessage(), e);
+			LOG.trace("Expected exception caught: {}", e.getMessage(), e);
 			exceptionWasThrown = true;
 			markTransactionForRollback();
 		}
