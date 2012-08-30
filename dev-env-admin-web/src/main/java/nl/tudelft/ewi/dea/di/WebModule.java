@@ -29,13 +29,13 @@ public class WebModule extends ServletModule {
 
 	private final ServletContext servletContext;
 
-	public WebModule(ServletContext servletContext) {
+	public WebModule(final ServletContext servletContext) {
 		this.servletContext = servletContext;
 	}
 
 	@Override
 	protected void configureServlets() {
-		install(new PersistenceModule("test-h2", ""));
+		install(new PersistenceModule("production", ""));
 
 		install(new SecurityModule(servletContext));
 
@@ -46,7 +46,7 @@ public class WebModule extends ServletModule {
 
 		bind(JacksonJsonProvider.class).in(Scopes.SINGLETON);
 
-		Map<String, String> params = Maps.newHashMap();
+		final Map<String, String> params = Maps.newHashMap();
 		params.put("com.sun.jersey.config.property.packages", "nl.tudelft.ewi.dea.jaxrs");
 		params.put(ServletContainer.PROPERTY_WEB_PAGE_CONTENT_REGEX, "/.*\\.(html|js|css)");
 		filter("/*").through(GuiceContainer.class, params);
