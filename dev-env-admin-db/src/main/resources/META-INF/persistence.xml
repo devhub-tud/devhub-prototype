@@ -22,7 +22,7 @@
 		</properties>
 	</persistence-unit>
 
-	<persistence-unit name="test-postgresql">
+	<persistence-unit name="test-postgresql" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 
 		<properties>
