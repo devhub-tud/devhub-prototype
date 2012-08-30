@@ -50,8 +50,10 @@ public class PostgreSQLSmokeTest {
 		properties.put("hibernate.hbm2ddl.auto", "create-drop");
 		final EntityManagerFactory emf = Persistence.createEntityManagerFactory("test-postgresql", properties);
 		final EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
 		em.createNativeQuery("DROP TABLE public.databasechangelog").executeUpdate();
 		em.createNativeQuery("DROP TABLE public.databasechangeloglock").executeUpdate();
+		em.getTransaction().commit();
 		em.close();
 		emf.close();
 
