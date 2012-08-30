@@ -131,7 +131,7 @@ public class AccountResource {
 		final long accountId = u.getId();
 
 		return Response.seeOther(URI.create("/account/" + accountId)).build();
-
+		
 	}
 
 	@GET
