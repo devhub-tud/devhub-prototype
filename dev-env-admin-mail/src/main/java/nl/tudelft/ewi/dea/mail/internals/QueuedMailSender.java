@@ -2,7 +2,6 @@ package nl.tudelft.ewi.dea.mail.internals;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -20,8 +19,8 @@ class QueuedMailSender implements MailSender {
 	private final BlockingQueue<SimpleMessage> mailsToSend;
 
 	@Inject
-	QueuedMailSender(ExecutorService executor, MailQueueTaker taker, @MailQueue BlockingQueue<SimpleMessage> mailqueue) {
-		this.mailsToSend = mailqueue;
+	QueuedMailSender(final ExecutorService executor, final MailQueueTaker taker, @MailQueue final BlockingQueue<SimpleMessage> mailqueue) {
+		mailsToSend = mailqueue;
 
 		LOG.info("Testing SMTP connection");
 		taker.testConnection();
@@ -33,11 +32,11 @@ class QueuedMailSender implements MailSender {
 	}
 
 	@Override
-	public void deliver(SimpleMessage message) {
+	public void deliver(final SimpleMessage message) {
 		LOG.debug("Adding message {} to queue: {}", message, mailsToSend.hashCode());
 		try {
 			mailsToSend.put(message);
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			LOG.error("Could not schedule message. The thread was stopped before it could be added to the queue");
 		}
 	}

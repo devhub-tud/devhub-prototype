@@ -32,9 +32,13 @@ public class AdminResource {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public String servePage() {
+
+		LOG.trace("Serving admin dashboard.");
+
 		return renderers.get()
 				.setValue("scripts", Lists.newArrayList("admin.js"))
 				.render("admin.tpl");
+
 	}
 
 }
