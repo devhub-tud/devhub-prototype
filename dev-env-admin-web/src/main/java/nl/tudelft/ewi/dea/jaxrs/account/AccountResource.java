@@ -121,7 +121,7 @@ public class AccountResource {
 		}
 
 		// TODO: Not all user fields are already there, fix this.
-		final User u = userFactory.createUser(email, request.getDisplayName(), request.getPassword());
+		final User u = userFactory.createUser(email, request.getDisplayName(), request.getNetId(), request.getStudentNumber(), request.getPassword());
 
 		registrationTokenDao.remove(registrationToken);
 		userDao.persist(u);
@@ -131,7 +131,7 @@ public class AccountResource {
 		final long accountId = u.getId();
 
 		return Response.seeOther(URI.create("/account/" + accountId)).build();
-		
+
 	}
 
 	@GET

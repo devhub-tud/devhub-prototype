@@ -19,14 +19,14 @@ import javax.persistence.Table;
 @Table(name = "Users")
 public class User {
 
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "id") private final long id;
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) private final long id;
 
-	@Column(name = "display_name", unique = true, nullable = false) private String displayName;
-
-	@Column(name = "mail_address", unique = true, nullable = false) private String mailAddress;
+	@Column(unique = true, nullable = false) private String email;
+	@Column(nullable = false) private String displayName;
+	@Column(unique = true, nullable = false) private String netid;
+	private long studentNumber;
 
 	@Column(name = "salt", nullable = false) private final String salt;
-
 	@Column(name = "password", nullable = false) private String password;
 
 	@Enumerated(EnumType.STRING) @Column(name = "role", nullable = false) private UserRole role;
@@ -40,18 +40,25 @@ public class User {
 		salt = "";
 	}
 
-	public User(String username, String mailAddress, String salt, String password, UserRole user) {
-		checkArgument(!isNullOrEmpty(username));
-		checkArgument(!isNullOrEmpty(mailAddress));
+	public User(final String displayName, final String email, final String netid, final long studentNumber, final String salt, final String password, final UserRole user) {
+		checkArgument(!isNullOrEmpty(displayName));
+		checkArgument(!isNullOrEmpty(email));
+		checkArgument(!isNullOrEmpty(netid));
 		checkArgument(!isNullOrEmpty(password));
 		checkArgument(!isNullOrEmpty(salt));
 		checkNotNull(user);
-		this.id = 0;
-		this.displayName = username;
-		this.mailAddress = mailAddress;
+		id = 0;
+		this.displayName = displayName;
+		this.email = email;
+		this.netid = netid;
+		this.studentNumber = studentNumber;
 		this.salt = salt;
 		this.password = password;
-		this.role = user;
+		role = user;
+	}
+
+	public long getId() {
+		return id;
 	}
 
 	public String getDisplayName() {
@@ -59,11 +66,15 @@ public class User {
 	}
 
 	public String getMailAddress() {
-		return mailAddress;
+		return email;
 	}
 
-	public long getId() {
-		return id;
+	public String getNetid() {
+		return netid;
+	}
+
+	public long getStudentNumber() {
+		return studentNumber;
 	}
 
 	public String getSalt() {
@@ -86,17 +97,19 @@ public class User {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((displayName == null) ? 0 : displayName.hashCode());
-		result = prime * result + (int) (id ^ (id >>> 32));
-		result = prime * result + ((mailAddress == null) ? 0 : mailAddress.hashCode());
-		result = prime * result + ((password == null) ? 0 : password.hashCode());
-		result = prime * result + ((role == null) ? 0 : role.hashCode());
-		result = prime * result + ((salt == null) ? 0 : salt.hashCode());
+		result = prime * result + (int) (id ^ id >>> 32);
+		result = prime * result + (displayName == null ? 0 : displayName.hashCode());
+		result = prime * result + (email == null ? 0 : email.hashCode());
+		result = prime * result + (netid == null ? 0 : netid.hashCode());
+		result = prime * result + (int) (studentNumber ^ studentNumber >>> 32);
+		result = prime * result + (password == null ? 0 : password.hashCode());
+		result = prime * result + (role == null ? 0 : role.hashCode());
+		result = prime * result + (salt == null ? 0 : salt.hashCode());
 		return result;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -106,7 +119,10 @@ public class User {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		User other = (User) obj;
+		final User other = (User) obj;
+		if (id != other.id) {
+			return false;
+		}
 		if (displayName == null) {
 			if (other.displayName != null) {
 				return false;
@@ -114,14 +130,21 @@ public class User {
 		} else if (!displayName.equals(other.displayName)) {
 			return false;
 		}
-		if (id != other.id) {
-			return false;
-		}
-		if (mailAddress == null) {
-			if (other.mailAddress != null) {
+		if (email == null) {
+			if (other.email != null) {
 				return false;
 			}
-		} else if (!mailAddress.equals(other.mailAddress)) {
+		} else if (!email.equals(other.email)) {
+			return false;
+		}
+		if (netid == null) {
+			if (other.netid != null) {
+				return false;
+			}
+		} else if (!netid.equals(other.netid)) {
+			return false;
+		}
+		if (studentNumber != other.studentNumber) {
 			return false;
 		}
 		if (password == null) {
@@ -146,7 +169,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", displayName=" + displayName + ", mailAddress=" + mailAddress + ", role=" + role + "]";
+		return "User [id=" + id + ", displayName=" + displayName + ", mailAddress=" + email + ", role=" + role + "]";
 	}
 
 }

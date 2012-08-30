@@ -79,7 +79,7 @@ public class UserDaoImplTest extends DatabaseTest {
 	}
 
 	private User newTestUser(final String ident) {
-		final User user = new User(ident, ident + "@example.com", "abc", "pass", UserRole.USER);
+		final User user = new User(ident, ident + "@example.com", ident, 12345, "abc", "pass", UserRole.USER);
 		return user;
 	}
 

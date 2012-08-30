@@ -11,17 +11,17 @@ import com.google.common.annotations.VisibleForTesting;
 
 public class UserFactory {
 
-	public User createUser(String mail, String displayName, String plainPassword) {
-		String userSalt = SaltTool.generateSalt();
-		String hashedPassword = hashPassword(plainPassword, userSalt);
-		User user = new User(displayName, mail, userSalt, hashedPassword, UserRole.USER);
+	public User createUser(final String mail, final String displayName, final String netid, final long studentNumber, final String plainPassword) {
+		final String userSalt = SaltTool.generateSalt();
+		final String hashedPassword = hashPassword(plainPassword, userSalt);
+		final User user = new User(displayName, mail, netid, studentNumber, userSalt, hashedPassword, UserRole.USER);
 		return user;
 	}
 
 	@VisibleForTesting
-	String hashPassword(String plainPassword, String userSalt) {
-		SimpleByteSource totalSalt = SaltTool.getFullSalt(userSalt);
-		int iterations = SecurityModule.NUMBER_OF_HASH_ITERATIONS;
+	String hashPassword(final String plainPassword, final String userSalt) {
+		final SimpleByteSource totalSalt = SaltTool.getFullSalt(userSalt);
+		final int iterations = SecurityModule.NUMBER_OF_HASH_ITERATIONS;
 		Sha256Hash hash = new Sha256Hash(plainPassword, totalSalt, iterations);
 		// Loop starts at 1 because it has already been hashed once in the
 		// constructor.

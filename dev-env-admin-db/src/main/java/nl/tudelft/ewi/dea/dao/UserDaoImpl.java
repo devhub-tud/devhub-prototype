@@ -31,7 +31,7 @@ class UserDaoImpl extends AbstractDaoBase<User> implements UserDao {
 
 		checkArgument(isNotEmpty(email));
 
-		final String query = "select o from " + entityName + " o where o.mailAddress = :email";
+		final String query = "select o from " + entityName + " o where o.email = :email";
 
 		final TypedQuery<User> tq = createQuery(query);
 		tq.setParameter("email", email);
