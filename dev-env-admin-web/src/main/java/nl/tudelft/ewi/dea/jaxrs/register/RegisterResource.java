@@ -8,6 +8,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -58,18 +59,21 @@ public class RegisterResource {
 
 	@GET
 	@Path("checkEmail")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response checkEmail(CheckEmailRequest request) {
-		String email = request.getEmail();
+	public Response checkEmail(@QueryParam("email") String email) {
 		if (!email.matches(EMAIL_REGEX)) {
 			return Response.status(Status.CONFLICT).entity("The provided email address is not valid!").build();
 		}
 
-		if (!email.endsWith("tudelft.nl")) {
+		if (!isAllowedDomain(email)) {
 			return Response.status(Status.CONFLICT).entity("You must enter a valid tudelft email address!").build();
 		}
 
 		// TODO: Check if account is already registered.
 		return Response.ok().build();
+	}
+
+	// TODO: Move this to config file...
+	private boolean isAllowedDomain(String email) {
+		return email.endsWith("@tudelft.nl") || email.endsWith("@student.tudelft.nl");
 	}
 }

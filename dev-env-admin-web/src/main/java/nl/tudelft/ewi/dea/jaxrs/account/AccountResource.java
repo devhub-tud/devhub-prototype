@@ -54,4 +54,19 @@ public class AccountResource {
 		return Response.seeOther(URI.create("/account/" + accountId)).build();
 	}
 
+	@GET
+	@Path("email/{email}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response findByEmail(@PathParam("email") String email) {
+		// TODO: Return a list of users with a matching email address.
+		return Response.serverError().build();
+	}
+
+	@POST
+	@Path("{id}/promote")
+	public Response promoteUserToTeacher(@PathParam("id") long id) {
+		// TODO: Promote user to teacher status.
+		return Response.serverError().build();
+	}
+
 }

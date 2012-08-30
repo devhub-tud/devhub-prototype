@@ -69,17 +69,17 @@ $(document).ready(function() {
 		var current = $('#register').find('input[name="email"]').val();
 		if (email == current) {
 			$.ajax({
-				type: "post",
-				url: "/register"
-				data: { "email": email },
+				type: "get",
+				url: "/register/checkEmail?email=" + email,
 				dataType: "text",
 				success: function(data) {
-					window.location.replace("/dashboard");
+					console.log("OK: " + data);
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
+					console.log("FAIL: " + jqXHR.responseText);
+				}
 			});
 		}
 	}
-	
 	
 });
