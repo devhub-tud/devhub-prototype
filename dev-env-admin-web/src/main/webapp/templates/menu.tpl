@@ -9,13 +9,11 @@
 					</a> -->
 					<a class="brand" href="#">DevHub</a>
 					
-					<!--<div class="nav-collapse collapse">
+					<div class="pull-right">
 						<ul class="nav">
-							<li class="active"><a href="#">Projects</a></li>
-							<li><a href="#user">Users</a></li>
-							<li><a href="#About">About</a></li>
+							<li><a href="/logout">Logout</a></li>
 						</ul>
-					</div>-->
+					</div>
 				</div>
 			</div>
 		</div>

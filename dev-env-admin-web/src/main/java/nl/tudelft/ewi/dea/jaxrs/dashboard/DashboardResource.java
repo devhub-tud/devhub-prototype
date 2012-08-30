@@ -1,4 +1,4 @@
-package nl.tudelft.ewi.dea.jaxrs.projects;
+package nl.tudelft.ewi.dea.jaxrs.dashboard;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,18 +33,18 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Lists;
 
 @Singleton
-@Path("projects")
+@Path("dashboard")
 @Produces(MediaType.APPLICATION_JSON)
-public class ProjectResource {
+public class DashboardResource {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ProjectResource.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DashboardResource.class);
 
 	private final ConfigManager gitManager;
 	private final JenkinsClient jenkinsClient;
 	private final Provider<Renderer> renderers;
 
 	@Inject
-	public ProjectResource(ConfigManager gitManager, JenkinsClient jenkinsClient, Provider<Renderer> renderers) {
+	public DashboardResource(ConfigManager gitManager, JenkinsClient jenkinsClient, Provider<Renderer> renderers) {
 		this.gitManager = gitManager;
 		this.jenkinsClient = jenkinsClient;
 		this.renderers = renderers;

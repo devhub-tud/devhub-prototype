@@ -28,7 +28,7 @@ When
 Then
 	I am presented with a screen that tells me to check my email, and
 	I receive an email on that account, which contains a one-time valid URL to my account page
-		(e.g. http://dea.hartveld.com/devhub/account/{accountId}/{one-time-valid-auth-token}).
+		(e.g. http://dea.hartveld.com/devhub/account/activate/{one-time-valid-auth-token}).
 
 
 -- Activate account through link in confirmation email

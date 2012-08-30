@@ -23,50 +23,50 @@ footer {
 </style>
 </head>
 <body>
-	<div class="hero-unit">
+	<div class="hero-unit" style="height: 280px;">
 		<h1>DevHub</h1>
-		<p>Login with TU Delft e-mail and password</p>
-
-		<form method='POST'>
-			<table class='logintable'>
-				<tr>
-					<td><input class='span3' type='text' name='username'
-						placeholder='E-mail address'></td>
-				</tr>
-				<tr>
-					<td><input class='span3' type='password' name='password'
-						placeholder='Password' /></td>
-				</tr>
-				<tr>
-					<td><label class="checkbox"><input type='checkbox'
-							name='rememberMe' /> Remember me on this computer. </label></td>
-				</tr>
-				<tr>
-					<td colspan='2'><input class="btn btn-primary btn-large"
-						name="submit" type="submit" value="Log me in" /></td>
-				</tr>
-			</table>
-		</form>
-		<!-- <%
-			String errorDescription = (String) request.getAttribute("shiroLoginFailure");
-			if (errorDescription != null) {
-		%>
-		<div class="alert alert-error">
-			<p>Username or password was incorrect</p>
+		<div class="pull-left" style="width: 49%; border-right: 1px solid #999;">
+			<p>Login with TU Delft e-mail and password</p>
+			<form id="login" method='POST'>
+				<table class='logintable'>
+					<tr>
+						<td><input class='span3' type='text' name='email'
+							placeholder='E-mail address'></td>
+					</tr>
+					<tr>
+						<td><input class='span3' type='password' name='password'
+							placeholder='Password' /></td>
+					</tr>
+					<tr>
+						<td><label class="checkbox"><input type='checkbox'
+								name='rememberMe' /> Remember me on this computer. </label></td>
+					</tr>
+					<tr>
+						<td colspan='2'><input class="btn btn-primary btn-large"
+							name="submit" type="submit" value="Log me in" /></td>
+					</tr>
+				</table>
+			</form>
 		</div>
-		<%
-			}
-		%> -->
+		<div class="pull-right" style="width: 49%;">
+			<p>Sign-up with your TU Delft e-mail</p>
+			<form id="register" method='POST'>
+				<table class='logintable'>
+					<tr>
+						<td><input class='span3' type='text' name='email'
+							placeholder='E-mail address'></td>
+					</tr>
+					<tr>
+						<td colspan='2'><input class="btn btn-primary btn-large"
+							name="submit" type="submit" value="Register" /></td>
+					</tr>
+				</table>
+			</form>
+		</div>
 	</div>
-	<!-- <%
-		String version = getServletContext().getInitParameter("version");
-		if (version.contains("SNAPSHOT")) {
-			version = version + " @ " + getServletContext().getInitParameter("build");
-		}
-	%>
-	<footer>
-		Version
-		<%=version%></footer> -->
+	<div id="successful-registration" class="hide">
+		Hello world...
+	</div>
 	<script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
 	<script src="/js/login.js"></script>
 </body>

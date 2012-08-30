@@ -1,4 +1,4 @@
-package nl.tudelft.ewi.dea.jaxrs.projects;
+package nl.tudelft.ewi.dea.jaxrs.dashboard;
 
 public class CreateProjectRequest {
 	private final String name;

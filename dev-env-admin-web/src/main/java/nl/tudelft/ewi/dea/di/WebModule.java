@@ -5,9 +5,6 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
-import nl.tudelft.ewi.dea.jaxrs.home.DashboardResource;
-import nl.tudelft.ewi.dea.jaxrs.login.LoginResource;
-import nl.tudelft.ewi.dea.jaxrs.projects.ProjectResource;
 import nl.tudelft.ewi.dea.template.TemplateEngine;
 
 import org.apache.shiro.guice.web.GuiceShiroFilter;
@@ -47,13 +44,10 @@ public class WebModule extends ServletModule {
 		LOG.debug("Configuring servlets and URLs");
 		filter("/*").through(GuiceShiroFilter.class);
 
-		bind(LoginResource.class);
-		bind(ProjectResource.class);
-		bind(DashboardResource.class);
-
 		bind(JacksonJsonProvider.class).in(Scopes.SINGLETON);
 
 		Map<String, String> params = Maps.newHashMap();
+		params.put("com.sun.jersey.config.property.packages", "nl.tudelft.ewi.dea.jaxrs");
 		params.put(ServletContainer.PROPERTY_WEB_PAGE_CONTENT_REGEX, "/.*\\.(html|js|css)");
 		filter("/*").through(GuiceContainer.class, params);
 	}
