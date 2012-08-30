@@ -12,7 +12,7 @@ import com.google.inject.Injector;
 public class ManualMailTest {
 
 	@Test
-	public void testSendingAnEmail() throws InterruptedException {
+	public void testSendingAnEmailTwice() throws InterruptedException {
 		String host = "smtp.gmail.com";
 		String user = "";
 		String password = "";
