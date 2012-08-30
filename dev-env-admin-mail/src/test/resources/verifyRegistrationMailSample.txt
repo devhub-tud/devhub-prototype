@@ -1,0 +1,9 @@
+Hi prospective DevHub user!
+
+You have requested a registration for the DevHub application with your email address: test@user.com. To complete your request, click the following link: html://verify.this.com
+
+If you did not register, disregard this e-mail.
+
+Kind regards,
+
+The DevHub team
