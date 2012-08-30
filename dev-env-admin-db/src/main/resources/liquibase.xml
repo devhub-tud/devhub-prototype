@@ -46,7 +46,9 @@
 			<column name="email" type="varchar(255)">
 				<constraints nullable="false" unique="true" />
 			</column>
-			<column name="token" type="bytea"> <!-- This should really be uuid, but JPA/Hibernate doesn't understand it -->
+			<column name="token" type="varchar(255)">
+				<!-- This should really be uuid, but JPA/Hibernate doesn't understand it. -->
+				<!-- And if it is bytea (which hibernate generates for postgresql), it doesn't work with h2 -->
 				<constraints nullable="true" unique="true" />
 			</column>
 		</createTable>

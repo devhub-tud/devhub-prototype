@@ -1,7 +1,5 @@
 package nl.tudelft.ewi.dea.model;
 
-import java.util.UUID;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,7 +15,7 @@ public class RegistrationToken {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) private final long id;
 
 	@Column(nullable = false, unique = true, updatable = false) private final String email;
-	@Column(nullable = false, unique = true, updatable = false) private final UUID token;
+	@Column(nullable = false, unique = true, updatable = false) private final String token;
 
 	@SuppressWarnings("unused")
 	private RegistrationToken() {
@@ -27,7 +25,7 @@ public class RegistrationToken {
 		token = null;
 	}
 
-	public RegistrationToken(final long id, final String email, final UUID token) {
+	public RegistrationToken(final long id, final String email, final String token) {
 		this.id = id;
 
 		this.email = email;
@@ -42,7 +40,7 @@ public class RegistrationToken {
 		return email;
 	}
 
-	public UUID getToken() {
+	public String getToken() {
 		return token;
 	}
 
