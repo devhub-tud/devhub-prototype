@@ -14,7 +14,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import nl.tudelft.ewi.dea.dao.RegistrationTokenDao;
 import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
+import nl.tudelft.ewi.dea.model.RegistrationToken;
 
 import com.google.common.collect.Lists;
 
@@ -23,17 +25,26 @@ import com.google.common.collect.Lists;
 public class AccountResource {
 
 	private final Provider<Renderer> renderers;
+	private final RegistrationTokenDao registrationTokenDao;
 
 	@Inject
-	public AccountResource(Provider<Renderer> renderers) {
+	public AccountResource(final Provider<Renderer> renderers, final RegistrationTokenDao registrationTokenDao) {
 		this.renderers = renderers;
+		this.registrationTokenDao = registrationTokenDao;
 	}
 
 	@GET
 	@Path("activate/{token}")
 	@Produces(MediaType.TEXT_HTML)
-	public String servePage(@PathParam("token") String token) {
-		// TODO: check if token is still valid.
+	public String servePage(@PathParam("token") final String token) {
+
+		final RegistrationToken registrationToken = registrationTokenDao.findByToken(token);
+
+		if (registrationToken == null) {
+			// TODO: Handle missing token.
+		}
+
+		// TODO: Render page with account input form.
 
 		return renderers.get()
 				.setValue("scripts", Lists.newArrayList("activate.js"))
@@ -43,13 +54,13 @@ public class AccountResource {
 	@POST
 	@Path("activate/{token}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response processActivation(@PathParam("token") String token, ActivationRequest request) {
+	public Response processActivation(@PathParam("token") final String token, final ActivationRequest request) {
 		// TODO: check if token is still valid, and account doesn't exist yet.
 		// TODO: delete token from database, and create account from request (in
 		// single transaction).
 		// TODO: automatically log user in, and send a confirmation email.
 
-		long accountId = 0;
+		final long accountId = 0;
 
 		return Response.seeOther(URI.create("/account/" + accountId)).build();
 	}
@@ -57,14 +68,14 @@ public class AccountResource {
 	@GET
 	@Path("email/{email}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response findByEmail(@PathParam("email") String email) {
+	public Response findByEmail(@PathParam("email") final String email) {
 		// TODO: Return a list of users with a matching email address.
 		return Response.serverError().build();
 	}
 
 	@POST
 	@Path("{id}/promote")
-	public Response promoteUserToTeacher(@PathParam("id") long id) {
+	public Response promoteUserToTeacher(@PathParam("id") final long id) {
 		// TODO: Promote user to teacher status.
 		return Response.serverError().build();
 	}

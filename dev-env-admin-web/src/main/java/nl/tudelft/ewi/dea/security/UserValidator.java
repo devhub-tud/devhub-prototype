@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import nl.tudelft.ewi.dea.dao.UserDao;
-import nl.tudelft.ewi.dea.dao.UserNotFoundException;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.model.UserRole;
 
@@ -40,54 +39,59 @@ public class UserValidator extends AuthorizingRealm {
 	private final UserDao userDao;
 
 	@Inject
-	UserValidator(UserDao userDao, HashedCredentialsMatcher matcher) {
+	UserValidator(final UserDao userDao, final HashedCredentialsMatcher matcher) {
 		super(matcher);
 		this.userDao = userDao;
-		this.setName(UserValidator.class.getSimpleName());
+		setName(UserValidator.class.getSimpleName());
 	}
 
 	@Override
-	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+	protected AuthorizationInfo doGetAuthorizationInfo(final PrincipalCollection principals) {
 		LOG.debug("Checking doGetAuthorizationInfo for {}", principals);
 		// null usernames are invalid
 		if (principals == null) {
 			throw new AuthorizationException("PrincipalCollection method argument cannot be null.");
 		}
 
-		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo(UserRole.ALL_ROLES);
+		final SimpleAuthorizationInfo info = new SimpleAuthorizationInfo(UserRole.ALL_ROLES);
 
-		String email = (String) getAvailablePrincipal(principals);
-		User user = userDao.findByEmail(email);
+		final String email = (String) getAvailablePrincipal(principals);
+		final User user = userDao.findByEmail(email);
 
-		Set<String> userRoles = UserRole.getRolesFor(user);
+		if (user == null) {
+			throw new UnknownAccountException("No user found with email: " + email);
+		}
+
+		final Set<String> userRoles = UserRole.getRolesFor(user);
 		info.setStringPermissions(userRoles);
 		LOG.debug("User {} was assigned permissions: {}", email, userRoles);
 		return info;
 	}
 
 	@Override
-	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token)
+	protected AuthenticationInfo doGetAuthenticationInfo(final AuthenticationToken token)
 			throws AuthenticationException {
-		String email = extractMail(token);
+		final String email = extractMail(token);
 		LOG.debug("Looking for user {}", email);
 
-		try {
-			User user = userDao.findByEmail(email);
-			LOG.debug("Found user {}", user);
-			char[] password = user.getPassword().toCharArray();
-			ByteSource salt = SaltTool.getFullSalt(user);
-			return new SimpleAuthenticationInfo(email, password, salt, getName());
-		} catch (UserNotFoundException e) {
+		final User user = userDao.findByEmail(email);
+
+		if (user == null) {
 			LOG.debug("User not found: {}", email);
 			throw new UnknownAccountException("No account found for user [" + email + "]");
 		}
+
+		LOG.debug("Found user {}", user);
+		final char[] password = user.getPassword().toCharArray();
+		final ByteSource salt = SaltTool.getFullSalt(user);
+		return new SimpleAuthenticationInfo(email, password, salt, getName());
 	}
 
-	private String extractMail(AuthenticationToken token) {
+	private String extractMail(final AuthenticationToken token) {
 		LOG.info("Checking doGetAuthenticationInfo");
 		checkArgument(token instanceof UsernamePasswordToken, "Expected a usernamePassword token");
-		UsernamePasswordToken usernamePassword = (UsernamePasswordToken) token;
-		String email = usernamePassword.getUsername();
+		final UsernamePasswordToken usernamePassword = (UsernamePasswordToken) token;
+		final String email = usernamePassword.getUsername();
 		if (email == null) {
 			throw new AccountException("Null usernames are not allowed by this realm.");
 		}

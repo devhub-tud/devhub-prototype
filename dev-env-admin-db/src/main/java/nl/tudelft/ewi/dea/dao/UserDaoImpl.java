@@ -1,70 +1,43 @@
 package nl.tudelft.ewi.dea.dao;
 
-import java.util.List;
+import static com.google.common.base.Preconditions.checkArgument;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.TypedQuery;
 
 import nl.tudelft.ewi.dea.model.User;
-import nl.tudelft.ewi.dea.model.User_;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-class UserDaoImpl implements UserDao {
+class UserDaoImpl extends AbstractDaoBase<User> implements UserDao {
 
-	private final EntityManager em;
+	private static final Logger LOG = LoggerFactory.getLogger(UserDaoImpl.class);
 
 	@Inject
-	UserDaoImpl(EntityManager em) {
-		this.em = em;
+	public UserDaoImpl(final EntityManager em) {
+		super(em, User.class);
 	}
 
 	@Override
 	@Transactional
-	public User findById(long id) {
-		User user = em.find(User.class, id);
-		if (user == null) {
-			throw new UserNotFoundException(id);
-		} else {
-			return user;
-		}
-	}
+	public User findByEmail(final String email) {
 
-	@Override
-	@Transactional
-	public void persist(User t) {
-		em.persist(t);
-	}
+		LOG.trace("Find by email: {}", email);
 
-	@Override
-	public User findByEmail(String emailAddres) {
-		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<User> criteria = builder.createQuery(User.class);
-		Root<User> userRoot = criteria.from(User.class);
-		criteria.select(userRoot).where(builder.equal(userRoot.get(User_.mailAddress), emailAddres));
-		User user = em.createQuery(criteria).getSingleResult();
-		if (user == null) {
-			throw new UserNotFoundException();
-		} else {
-			return user;
-		}
-	}
+		checkArgument(isNotEmpty(email));
 
-	@Override
-	public void delete(User firstUser) {
-		em.remove(firstUser);
-	}
+		final String query = "select o from " + entityName + " o where o.mailAddress = :email";
 
-	@Override
-	public List<User> list() {
-		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<User> criteria = builder.createQuery(User.class);
-		Root<User> userRoot = criteria.from(User.class);
-		criteria.select(userRoot).orderBy(builder.asc(userRoot.get(User_.mailAddress)));
-		return em.createQuery(criteria).getResultList();
+		final TypedQuery<User> tq = createQuery(query);
+		tq.setParameter("email", email);
+
+		return tq.getSingleResult();
+
 	}
 
 }

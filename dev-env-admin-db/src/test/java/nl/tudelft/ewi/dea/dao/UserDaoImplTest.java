@@ -3,6 +3,7 @@ package nl.tudelft.ewi.dea.dao;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 
 import nl.tudelft.ewi.dea.model.User;
@@ -10,10 +11,14 @@ import nl.tudelft.ewi.dea.model.UserRole;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UserDaoImplTest extends DatabaseTest {
 
-	UserDao dao;
+	private static final Logger LOG = LoggerFactory.getLogger(UserDaoImplTest.class);
+
+	private UserDao dao;
 
 	@Override
 	@Before
@@ -24,30 +29,57 @@ public class UserDaoImplTest extends DatabaseTest {
 
 	@Test
 	public void whenAUserIsSavedItCanAlsoBeFound() {
-		User user = newTestUser("harry");
+		final User user = newTestUser("harry");
 		dao.persist(user);
-		User foundUser = dao.findByEmail(user.getMailAddress());
+		final User foundUser = dao.findByEmail(user.getMailAddress());
 		assertThat(foundUser, is(user));
 	}
 
-	@Test(expected = PersistenceException.class)
-	public void whenADuplicateEmailAdressIsCreatedAnErrorIsThrown() {
-		User firstUser = newTestUser("harry");
-		User secondUser = newTestUser("harry");
+	@Test
+	public void whenADuplicateEmailAddressIsCreatedAnErrorIsThrown() {
+
+		final User firstUser = newTestUser("harry");
+		final User secondUser = newTestUser("harry");
 		dao.persist(firstUser);
-		dao.persist(secondUser);
+
+		boolean exceptionWasThrown = false;
+		try {
+			dao.persist(secondUser);
+		} catch (final PersistenceException e) {
+			LOG.debug("Intentional exception caught: {}", e.getMessage(), e);
+			exceptionWasThrown = true;
+			markTransactionForRollback();
+		}
+
+		assertThat(exceptionWasThrown, is(true));
+
 	}
 
-	@Test(expected = UserNotFoundException.class)
+	@Test
 	public void whenAUserIsDeletedItShouldntBeFoundAnymore() {
-		User firstUser = newTestUser("deleteUser");
+
+		// Given
+		final User firstUser = newTestUser("deleteUser");
 		dao.persist(firstUser);
-		dao.delete(firstUser);
-		dao.findById(firstUser.getId());
+
+		// When
+		dao.remove(firstUser);
+
+		// Then
+		boolean exceptionWasThrown = false;
+		try {
+			dao.findById(firstUser.getId());
+		} catch (final NoResultException e) {
+			LOG.debug("Expected exception caught: {}", e.getMessage(), e);
+			exceptionWasThrown = true;
+			markTransactionForRollback();
+		}
+		assertThat(exceptionWasThrown, is(true));
+
 	}
 
-	private User newTestUser(String ident) {
-		User user = new User(ident, ident + "@unittest.com", "abc", "pass", UserRole.USER);
+	private User newTestUser(final String ident) {
+		final User user = new User(ident, ident + "@example.com", "abc", "pass", UserRole.USER);
 		return user;
 	}
 
