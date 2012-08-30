@@ -1,10 +1,14 @@
 package nl.tudelft.ewi.dea.jaxrs.account;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 import java.net.URI;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+import javax.persistence.NoResultException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -18,11 +22,16 @@ import nl.tudelft.ewi.dea.dao.RegistrationTokenDao;
 import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
 import nl.tudelft.ewi.dea.model.RegistrationToken;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.Lists;
 
 @Singleton
 @Path("account")
 public class AccountResource {
+
+	private static final Logger LOG = LoggerFactory.getLogger(AccountResource.class);
 
 	private final Provider<Renderer> renderers;
 	private final RegistrationTokenDao registrationTokenDao;
@@ -38,9 +47,15 @@ public class AccountResource {
 	@Produces(MediaType.TEXT_HTML)
 	public String servePage(@PathParam("token") final String token) {
 
-		final RegistrationToken registrationToken = registrationTokenDao.findByToken(token);
+		LOG.trace("Serving activation page for token: {}", token);
 
-		if (registrationToken == null) {
+		checkArgument(isNotEmpty(token));
+
+		final RegistrationToken registrationToken;
+		try {
+			registrationToken = registrationTokenDao.findByToken(token);
+		} catch (final NoResultException e) {
+			LOG.trace("Token not found in database, so not active: {}", token, e);
 			// TODO: Handle missing token.
 		}
 
