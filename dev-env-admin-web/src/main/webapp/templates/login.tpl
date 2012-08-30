@@ -43,11 +43,11 @@ footer {
 				</tr>
 				<tr>
 					<td colspan='2'><input class="btn btn-primary btn-large"
-						name="submit" type="submit" value="Log me in"/></td>
+						name="submit" type="submit" value="Log me in" /></td>
 				</tr>
 			</table>
 		</form>
-		<%
+		<!-- <%
 			String errorDescription = (String) request.getAttribute("shiroLoginFailure");
 			if (errorDescription != null) {
 		%>
@@ -56,9 +56,9 @@ footer {
 		</div>
 		<%
 			}
-		%>
+		%> -->
 	</div>
-	<%
+	<!-- <%
 		String version = getServletContext().getInitParameter("version");
 		if (version.contains("SNAPSHOT")) {
 			version = version + " @ " + getServletContext().getInitParameter("build");
@@ -66,6 +66,8 @@ footer {
 	%>
 	<footer>
 		Version
-		<%=version%></footer>
+		<%=version%></footer> -->
+	<script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
+	<script src="/js/login.js"></script>
 </body>
 </html>

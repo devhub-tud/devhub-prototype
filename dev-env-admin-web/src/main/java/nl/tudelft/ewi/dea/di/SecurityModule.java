@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Provides;
+import com.google.inject.name.Names;
 
 /**
  * This is the application's configuration of most security. Some security can
@@ -34,13 +35,13 @@ public class SecurityModule extends ShiroWebModule {
 		install(new ShiroAopModule());
 
 		bindRealm().to(UserValidator.class);
+		bindConstant().annotatedWith(Names.named("shiro.loginUrl")).to("/login");
 
-		addFilterChain("/", AUTHC);
-
+		addFilterChain("/js/**", ANON);
+		addFilterChain("/css/**", ANON);
 		addFilterChain("/logout", LOGOUT);
-		// addFilterChain("/login.jsp", AUTHC);
-		addFilterChain("/.*\\.(html|js|css|jsp)", ANON);
-		addFilterChain("/*", AUTHC);
+		addFilterChain("/login", AUTHC);
+		addFilterChain("/**", AUTHC);
 	}
 
 	@Provides

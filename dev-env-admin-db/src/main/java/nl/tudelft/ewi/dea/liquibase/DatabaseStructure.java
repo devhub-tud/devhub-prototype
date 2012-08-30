@@ -47,8 +47,11 @@ public class DatabaseStructure {
 
 	public void create() {
 		try (Connection conn = createConnection()) {
+			LOG.info("Processing all liquibase changesets...");
 			Liquibase liquibase = new Liquibase("liquibase.xml", new ClassLoaderResourceAccessor(), new JdbcConnection(conn));
 			liquibase.update(context);
+			conn.commit();
+			LOG.debug("Finished processing all liquibase changesets.");
 		} catch (LiquibaseException | ClassNotFoundException | SQLException e) {
 			LOG.error(e.getMessage(), e);
 			throw new RuntimeException(e.getMessage(), e);
