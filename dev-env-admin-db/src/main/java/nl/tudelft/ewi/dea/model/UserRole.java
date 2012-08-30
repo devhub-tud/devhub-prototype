@@ -11,11 +11,13 @@ public enum UserRole {
 
 	ADMIN, USER;
 
+	public static final String ROLE_ADMIN = "ADMIN";
+
 	public static final ImmutableSet<String> ALL_ROLES = ImmutableSet.of(ADMIN.name(), USER.name());
 	public static final ImmutableSet<String> ADMIN_ROLES = ALL_ROLES;
 	public static final ImmutableSet<String> USER_ROLES = ImmutableSet.of(USER.name());
 
-	public static Set<String> getRolesFor(User user) {
+	public static Set<String> getRolesFor(final User user) {
 		if (user.isAdmin()) {
 			return ADMIN_ROLES;
 		} else {
