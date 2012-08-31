@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.model.User;
@@ -36,12 +37,12 @@ import org.slf4j.LoggerFactory;
 public class UserValidator extends AuthorizingRealm {
 
 	private static final Logger LOG = LoggerFactory.getLogger(UserValidator.class);
-	private final UserDao userDao;
+	private final Provider<UserDao> userDaoProvider;
 
 	@Inject
-	UserValidator(final UserDao userDao, final HashedCredentialsMatcher matcher) {
+	UserValidator(final Provider<UserDao> userDaoProvider, final HashedCredentialsMatcher matcher) {
 		super(matcher);
-		this.userDao = userDao;
+		this.userDaoProvider = userDaoProvider;
 		setName(UserValidator.class.getSimpleName());
 	}
 
@@ -56,7 +57,7 @@ public class UserValidator extends AuthorizingRealm {
 		final SimpleAuthorizationInfo info = new SimpleAuthorizationInfo(UserRole.ALL_ROLES);
 
 		final String email = (String) getAvailablePrincipal(principals);
-		final User user = userDao.findByEmail(email);
+		final User user = userDaoProvider.get().findByEmail(email);
 
 		if (user == null) {
 			throw new UnknownAccountException("No user found with email: " + email);
@@ -74,7 +75,7 @@ public class UserValidator extends AuthorizingRealm {
 		final String email = extractMail(token);
 		LOG.debug("Looking for user {}", email);
 
-		final User user = userDao.findByEmail(email);
+		final User user = userDaoProvider.get().findByEmail(email);
 
 		if (user == null) {
 			LOG.debug("User not found: {}", email);

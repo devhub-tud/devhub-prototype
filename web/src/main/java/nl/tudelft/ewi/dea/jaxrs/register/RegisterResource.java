@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 import javax.persistence.NoResultException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -26,8 +25,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 
-@Singleton
+@RequestScoped
 @Path("register")
 @Produces(MediaType.APPLICATION_JSON)
 public class RegisterResource {

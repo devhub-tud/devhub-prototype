@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Maps;
 import com.google.inject.Scopes;
 import com.google.inject.name.Names;
+import com.google.inject.persist.PersistFilter;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
@@ -44,6 +45,8 @@ public class WebModule extends ServletModule {
 		Names.bindProperties(binder(), configuration);
 
 		install(new PersistenceModule("test-h2", ""));
+		filter("/*").through(PersistFilter.class);
+
 		install(new SecurityModule(servletContext));
 		install(new MailModule(MailProperties.newWithAuth(
 				configuration.getProperty("webapp.smtp.host"),

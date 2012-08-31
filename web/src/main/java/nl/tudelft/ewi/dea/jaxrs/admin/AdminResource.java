@@ -2,7 +2,6 @@ package nl.tudelft.ewi.dea.jaxrs.admin;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -14,8 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
+import com.google.inject.servlet.RequestScoped;
 
-@Singleton
+@RequestScoped
 @Path("admin")
 @Produces(MediaType.APPLICATION_JSON)
 public class AdminResource {

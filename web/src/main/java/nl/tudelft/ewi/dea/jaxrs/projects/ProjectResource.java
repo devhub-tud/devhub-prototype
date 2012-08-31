@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -28,7 +27,9 @@ import nl.tudelft.jenkins.client.JenkinsClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
+import com.google.inject.servlet.RequestScoped;
+
+@RequestScoped
 @Path("projects")
 @Produces(MediaType.APPLICATION_JSON)
 public class ProjectResource {

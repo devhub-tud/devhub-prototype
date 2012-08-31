@@ -2,7 +2,6 @@ package nl.tudelft.ewi.dea.jaxrs.login;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -11,8 +10,9 @@ import javax.ws.rs.core.MediaType;
 import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
 
 import com.google.common.collect.Lists;
+import com.google.inject.servlet.RequestScoped;
 
-@Singleton
+@RequestScoped
 @Path("login")
 @Produces(MediaType.APPLICATION_JSON)
 public class LoginResource {

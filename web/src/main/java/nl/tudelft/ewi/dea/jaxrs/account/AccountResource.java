@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import javax.inject.Singleton;
 import javax.persistence.NoResultException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -33,8 +32,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 
-@Singleton
+@RequestScoped
 @Path("account")
 public class AccountResource {
 
@@ -58,6 +58,7 @@ public class AccountResource {
 	@GET
 	@Path("activate/{token}")
 	@Produces(MediaType.TEXT_HTML)
+	@Transactional
 	public String servePage(@PathParam("token") final String token) {
 
 		LOG.trace("Serving activation page for token: {}", token);
@@ -124,7 +125,7 @@ public class AccountResource {
 		userDao.persist(u);
 
 		// TODO: This requires a flush!
-		userDao.flush();
+		// userDao.flush();
 
 		// SecurityUtils.getSubject().login(new UsernamePasswordToken(email,
 		// password));

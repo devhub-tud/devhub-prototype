@@ -2,12 +2,13 @@ package nl.tudelft.ewi.dea.jaxrs.root;
 
 import java.net.URI;
 
-import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
-@Singleton
+import com.google.inject.servlet.RequestScoped;
+
+@RequestScoped
 @Path("/")
 public class RootResource {
 
