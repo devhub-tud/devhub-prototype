@@ -136,9 +136,9 @@
 
 
 	<modules>
-		<module>dev-env-admin-web</module>
-		<module>dev-env-admin-db</module>
-		<module>dev-env-admin-mail</module>
+		<module>db</module>
+		<module>mail</module>
+		<module>web</module>
 	</modules>
 
 </project>
