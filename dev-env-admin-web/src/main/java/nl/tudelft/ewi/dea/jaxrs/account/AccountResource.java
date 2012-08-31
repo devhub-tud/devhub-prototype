@@ -28,8 +28,6 @@ import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.model.UserRole;
 import nl.tudelft.ewi.dea.security.UserFactory;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,12 +123,18 @@ public class AccountResource {
 		registrationTokenDao.remove(registrationToken);
 		userDao.persist(u);
 
-		SecurityUtils.getSubject().login(new UsernamePasswordToken(email, password));
+		// TODO: This requires a flush!
+		userDao.flush();
+
+		// SecurityUtils.getSubject().login(new UsernamePasswordToken(email,
+		// password));
 
 		// TODO: send a confirmation email.
 
 		final long accountId = u.getId();
-		return Response.ok(accountId).build();
+
+		LOG.debug("Created account with id: " + accountId);
+		return Response.ok(Long.toString(accountId)).build();
 	}
 
 	@GET

@@ -18,7 +18,7 @@ public class ProvisioningModule extends AbstractModule {
 	@Override
 	protected void configure() {
 
-		final ConfigManager manager = ConfigManager.create("git@dea.hartveld.com:gitolite-admin", new PassphraseCredentialsProvider(""));
+		final ConfigManager manager = ConfigManager.create("git@dea.hartveld.com:gitolite-admin", new PassphraseCredentialsProvider("passphrase"));
 
 		try {
 			final Config config = manager.getConfig();
