@@ -62,7 +62,9 @@
 						<div class="control-group">
 							<label class="control-label" for="project-name">Project name</label>
 							<div class="controls">
-								<input type="text" id="project-name" placeholder="Project name" />
+								<input type="text" id="project-name" placeholder="Project name" /> 
+								<img src="/img/loader.gif" class="loader hide" />
+								<div class="hide help-block"></div>
 							</div>
 						</div>
 					</form>

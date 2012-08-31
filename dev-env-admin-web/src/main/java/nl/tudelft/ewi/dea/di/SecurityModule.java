@@ -39,6 +39,7 @@ public class SecurityModule extends ShiroWebModule {
 
 		addFilterChain("/js/**", ANON);
 		addFilterChain("/css/**", ANON);
+		addFilterChain("/img/**", ANON);
 		addFilterChain("/register", ANON);
 		addFilterChain("/register/**", ANON);
 		addFilterChain("/account/activate", ANON);

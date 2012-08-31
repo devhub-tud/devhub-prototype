@@ -18,33 +18,60 @@ $(document).ready(function() {
 	var lastValue;
 	
 	setInterval(function() {
-		checkProjectName(projectNameField.val(), function(ok) {
-			var controlGroup = projectNameField.parentsUntil('.control-group').parent();
-			if (ok) {
-				controlGroup.removeClass("error");
-				provisionNewProjectButton.removeAttr("disabled");
+		setTimeout(function() {
+			var projectName = projectNameField.val();
+			if (projectName != lastValue) {
+				lastValue = projectName;
+				startProjectNameCheck(projectName);
 			}
-			else {
-				controlGroup.addClass("error");
-				provisionNewProjectButton.attr("disabled", "disabled");
-			}
-		});
+		}, 250);
 	}, 100);
 	
-	function checkProjectName(projectName, callback) {
-		if (projectName != lastValue) {
-			lastValue = projectName;
-			$.ajax({
-					url: "/dashboard/checkName", 
-					data: { "name": projectName }, 
-					success: function(data) {
-						callback.call(this, true);
-					},
-					error: function(data) {
-						callback.call(this, false);
-					}
-			});
+	function startProjectNameCheck(projectName) {
+		if (projectName != projectNameField.val()) {
+			return;
 		}
+		
+		var controlGroup = projectNameField.parentsUntil('.control-group').parent();
+		var loader = controlGroup.find(".loader");
+		var helpBlock = controlGroup.find(".help-block");
+		
+		loader.show();
+		helpBlock.hide();
+		provisionNewProjectButton.attr("disabled", "disabled");
+		
+		checkProjectName(projectNameField.val(), function(result) {
+			if (projectName == projectNameField.val()) {
+				loader.hide();
+				if (result == "ok") {
+					controlGroup.removeClass("error warning");
+					provisionNewProjectButton.removeAttr("disabled");
+				}
+				else if (result == "already-taken") {
+					helpBlock.html("The project name <strong>" + projectNameField.val() + "</strong> is taken!").show();
+					controlGroup.addClass("error");
+					provisionNewProjectButton.attr("disabled", "disabled");
+				}
+				else if (result == "invalid-name") {
+					helpBlock.html("Project names may only consist of letters and numbers, and must be at least 4 characters long!").show();
+					controlGroup.addClass("error");
+					provisionNewProjectButton.attr("disabled", "disabled");
+				}
+			}
+		});
+	}
+	
+	function checkProjectName(projectName, callback) {
+		$.ajax({
+				url: "/projects/checkName", 
+				data: { "name": projectName }, 
+				success: function(data) {
+					callback.call(this, "ok");
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					callback.call(this, jqXHR.responseText);
+				}
+		});
 	}
 	
 	newProjectButton.click(function(e) {
@@ -75,7 +102,7 @@ $(document).ready(function() {
 				type: "post",
 				dataType: "text",
 				contentType: "application/json",
-				url: "/dashboard/create", 
+				url: "/projects/create", 
 				data: JSON.stringify({ "name": projectName }), 
 				success: function() {
 					step2.hide();
