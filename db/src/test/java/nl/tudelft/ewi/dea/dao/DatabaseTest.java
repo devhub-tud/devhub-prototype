@@ -36,6 +36,7 @@ public class DatabaseTest {
 		structure.dropAndCreate();
 
 		persistService = injector.getInstance(PersistService.class);
+		persistService.start();
 		em = injector.getInstance(EntityManager.class);
 		beginTransaction();
 
