@@ -2,7 +2,6 @@ package nl.tudelft.ewi.dea.jaxrs.course;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -17,8 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
+import com.google.inject.servlet.RequestScoped;
 
-@Singleton
+@RequestScoped
 @Path("course")
 @Produces(MediaType.APPLICATION_JSON)
 public class CourseResource {
