@@ -25,8 +25,8 @@ public class RegistrationToken {
 		token = null;
 	}
 
-	public RegistrationToken(final long id, final String email, final String token) {
-		this.id = id;
+	public RegistrationToken(final String email, final String token) {
+		this.id = 0;
 
 		this.email = email;
 		this.token = token;

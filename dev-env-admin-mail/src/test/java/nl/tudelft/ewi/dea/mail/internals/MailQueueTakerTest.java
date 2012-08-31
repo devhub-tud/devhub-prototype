@@ -2,9 +2,9 @@ package nl.tudelft.ewi.dea.mail.internals;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -26,7 +26,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -35,7 +34,7 @@ public class MailQueueTakerTest {
 
 	@Spy private LinkedBlockingQueue<SimpleMessage> mailQueue;
 	@Mock private MailProperties mailProps;
-	private Session session = Session.getDefaultInstance(new Properties());
+	private final Session session = Session.getDefaultInstance(new Properties());
 	@Mock private Transport transport;
 	private MailQueueTaker mQueueTaker;
 

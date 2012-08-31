@@ -9,4 +9,6 @@ public interface RegistrationTokenDao extends Dao<RegistrationToken> {
 
 	RegistrationToken findByToken(final String token);
 
+	RegistrationToken findByEmail(final String email);
+
 }

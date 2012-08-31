@@ -26,7 +26,6 @@ public class RegistrationTokenDaoImpl extends AbstractDaoBase<RegistrationToken>
 	@Override
 	@Transactional
 	public RegistrationToken findByToken(final String token) {
-
 		LOG.trace("Find by token: {}", token);
 
 		checkArgument(isNotEmpty(token));
@@ -37,7 +36,21 @@ public class RegistrationTokenDaoImpl extends AbstractDaoBase<RegistrationToken>
 		tq.setParameter("token", token);
 
 		return tq.getSingleResult();
+	}
 
+	@Override
+	@Transactional
+	public RegistrationToken findByEmail(String email) {
+		LOG.trace("Find by email: {}", email);
+
+		checkArgument(isNotEmpty(email));
+
+		final String query = "SELECT o FROM " + entityName + " o WHERE o.email = :email";
+
+		final TypedQuery<RegistrationToken> tq = createQuery(query);
+		tq.setParameter("email", email);
+
+		return tq.getSingleResult();
 	}
 
 }

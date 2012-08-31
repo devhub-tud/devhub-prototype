@@ -1,20 +1,31 @@
 package nl.tudelft.ewi.dea.jaxrs.register;
 
 import java.net.URI;
+import java.net.UnknownHostException;
+import java.util.UUID;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
+import javax.persistence.NoResultException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import nl.tudelft.ewi.dea.dao.RegistrationTokenDao;
+import nl.tudelft.ewi.dea.dao.UserDao;
+import nl.tudelft.ewi.dea.mail.DevHubMail;
+import nl.tudelft.ewi.dea.model.RegistrationToken;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.inject.persist.Transactional;
 
 @Singleton
 @Path("register")
@@ -23,7 +34,19 @@ public class RegisterResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RegisterResource.class);
 
-	private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$";
+	private final UserDao userDao;
+	private final RegistrationTokenDao tokenDao;
+	private final DevHubMail mailer;
+	private final String publicUrl;
+
+	@Inject
+	public RegisterResource(UserDao userDao, RegistrationTokenDao tokenDao, DevHubMail mailer,
+			@Named("webapp.public-url") String publicUrl) {
+		this.userDao = userDao;
+		this.tokenDao = tokenDao;
+		this.mailer = mailer;
+		this.publicUrl = publicUrl;
+	}
 
 	@GET
 	public Response servePage() {
@@ -46,34 +69,48 @@ public class RegisterResource {
 	 * 		(e.g. http://dea.hartveld.com/devhub/account/{accountId}/{one-time-valid-auth-token}).
 	 * </pre>
 	 * 
-	 * @return
+	 * @return The response of this request.
+	 * 
+	 * @throws UnknownHostException If the server is unable to resolve its own
+	 *            hostname.
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response processSignupRequest(SignupRequest request) {
-		// TODO: Implement this.
+	@Transactional
+	public Response processSignupRequest(SignupRequest request) throws UnknownHostException {
 		LOG.info("Request: {}", request);
-		// return Response.serverError().entity("Hello world").build();
+
+		if (emailAlreadyRegistered(request.getEmail())) {
+			return Response.status(Status.CONFLICT).entity("This e-mail address is already registered!").build();
+		}
+
+		if (registrationTokenAlreadyRequested(request.getEmail())) {
+			return Response.status(Status.CONFLICT).entity("This e-mail address is already registered!").build();
+		}
+
+		String token = UUID.randomUUID().toString();
+		tokenDao.persist(new RegistrationToken(request.getEmail(), token));
+
+		String verifyUrl = publicUrl + "accounts/activate/" + token;
+		mailer.sendVerifyRegistrationMail(request.getEmail(), verifyUrl);
+
 		return Response.ok().build();
 	}
 
-	@GET
-	@Path("checkEmail")
-	public Response checkEmail(@QueryParam("email") String email) {
-		if (!email.matches(EMAIL_REGEX)) {
-			return Response.status(Status.CONFLICT).entity("The provided email address is not valid!").build();
+	private boolean emailAlreadyRegistered(String email) {
+		try {
+			return userDao.findByEmail(email) != null;
+		} catch (NoResultException e) {
+			return false;
 		}
-
-		if (!isAllowedDomain(email)) {
-			return Response.status(Status.CONFLICT).entity("You must enter a valid tudelft email address!").build();
-		}
-
-		// TODO: Check if account is already registered.
-		return Response.ok().build();
 	}
 
-	// TODO: Move this to config file...
-	private boolean isAllowedDomain(String email) {
-		return email.endsWith("@tudelft.nl") || email.endsWith("@student.tudelft.nl");
+	private boolean registrationTokenAlreadyRequested(String email) {
+		try {
+			return tokenDao.findByEmail(email) != null;
+		} catch (NoResultException e) {
+			return false;
+		}
 	}
+
 }
