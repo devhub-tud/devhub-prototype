@@ -1,6 +1,9 @@
 package nl.tudelft.ewi.dea.security;
 
 import static org.mockito.Mockito.when;
+
+import javax.inject.Provider;
+
 import nl.tudelft.ewi.dea.dao.UserDao;
 
 import org.apache.shiro.authc.AuthenticationToken;
@@ -24,7 +27,12 @@ public class UserValidatorTest {
 	@Before
 	public void setup() {
 		final HashedCredentialsMatcher matcher = new HashedCredentialsMatcher(Sha256Hash.ALGORITHM_NAME);
-		userValidator = new UserValidator(userDao, matcher);
+		userValidator = new UserValidator(new Provider<UserDao>() {
+			@Override
+			public UserDao get() {
+				return userDao;
+			}
+		}, matcher);
 	}
 
 	@Test(expected = UnknownAccountException.class)
