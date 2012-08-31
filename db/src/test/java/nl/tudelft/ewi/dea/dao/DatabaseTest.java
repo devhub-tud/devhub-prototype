@@ -10,7 +10,6 @@ import nl.tudelft.ewi.dea.liquibase.DatabaseStructure;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +25,6 @@ public class DatabaseTest {
 
 	private EntityManager em;
 	private PersistService persistService;
-
-	@BeforeClass
-	public static void setUpBeforeClass() {}
 
 	@Before
 	public void setUp() {
