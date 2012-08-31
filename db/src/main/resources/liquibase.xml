@@ -82,7 +82,7 @@
 		</createTable>
 	</changeSet>
 
-	<changeSet id="2" author="team">
+	<changeSet id="2" author="team" context="test">
 		<insert tableName="users">
 			<column name="id">1</column>
 			<column name="displayname">Administrator</column>
@@ -95,7 +95,7 @@
 		</insert>
 	</changeSet>
 
-	<changeSet id="3" author="david">
+	<changeSet id="3" author="david" context="test">
 		<insert tableName="users">
 			<column name="id">2</column>
 			<column name="displayname">John Doe (Teacher)</column>
@@ -130,6 +130,19 @@
 			<column name="id">1</column>
 			<column name="user_id">3</column>
 			<column name="project_id">1</column>
+		</insert>
+	</changeSet>
+
+	<changeSet id="4" author="david" context="test">
+		<insert tableName="course">
+			<column name="id">2</column>
+			<column name="name">IN5678 TDD for geeks</column>
+			<column name="owner_id">2</column>
+		</insert>
+		<insert tableName="course">
+			<column name="id">3</column>
+			<column name="name">IN9101 AFP</column>
+			<column name="owner_id">2</column>
 		</insert>
 	</changeSet>
 

@@ -41,7 +41,7 @@ public class WebModule extends ServletModule {
 
 	@Override
 	protected void configureServlets() {
-		Properties configuration = loadConfiguration();
+		final Properties configuration = loadConfiguration();
 		Names.bindProperties(binder(), configuration);
 
 		install(new PersistenceModule("test-h2", ""));
@@ -71,10 +71,10 @@ public class WebModule extends ServletModule {
 
 	private Properties loadConfiguration() {
 		try {
-			Properties properties = new Properties();
+			final Properties properties = new Properties();
 			properties.load(getClass().getResourceAsStream("/config.properties"));
 			return properties;
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			LOG.error(e.getMessage(), e);
 			throw new RuntimeException(e.getMessage(), e);
 		}

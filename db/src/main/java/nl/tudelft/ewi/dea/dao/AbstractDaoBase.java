@@ -32,7 +32,7 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 
 	@Override
 	@Transactional
-	public void flush() {
+	public final void flush() {
 
 		LOG.trace("{}: Flush ...", entityName);
 
