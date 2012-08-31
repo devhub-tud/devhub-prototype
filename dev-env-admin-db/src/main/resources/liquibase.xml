@@ -17,7 +17,7 @@
 				<constraints nullable="false" unique="true" />
 			</column>
 			<column name="netid" type="varchar(255)">
-				<constraints unique="true"/>
+				<constraints unique="true" />
 			</column>
 			<column name="studentNumber" type="bigint">
 			</column>
@@ -39,9 +39,44 @@
 				<constraints nullable="false" unique="true" />
 			</column>
 			<column name="token" type="varchar(255)">
-				<!-- This should really be uuid, but JPA/Hibernate doesn't understand it. -->
-				<!-- And if it is bytea (which hibernate generates for postgresql), it doesn't work with h2 -->
+				<!-- This should really be uuid, but JPA/Hibernate doesn't understand 
+					it. -->
+				<!-- And if it is bytea (which hibernate generates for postgresql), it 
+					doesn't work with h2 -->
 				<constraints nullable="true" unique="true" />
+			</column>
+		</createTable>
+		<createTable tableName="course">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="varchar(255)">
+				<constraints unique="true" nullable="false" />
+			</column>
+			<column name="owner_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<createTable tableName="project">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="course_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<createTable tableName="projectmembership">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="user_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="project_id" type="bigint">
+				<constraints nullable="false" />
 			</column>
 		</createTable>
 	</changeSet>
@@ -53,7 +88,8 @@
 			<column name="netid">test-admin</column>
 			<column name="studentNumber">0</column>
 			<column name="salt">cafc393e</column>
-			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c</column>
+			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c
+			</column>
 			<column name="role">ADMIN</column>
 		</insert>
 	</changeSet>
