@@ -29,6 +29,9 @@ $(document).ready(function() {
 		var emailField = $('#signup').find('input[name="email"]');
 		var email = emailField.val();
 		
+		var signUpBtn = $('#signup').find('input[type="submit"]');
+		setButtonState(signUpBtn, false);
+		
 		$.ajax({
 			type: "post",
 			url: "/register",
@@ -39,12 +42,23 @@ $(document).ready(function() {
 				emailField.val("");
 				showAlert("alert-success", "An e-mail has been sent to <strong>" + email 
 						+ "</strong>.<br/>This e-mail contains futher instructions on how to complete your registration.");
+				setButtonState(signUpBtn, true);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				showAlert("alert-info", jqXHR.responseText);
+				setButtonState(signUpBtn, true);
 			}
 		});
 	});
+	
+	function setButtonState(button, valid) {
+		if (valid) {
+			button.removeAttr("disabled");
+		}
+		else {
+			button.attr("disabled", "disabled");
+		}
+	}
 	
 	function showAlert(type, message) {
 		var alerts = $('.alerts');

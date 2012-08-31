@@ -21,6 +21,7 @@ $(document).ready(function() {
 		var studentNumber = studentNumberField.val();
 		var name = nameField.val();
 		var password = password1Field.val();
+		setButtonState(completeBtn, false);
 		
 		$.ajax({
 			type: "post",
@@ -31,6 +32,7 @@ $(document).ready(function() {
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				showAlert("alert-error", jqXHR.responseText);
+				setButtonState(completeBtn, true);
 			}
 		});
 	});
