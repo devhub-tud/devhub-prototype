@@ -8,7 +8,7 @@ import nl.tudelft.ewi.dea.model.Course;
 public class CourseDaoImpl extends AbstractDaoBase<Course> implements CourseDao {
 
 	@Inject
-	protected CourseDaoImpl(final EntityManager em) {
+	public CourseDaoImpl(final EntityManager em) {
 		super(em, Course.class);
 	}
 

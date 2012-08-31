@@ -1,5 +1,6 @@
 package nl.tudelft.ewi.dea.model;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,19 +11,24 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 @Entity
 public class Project {
 
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) private final long id;
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
 
-	@ManyToOne(optional = false) private final Course course;
+	private String name;
 
-	@OneToMany(mappedBy = "project") private final Set<ProjectMembership> members = new HashSet<>();
+	@ManyToOne(optional = false) private Course course;
 
-	private final String name;
+	@OneToMany(mappedBy = "project") private Set<ProjectMembership> members = new HashSet<>();
+
+	@SuppressWarnings("unused")
+	private Project() {}
 
 	public Project(final String name, final Course course) {
-		id = 0;
 		this.name = name;
 		this.course = course;
 	}
@@ -37,6 +43,23 @@ public class Project {
 
 	public Course getCourse() {
 		return course;
+	}
+
+	public Set<ProjectMembership> getMembers() {
+		return Collections.unmodifiableSet(members);
+	}
+
+	void setMembers(final Set<ProjectMembership> members) {
+		this.members = members;
+	}
+
+	@Override
+	public String toString() {
+		final ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
+		builder.append("id", getId());
+		builder.append("name", getName());
+		builder.append("course", getCourse().getName());
+		return builder.toString();
 	}
 
 }

@@ -43,6 +43,7 @@ class UserDaoImpl extends AbstractDaoBase<User> implements UserDao {
 	}
 
 	@Override
+	@Transactional
 	public List<User> findByEmailSubString(final String email) {
 
 		LOG.trace("Find by email substring: {}", email);

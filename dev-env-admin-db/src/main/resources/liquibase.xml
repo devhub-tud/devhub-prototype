@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<!-- BIG FAT NOTICE: When to create a new changeSet? -->
+	<!-- It is *NOT* allowed to alter existing changeSets. -->
+	<!-- Always create a single, new changeSet for *every* commit. -->
 
 	<changeSet id="1" author="team">
 		<createTable tableName="users">
 			<column name="id" type="bigint" autoIncrement="true">
 				<constraints primaryKey="true" nullable="false" />
 			</column>
-			<column name="displayName" type="varchar(32)">
+			<column name="displayname" type="varchar(32)">
 				<constraints nullable="false" unique="true" />
 			</column>
 			<column name="email" type="varchar(255)">
@@ -19,7 +22,7 @@
 			<column name="netid" type="varchar(255)">
 				<constraints unique="true" />
 			</column>
-			<column name="studentNumber" type="bigint">
+			<column name="studentnumber" type="bigint">
 			</column>
 			<column name="salt" type="varchar(8)">
 				<constraints nullable="false" />
@@ -39,10 +42,8 @@
 				<constraints nullable="false" unique="true" />
 			</column>
 			<column name="token" type="varchar(255)">
-				<!-- This should really be uuid, but JPA/Hibernate doesn't understand 
-					it. -->
-				<!-- And if it is bytea (which hibernate generates for postgresql), it 
-					doesn't work with h2 -->
+				<!-- This should really be uuid, but JPA/Hibernate doesn't understand it. -->
+				<!-- And if it is bytea (which hibernate generates for postgresql), it doesn't work with h2 -->
 				<constraints nullable="true" unique="true" />
 			</column>
 		</createTable>
@@ -83,14 +84,52 @@
 
 	<changeSet id="2" author="team">
 		<insert tableName="users">
-			<column name="displayName">Administrator</column>
+			<column name="id">1</column>
+			<column name="displayname">Administrator</column>
 			<column name="email">test@test.com</column>
 			<column name="netid">test-admin</column>
-			<column name="studentNumber">0</column>
+			<column name="studentnumber">0</column>
 			<column name="salt">cafc393e</column>
-			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c
-			</column>
+			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c</column>
 			<column name="role">ADMIN</column>
+		</insert>
+	</changeSet>
+
+	<changeSet id="3" author="david">
+		<insert tableName="users">
+			<column name="id">2</column>
+			<column name="displayname">John Doe (Teacher)</column>
+			<column name="email">john.doe@example.com</column>
+			<column name="netid">jdoe</column>
+			<column name="studentnumber">0</column>
+			<column name="salt">cafc393e</column>
+			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c</column>
+			<column name="role">ADMIN</column>
+		</insert>
+		<insert tableName="users">
+			<column name="id">3</column>
+			<column name="displayname">Jane X (Student)</column>
+			<column name="email">jane.x@student.example.com</column>
+			<column name="netid">jx</column>
+			<column name="studentnumber">12345</column>
+			<column name="salt">cafc393e</column>
+			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c</column>
+			<column name="role">ADMIN</column>
+		</insert>
+		<insert tableName="course">
+			<column name="id">1</column>
+			<column name="name">IN1234 Software Engineering</column>
+			<column name="owner_id">2</column>
+		</insert>
+		<insert tableName="project">
+			<column name="id">1</column>
+			<column name="name">My first project</column>
+			<column name="course_id">1</column>
+		</insert>
+		<insert tableName="projectmembership">
+			<column name="id">1</column>
+			<column name="user_id">3</column>
+			<column name="project_id">1</column>
 		</insert>
 	</changeSet>
 

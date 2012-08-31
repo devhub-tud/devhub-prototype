@@ -25,11 +25,11 @@ public class PersistenceModule extends AbstractModule {
 	 * @param dbName The name of the database as provided in
 	 *           META-INF/persistence.xml
 	 */
-	public PersistenceModule(String dbName, String context) {
+	public PersistenceModule(final String dbName, final String context) {
 		checkArgument(!Strings.isNullOrEmpty(dbName), "DB name must be non-empty");
 		this.dbName = dbName;
 
-		this.liquibaseContext = (context == null) ? "" : context;
+		liquibaseContext = context == null ? "" : context;
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class PersistenceModule extends AbstractModule {
 		private final Logger log = LoggerFactory.getLogger(PersistenceModule.PersistenceStarter.class);
 
 		@Inject
-		PersistenceStarter(PersistService service) {
+		PersistenceStarter(final PersistService service) {
 			log.info("Starting persistence!");
 			service.start();
 			log.info("Persistence started");
