@@ -13,6 +13,7 @@ import java.util.Properties;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.mail.MessagingException;
+import javax.mail.SendFailedException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
@@ -28,6 +29,8 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import com.google.common.collect.ImmutableList;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MailQueueTakerTest {
@@ -90,5 +93,30 @@ public class MailQueueTakerTest {
 		MimeMessage mimeMock = mock(MimeMessage.class);
 		when(smsg.asMimeMessage(any(Session.class))).thenReturn(mimeMock);
 		return smsg;
+	}
+
+	@Test(expected = MailException.class)
+	public void whenAnExceptionOccursInRunItIsCatchedAndWrapped() throws InterruptedException {
+		RuntimeException textExcp = new RuntimeException();
+		mailQueue.add(newMessageMock());
+		when(mailQueue.take()).thenThrow(textExcp);
+
+		mQueueTaker.run();
+
+	}
+
+	@Test
+	public void whenThereIsAProblemConnectingTheMessagesAreSentLater() throws MessagingException, InterruptedException {
+		SimpleMessage message = newMessageMock();
+		mailQueue.add(message);
+		mQueueTaker = spy(new MailQueueTaker(mailQueue, transport, mailProps, session));
+		SendFailedException exc = new SendFailedException();
+		doThrow(exc).when(transport).connect(anyString(), anyString(), anyString());
+		doNothing().when(mQueueTaker).tryAgainAfterDelay(any(ImmutableList.class), eq(exc));
+		when(mailQueue.take()).thenReturn(message).thenThrow(new InterruptedException());
+		
+		mQueueTaker.run();
+		
+		verify(mQueueTaker).tryAgainAfterDelay(any(ImmutableList.class), eq(exc));
 	}
 }

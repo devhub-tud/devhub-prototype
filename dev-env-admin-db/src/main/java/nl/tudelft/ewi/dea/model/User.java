@@ -4,6 +4,9 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +15,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -26,10 +30,12 @@ public class User {
 	@Column(unique = true, nullable = false) private String netid;
 	private long studentNumber;
 
-	@Column(name = "salt", nullable = false) private final String salt;
-	@Column(name = "password", nullable = false) private String password;
+	@Column(nullable = false) private final String salt;
+	@Column(nullable = false) private String password;
 
 	@Enumerated(EnumType.STRING) @Column(name = "role", nullable = false) private UserRole role;
+
+	@OneToMany(mappedBy = "user") private final Set<ProjectMembership> memberships = new HashSet<>();
 
 	/**
 	 * Constructor required by Hibernate.

@@ -24,6 +24,7 @@ import nl.tudelft.ewi.dea.mail.SimpleMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -104,7 +105,8 @@ class MailQueueTaker implements Runnable {
 		transport.close();
 	}
 
-	private void tryAgainAfterDelay(ImmutableList<SimpleMessage> messagesToSend, SendFailedException e)
+	@VisibleForTesting
+	void tryAgainAfterDelay(ImmutableList<SimpleMessage> messagesToSend, SendFailedException e)
 			throws MessagingException {
 		LOG.warn("Sending mail failed. Trying again in {} minutes. The error was: {}", TIME_OUT_IN_MIN, e.getMessage());
 		LOG.debug("Full error print for debug: ", e);

@@ -29,6 +29,8 @@ import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.model.UserRole;
 import nl.tudelft.ewi.dea.security.UserFactory;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,22 +95,21 @@ public class AccountResource {
 		checkArgument(isNotEmpty(token));
 		checkNotNull(request);
 
-		// check if token is still valid, and account doesn't exist yet.
 		RegistrationToken registrationToken;
 		try {
 			registrationToken = registrationTokenDao.findByToken(token);
 		} catch (final NoResultException e) {
 			LOG.trace("Token not found in database, so not active: {}", token, e);
-			return Response.status(Status.FORBIDDEN).entity("Token is not active").build();
-		}
-
-		assert registrationToken.getEmail() != null;
-
-		if (!registrationToken.getEmail().equals(request.getEmail())) {
-			// TODO: Error: token email and request email should be the same.
+			return Response.status(Status.NOT_FOUND).entity("Token is not active").build();
 		}
 
 		final String email = registrationToken.getEmail();
+		assert email != null;
+
+		if (!email.equals(request.getEmail())) {
+			LOG.warn("Email {} does not correspond to registration token {}", email, token);
+			return Response.status(Status.BAD_REQUEST).entity("Error: email does not correspond to token").build();
+		}
 
 		boolean userExists = true;
 		try {
@@ -119,16 +120,18 @@ public class AccountResource {
 		}
 
 		if (userExists) {
-			// TODO: user already exists. Something is wrong. Handle this.
+			LOG.warn("User already exists: {}", email);
+			return Response.serverError().entity("User with email " + email + " already exists.").build();
 		}
 
-		// TODO: Not all user fields are already there, fix this.
-		final User u = userFactory.createUser(email, request.getDisplayName(), request.getNetId(), request.getStudentNumber(), request.getPassword());
+		final String password = request.getPassword();
+		final User u = userFactory.createUser(email, request.getDisplayName(), request.getNetId(), request.getStudentNumber(), password);
 
 		registrationTokenDao.remove(registrationToken);
 		userDao.persist(u);
 
-		// TODO: automatically log user in
+		SecurityUtils.getSubject().login(new UsernamePasswordToken(email, password));
+
 		// TODO: send a confirmation email.
 
 		final long accountId = u.getId();
