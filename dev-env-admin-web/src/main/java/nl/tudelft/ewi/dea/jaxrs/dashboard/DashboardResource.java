@@ -10,34 +10,53 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nl.tudelft.ewi.dea.dao.ProjectDao;
+import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
+import nl.tudelft.ewi.dea.model.Project;
+import nl.tudelft.ewi.dea.model.User;
+
+import org.apache.shiro.SecurityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
+import com.google.inject.persist.Transactional;
 
 @Singleton
 @Path("dashboard")
 @Produces(MediaType.APPLICATION_JSON)
 public class DashboardResource {
 
+	private static final Logger LOG = LoggerFactory.getLogger(DashboardResource.class);
+
 	private final Provider<Renderer> renderers;
 
+	private final ProjectDao projectDao;
+	private final UserDao userDao;
+
 	@Inject
-	public DashboardResource(Provider<Renderer> renderers) {
+	public DashboardResource(final Provider<Renderer> renderers, final ProjectDao projectDao, final UserDao userDao) {
 		this.renderers = renderers;
+		this.projectDao = projectDao;
+		this.userDao = userDao;
 	}
 
 	@GET
 	@Produces(MediaType.TEXT_HTML)
+	@Transactional
 	public String servePage() {
-		List<Project> invitations = Lists.newArrayList(
-				new Project("IN2610 Advanced Algorithms - Group 22")
+		final List<TempProject> invitations = Lists.newArrayList(
+				new TempProject("IN2610 Advanced Algorithms - Group 22")
 				);
 
-		List<Project> projects = Lists.newArrayList(
-				new Project("IN2010 Algorithms - Group 5"),
-				new Project("IN2105 Software Quality & Testing - Group 8"),
-				new Project("IN2505 Context project 1 - Group 7")
-				);
+		LOG.debug("Looking up my projects ...");
+
+		final String email = (String) SecurityUtils.getSubject().getPrincipal();
+		final User me = userDao.findByEmail(email);
+		final List<Project> projects = projectDao.findByUser(me);
+
+		LOG.debug("Rendering page ...");
 
 		return renderers.get()
 				.setValue("invitations", invitations)
@@ -48,10 +67,11 @@ public class DashboardResource {
 
 	// TODO: Temp class, this should be replaced with something reading from the
 	// database...
-	public static class Project {
+	@Deprecated
+	public static class TempProject {
 		private final String name;
 
-		public Project(String name) {
+		public TempProject(final String name) {
 			this.name = name;
 		}
 

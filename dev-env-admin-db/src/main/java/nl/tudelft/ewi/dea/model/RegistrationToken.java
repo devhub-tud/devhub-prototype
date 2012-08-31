@@ -6,28 +6,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity
 public class RegistrationToken {
 
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) private final long id;
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
 
-	@Column(nullable = false, unique = true, updatable = false) private final String email;
-	@Column(nullable = false, unique = true, updatable = false) private final String token;
+	@Column(nullable = false, unique = true, updatable = false) private String email;
+	@Column(nullable = false, unique = true, updatable = false) private String token;
 
 	@SuppressWarnings("unused")
-	private RegistrationToken() {
-		id = 0;
-
-		email = null;
-		token = null;
-	}
+	private RegistrationToken() {}
 
 	public RegistrationToken(final String email, final String token) {
-		this.id = 0;
-
 		this.email = email;
 		this.token = token;
 	}
@@ -46,7 +39,11 @@ public class RegistrationToken {
 
 	@Override
 	public String toString() {
-		return ReflectionToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+		final ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
+		builder.append("id", getId());
+		builder.append("email", getEmail());
+		builder.append("token", getToken());
+		return builder.toString();
 	}
 
 }

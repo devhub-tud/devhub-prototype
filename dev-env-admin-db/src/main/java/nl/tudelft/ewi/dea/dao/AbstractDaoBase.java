@@ -32,6 +32,16 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 
 	@Override
 	@Transactional
+	public void flush() {
+
+		LOG.trace("{}: Flush ...", entityName);
+
+		em.flush();
+
+	}
+
+	@Override
+	@Transactional
 	public final List<T> findAll() {
 
 		LOG.trace("{}: Find all...", entityName);

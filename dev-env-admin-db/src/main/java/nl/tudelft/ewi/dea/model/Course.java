@@ -12,24 +12,24 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 @Entity
 public class Course {
 
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) private final long id;
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
 
 	@Column(unique = true, nullable = false) private String name;
 
 	@ManyToOne(optional = false) private User owner;
 
-	@OneToMany(mappedBy = "course") private final Set<Project> projects = new HashSet<>();
+	@OneToMany(mappedBy = "course") private Set<Project> projects = new HashSet<>();
 
 	@SuppressWarnings("unused")
-	private Course() {
-		id = 0;
-	}
+	private Course() {}
 
 	public Course(final String name, final User owner) {
-		id = 0;
 		this.owner = owner;
 		this.name = name;
 	}
@@ -48,6 +48,21 @@ public class Course {
 
 	public Set<Project> getProjects() {
 		return Collections.unmodifiableSet(projects);
+	}
+
+	// TODO: Is this necessary?
+	@SuppressWarnings("unused")
+	private void setProjects(final Set<Project> projects) {
+		this.projects = projects;
+	}
+
+	@Override
+	public String toString() {
+		final ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
+		builder.append("id", getId());
+		builder.append("name", getName());
+		builder.append("owner", getOwner().getMailAddress());
+		return builder.toString();
 	}
 
 }

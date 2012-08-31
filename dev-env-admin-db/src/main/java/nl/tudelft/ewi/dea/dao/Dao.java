@@ -9,6 +9,11 @@ import javax.persistence.EntityManager;
  */
 interface Dao<T> {
 
+	/**
+	 * @see EntityManager#flush()
+	 */
+	void flush();
+
 	List<T> findAll();
 
 	/**

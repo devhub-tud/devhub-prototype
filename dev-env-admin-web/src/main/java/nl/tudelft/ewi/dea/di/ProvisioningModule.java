@@ -18,15 +18,15 @@ public class ProvisioningModule extends AbstractModule {
 	@Override
 	protected void configure() {
 
-		ConfigManager manager = ConfigManager.create("git@dea.hartveld.com:gitolite-admin", new PassphraseCredentialsProvider("passphrase"));
+		final ConfigManager manager = ConfigManager.create("git@dea.hartveld.com:gitolite-admin", new PassphraseCredentialsProvider(""));
 
 		try {
-			Config config = manager.getConfig();
+			final Config config = manager.getConfig();
 			LOG.info("Loaded gitolite configuration { "
 					+ "repos: " + config.getRepositories().size() + ", "
 					+ "groups: " + config.getGroups().size() + ", "
 					+ "users: " + config.getUsers().size() + " }");
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
 

@@ -18,33 +18,33 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 @Entity
 @NotThreadSafe
 @Table(name = "Users")
 public class User {
 
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) private final long id;
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
 
 	@Column(unique = true, nullable = false) private String email;
 	@Column(nullable = false) private String displayName;
 	@Column(unique = true, nullable = false) private String netid;
 	private long studentNumber;
 
-	@Column(nullable = false) private final String salt;
+	@Column(nullable = false) private String salt;
 	@Column(nullable = false) private String password;
 
 	@Enumerated(EnumType.STRING) @Column(name = "role", nullable = false) private UserRole role;
 
-	@OneToMany(mappedBy = "user") private final Set<ProjectMembership> memberships = new HashSet<>();
+	@OneToMany(mappedBy = "user") private Set<ProjectMembership> memberships = new HashSet<>();
 
 	/**
 	 * Constructor required by Hibernate.
 	 */
 	@SuppressWarnings("unused")
-	private User() {
-		id = 0;
-		salt = "";
-	}
+	private User() {}
 
 	public User(final String displayName, final String email, final String netid, final long studentNumber, final String salt, final String password, final UserRole user) {
 		checkArgument(!isNullOrEmpty(displayName));
@@ -53,7 +53,6 @@ public class User {
 		checkArgument(!isNullOrEmpty(password));
 		checkArgument(!isNullOrEmpty(salt));
 		checkNotNull(user);
-		id = 0;
 		this.displayName = displayName;
 		this.email = email;
 		this.netid = netid;
@@ -175,11 +174,37 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", displayName=" + displayName + ", mailAddress=" + email + ", role=" + role + "]";
+		final ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
+		builder.append("id", getId());
+		builder.append("email", getMailAddress());
+		builder.append("displayName", getDisplayName());
+		builder.append("netid", getNetid());
+		builder.append("studentNumber", getStudentNumber());
+		builder.append("role", getRole());
+		builder.append("memberships", getProjectMemberships());
+		return builder.toString();
 	}
 
 	public void makeAdmin() {
 		role = UserRole.ADMIN;
+	}
+
+	public Set<ProjectMembership> getProjectMemberships() {
+		return memberships;
+	}
+
+	void setProjectMemberships(final Set<ProjectMembership> memberships) {
+		this.memberships = memberships;
+	}
+
+	public ProjectMembership addProjectMembership(final Project p) {
+
+		final ProjectMembership pm = new ProjectMembership(this, p);
+
+		memberships.add(pm);
+
+		return pm;
+
 	}
 
 }
