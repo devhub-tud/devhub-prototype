@@ -56,6 +56,8 @@ $(document).ready(function() {
 					helpBlock.html("Project names may only consist of letters and numbers, and must be at least 4 characters long!").show();
 					controlGroup.addClass("error");
 					provisionNewProjectButton.attr("disabled", "disabled");
+				} else {
+					// Errors are not handled!
 				}
 			}
 		});
