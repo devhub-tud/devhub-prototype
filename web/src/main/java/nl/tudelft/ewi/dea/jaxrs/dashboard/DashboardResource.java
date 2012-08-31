@@ -46,9 +46,6 @@ public class DashboardResource {
 	@Produces(MediaType.TEXT_HTML)
 	@Transactional
 	public String servePage() {
-		final List<TempProject> invitations = Lists.newArrayList(
-				new TempProject("IN2610 Advanced Algorithms - Group 22")
-				);
 
 		LOG.debug("Looking up my projects ...");
 
@@ -59,25 +56,9 @@ public class DashboardResource {
 		LOG.debug("Rendering page ...");
 
 		return renderers.get()
-				.setValue("invitations", invitations)
 				.setValue("projects", projects)
 				.setValue("scripts", Lists.newArrayList("dashboard.js"))
 				.render("dashboard.tpl");
-	}
-
-	// TODO: Temp class, this should be replaced with something reading from the
-	// database...
-	@Deprecated
-	public static class TempProject {
-		private final String name;
-
-		public TempProject(final String name) {
-			this.name = name;
-		}
-
-		public String getName() {
-			return name;
-		}
 	}
 
 }

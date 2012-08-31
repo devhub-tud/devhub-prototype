@@ -26,7 +26,7 @@ footer {
 		<div class="alerts" style="margin-top: 10px;"></div>
 		<div style="margin-top: 20px; height: 200px;">
 			<div class="pull-left" style="width: 334px; border-right: 1px solid #999;">
-				<p>Sign-in with your TU Delft e-mail</p>
+				<p>Sign in with your TU Delft email</p>
 				<form id="signin" class="form-inline">
 					<div class="control-group">
 						<div class="controls">
@@ -49,7 +49,7 @@ footer {
 				</form>
 			</div>
 			<div class="pull-right" style="width: 284px;">
-				<p>Sign-up with your TU Delft e-mail</p>
+				<p>Sign up with your TU Delft email</p>
 				<form id="signup" class="form-inline">
 					<div class="control-group">
 						<div class="controls">

@@ -4,7 +4,7 @@
 		<div class="container">
 			<div class="content">
 
-#if(!$invitations.isEmtpy())
+#if($invitations && !$invitations.isEmtpy())
 				<div id="invitations" class="alert alert-info">
 	
 	#if($invitations.size() == 1)		
@@ -31,7 +31,7 @@
 				</div>
 #end
 
-				<h3>Your projects <a id="create-new-project" class="btn btn-primary btn-mini">Sign-up for a new project</a></h3>
+				<h3>Your projects <a id="create-new-project" class="btn btn-primary btn-mini">Sign up for a new project</a></h3>
 				<table class="table table-striped table-bordered table-hover">
 					<thead>
 						<tr>
