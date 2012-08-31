@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
-import java.net.URI;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -35,7 +34,6 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
 import com.google.inject.persist.Transactional;
 
 @Singleton
@@ -68,19 +66,16 @@ public class AccountResource {
 
 		checkArgument(isNotEmpty(token));
 
+		RegistrationToken tokenObject = null;
 		try {
-			registrationTokenDao.findByToken(token);
+			tokenObject = registrationTokenDao.findByToken(token);
 		} catch (final NoResultException e) {
 			LOG.trace("Token not found in database, so not active: {}", token, e);
-			// TODO: Render page with 'unknown token' message.
-			return renderers.get()
-					.setValue("scripts", Lists.newArrayList("activate-unknown-token.js"))
-					.render("activate-unknown-token.tpl");
+			return renderers.get().render("activate-unknown-token.tpl");
 		}
 
-		// TODO: Render page with account input form.
 		return renderers.get()
-				.setValue("scripts", Lists.newArrayList("activate.js"))
+				.setValue("email", tokenObject.getEmail())
 				.render("activate.tpl");
 	}
 
@@ -135,9 +130,7 @@ public class AccountResource {
 		// TODO: send a confirmation email.
 
 		final long accountId = u.getId();
-
-		return Response.seeOther(URI.create("/account/" + accountId)).build();
-
+		return Response.ok(accountId).build();
 	}
 
 	@GET

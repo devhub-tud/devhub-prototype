@@ -91,7 +91,7 @@ public class RegisterResource {
 		String token = UUID.randomUUID().toString();
 		tokenDao.persist(new RegistrationToken(request.getEmail(), token));
 
-		String verifyUrl = publicUrl + "accounts/activate/" + token;
+		String verifyUrl = publicUrl + "account/activate/" + token;
 		mailer.sendVerifyRegistrationMail(request.getEmail(), verifyUrl);
 
 		return Response.ok().build();
