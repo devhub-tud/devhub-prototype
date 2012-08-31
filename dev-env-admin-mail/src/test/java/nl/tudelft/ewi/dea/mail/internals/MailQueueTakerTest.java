@@ -2,9 +2,13 @@ package nl.tudelft.ewi.dea.mail.internals;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -31,6 +35,7 @@ import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.collect.ImmutableList;
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class MailQueueTakerTest {
@@ -114,9 +119,9 @@ public class MailQueueTakerTest {
 		doThrow(exc).when(transport).connect(anyString(), anyString(), anyString());
 		doNothing().when(mQueueTaker).tryAgainAfterDelay(any(ImmutableList.class), eq(exc));
 		when(mailQueue.take()).thenReturn(message).thenThrow(new InterruptedException());
-		
+
 		mQueueTaker.run();
-		
+
 		verify(mQueueTaker).tryAgainAfterDelay(any(ImmutableList.class), eq(exc));
 	}
 }
