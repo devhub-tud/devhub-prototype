@@ -9,16 +9,14 @@ $(document).ready(function() {
 		
 		$.ajax({
 			type: "post",
+			url: "/login",
 			data: { "username": email, "password": password, "rememberMe": remember },
 			dataType: "text",
 			success: function(data) {
 				window.location.replace("/dashboard");
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				// Already logged in...
-				if (jqXHR.status == 405) {
-					window.location.replace("/dashboard");
-				}
+				window.location.replace("/dashboard");
 			}
 		});
 	});
