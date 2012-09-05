@@ -1,0 +1,10 @@
+Multiple assignments per course context
+---
+
+As a teacher,
+I want to create multiple assignments per course context,
+So that students can hand in work for multiple assingments.
+
+---
+
+- Same as 11-multiple-years-in-course-context, might not be necessary, depending on ease of cloning of course contexts.

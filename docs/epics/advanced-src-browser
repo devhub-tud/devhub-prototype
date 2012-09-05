@@ -1,0 +1,13 @@
+Advanced source code browser
+---
+
+As a teacher,
+I want to
+	browse the source code of students, and
+	give comments on the quality of their code, and
+	grade their code,
+So that they can learn and improve from these comments.
+
+---
+
+- We are thinking about something like github or gitlabs, in which a teacher can leave comments on code for grading purposes.

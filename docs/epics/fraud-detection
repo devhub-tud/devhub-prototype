@@ -1,0 +1,12 @@
+Fraud detection
+---
+
+As a teacher,
+I want to detect fraud by students,
+So that I can grade these students properly.
+
+---
+
+Use of for example code clone detection.
+Eelco Visser does some code clone detection in his online platform. Check this out before further working on this epic.
+

@@ -1,0 +1,11 @@
+Multiple years per course context
+---
+
+As a teacher,
+I want to easily create a new course context for my course for the next year,
+So that I don't have to initialize a completely new course context.
+
+---
+
+- Is this really necessary? Nice to have, but might be unnecessary, if repositories/jobs can be cloned from other repositories/jobs.
+ 

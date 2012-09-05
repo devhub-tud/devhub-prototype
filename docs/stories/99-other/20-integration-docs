@@ -1,0 +1,11 @@
+Integration documentation
+---
+
+As an external developer,
+I want documentation of the REST API of the platform,
+So that I can build on its functionality with my own app.
+
+---
+
+- Use for example Enunciate (Codehaus) to generate restdocs (javadoc style).
+  

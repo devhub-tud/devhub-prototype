@@ -1,0 +1,12 @@
+Initialize project repository with simple maven project
+---
+
+As a user,
+I want to start a new project with a basic maven project in my repository,
+So that I can kickstart my project with a working maven project.
+
+---
+
+- Other stories:
+  - Multi-module project
+  - Custom clone from repository which allows anonymous access

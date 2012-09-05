@@ -1,0 +1,12 @@
+Appcontainer monitoring
+---
+
+As a system administrator,
+I want to measure application metrics,
+So I can monitor application performance.
+
+---
+
+- Use JMX to monitor tomcat (memory usage, etc.).
+- Provide some app-specific JMX beans or SNMP traps?
+ 

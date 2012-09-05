@@ -1,0 +1,14 @@
+Download all deliverables belonging to course
+---
+
+As a teacher,
+I want to download all course project contents,
+So that
+	I can browse the students' source code, and
+	I can grade the students participating in the course.
+
+---
+
+- One big tarball?
+- Maybe start packaging, then send an email with download link when it is ready.
+- 'Lock' the projects? Snapshot them?

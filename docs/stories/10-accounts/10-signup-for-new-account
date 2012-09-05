@@ -48,4 +48,4 @@ Then
   - Account creation on /account/create?
 - User account has properties: id, email, display name, student number, netid. Other properties? See answer Arie.
   - Email is not editable.
-- Valid TUD email addresses are @student.tudelft.nl, and @tudelft.nl.
+- Valid TUD email addresses are @student.tudelft.nl, and @tudelft.nl. Also other addresses?
