@@ -35,6 +35,7 @@ public class AdminResource {
 	@Inject
 	public AdminResource(final Provider<Renderer> renderers, final CourseDao courseDao) {
 		this.renderers = renderers;
+
 		this.courseDao = courseDao;
 	}
 
@@ -50,6 +51,7 @@ public class AdminResource {
 				.setValue("courses", courses)
 				.setValue("scripts", Lists.newArrayList("admin.js"))
 				.render("admin.tpl");
+
 	}
 
 }

@@ -4,7 +4,7 @@
 		<div class="container">
 			<div class="content">
 
-				<h3>Administrator dashboard <a id="create-new-course" class="btn btn-primary btn-mini">Create new course</a></h3>
+				<h3>Administrator dashboard<a id="promote-user" class="btn btn-primary btn-mini">Promote user</a><a id="create-new-course" class="btn btn-primary btn-mini">Create new course</a></h3>
 				<table class="table table-striped table-bordered table-hover">
 					<thead>
 						<tr>
@@ -20,7 +20,8 @@
 						</tr>
 #end
 					</tbody>
-				</table>	
+				</table>
+
 			</div>
 		</div>
 
