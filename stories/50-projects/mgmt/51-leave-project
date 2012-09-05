@@ -1,0 +1,10 @@
+Leaving a project
+---
+
+As a user,
+I want to leave a project,
+So that I can join another project in the same course context.
+
+---
+
+- At some point, we want to support users leaving a project and joining another project.

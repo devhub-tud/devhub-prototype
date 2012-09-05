@@ -1,0 +1,11 @@
+Workflow document: teacher
+---
+
+As a teacher
+I want to read a workflow document that describes how to use the system,
+So that I can use the system for my course.
+
+---
+
+- Do we really want a document? Or can we create an online experience that is clear enough?
+ 

@@ -1,0 +1,25 @@
+Clean up old projects automatically
+---
+
+As a administrator,
+I want to clean up all old projects,
+So that the system doesn't get cluttered with old projects.
+
+---
+
+-- Viewing old projects
+Given
+	I am on the admin dashboard,
+When
+	I click on 'clean up old projects...',
+Then
+	I am presented with a list of old projects (e.g. > 180 days old).
+
+
+-- Cleaning up all old projects
+Given
+	I am viewing a list of old projects,
+When
+	I click 'Remove all',
+Then
+	All old projects are removed.

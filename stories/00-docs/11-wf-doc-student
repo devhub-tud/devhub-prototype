@@ -1,0 +1,10 @@
+Workflow document: Student
+---
+
+As a student
+I want to read a workflow document that describes how to use the system,
+So that I can use the system for my course work.
+
+---
+
+- See wf-doc-teacher: Can we make the system self-describing?

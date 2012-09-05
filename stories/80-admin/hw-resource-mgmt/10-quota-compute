@@ -1,0 +1,12 @@
+Resource management: Compute
+---
+
+As a system administrator,
+I want to limit the amount of compute resource that a user/group can use,
+So that system load can be managed.
+
+---
+
+- Probably needs monitoring on build job performance.
+  - Per project
+  - Per user

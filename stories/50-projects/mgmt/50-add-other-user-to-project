@@ -1,0 +1,10 @@
+Add additional user to project
+---
+
+As a user,
+I want to add other users to my project,
+So that I can cooperate with them.
+
+---
+
+- At some point we want to support account management on existing projects.

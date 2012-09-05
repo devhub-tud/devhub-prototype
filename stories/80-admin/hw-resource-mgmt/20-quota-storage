@@ -1,0 +1,14 @@
+Resource management: Storage
+---
+
+As a system administrator,
+I want to limit the amount of storage that a user/group can use,
+So that system load can be managed.
+
+---
+
+- Probably needs some disk usage monitoring:
+  - Git repositories
+  - Jenkins build jobs
+  - Per user
+  - Per project

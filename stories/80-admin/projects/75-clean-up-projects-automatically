@@ -1,0 +1,21 @@
+Clean up old projects automatically
+---
+
+As an administrator,
+I want that projects are cleaned up automatically after some period of time,
+So that the system does not become cluttered with old projects, and I don't have to worry about this myself.
+
+---
+
+-- Automatic cleanup
+Given
+	The system is idle (e.g. Saturday night at 4 AM),
+When
+	A project is older then 180 days,
+Then
+	The project is deleted.
+
+---
+
+- Do we want users to be notified beforehand?
+- Should users be able to extend the lifetime of their project?
