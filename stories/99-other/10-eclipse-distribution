@@ -1,0 +1,15 @@
+Default eclipse distribution
+---
+
+As a student,
+I want to download a default eclipse distribution,
+So that
+	I can immediately start working on my lab work, so that
+	I don't have to put a lot of time and effort in building my ecilpse installation.
+
+---
+
+ - Which platforms? Is 32-bit still used?
+   - Windows
+   - Mac OS X? Any variants?
+   - Linux

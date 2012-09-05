@@ -1,0 +1,17 @@
+HOWTO: Install local development environment
+---
+
+As a student,
+I want to know how to install a local development environment,
+So that I can kickstart my course work.
+
+---
+
+ - Installation guide for:
+   - Maven
+   - Git
+   - Eclipse
+ - Platforms:
+   - Windows (TortoiseGit?)
+   - Linux
+   - Mac
