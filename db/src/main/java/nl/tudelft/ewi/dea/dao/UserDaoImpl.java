@@ -33,7 +33,7 @@ class UserDaoImpl extends AbstractDaoBase<User> implements UserDao {
 
 		checkArgument(isNotEmpty(email));
 
-		final String query = "select o from " + entityName + " o where o.email = :email";
+		final String query = "select u from User u where u.email = :email";
 
 		final TypedQuery<User> tq = createQuery(query);
 		tq.setParameter("email", email);
@@ -48,7 +48,7 @@ class UserDaoImpl extends AbstractDaoBase<User> implements UserDao {
 
 		LOG.trace("Find by email substring: {}", email);
 
-		final String query = "select o from " + entityName + " o where o.email like '%:email%'";
+		final String query = "select u from User u where u.email like '%:email%'";
 
 		final TypedQuery<User> tq = createQuery(query);
 		tq.setParameter("email", email);

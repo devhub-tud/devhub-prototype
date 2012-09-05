@@ -42,7 +42,7 @@
 #foreach($project in $projects)
 						<tr>
 							<td>
-								<a href="">$project.getName()</a>
+								<a href="#">$project.getName()</a> <!-- TODO: link to /project/${project.id} -->
 							</td>
 						</tr>
 #end

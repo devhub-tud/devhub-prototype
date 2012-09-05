@@ -37,7 +37,9 @@ public class DatabaseTest {
 
 		persistService = injector.getInstance(PersistService.class);
 		persistService.start();
+
 		em = injector.getInstance(EntityManager.class);
+
 		beginTransaction();
 
 	}
@@ -52,6 +54,7 @@ public class DatabaseTest {
 				commitTransaction();
 			}
 		}
+
 		em.close();
 
 		persistService.stop();
@@ -85,7 +88,7 @@ public class DatabaseTest {
 	}
 
 	protected final void persistAll(final Object... objects) {
-		LOG.trace("Persisting object ...");
+		LOG.trace("Persisting objects ...");
 		for (final Object object : objects) {
 			LOG.trace("Persisting object: {}", object);
 			checkNotNull(object, "Object should be non-null: " + object);

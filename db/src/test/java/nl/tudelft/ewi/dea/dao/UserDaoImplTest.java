@@ -31,7 +31,7 @@ public class UserDaoImplTest extends DatabaseTest {
 	public void whenAUserIsSavedItCanAlsoBeFound() {
 		final User user = newTestUser("harry");
 		dao.persist(user);
-		final User foundUser = dao.findByEmail(user.getMailAddress());
+		final User foundUser = dao.findByEmail(user.getEmail());
 		assertThat(foundUser, is(user));
 	}
 

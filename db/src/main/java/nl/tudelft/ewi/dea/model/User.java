@@ -70,7 +70,7 @@ public class User {
 		return displayName;
 	}
 
-	public String getMailAddress() {
+	public String getEmail() {
 		return email;
 	}
 
@@ -176,7 +176,7 @@ public class User {
 	public String toString() {
 		final ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
 		builder.append("id", getId());
-		builder.append("email", getMailAddress());
+		builder.append("email", getEmail());
 		builder.append("displayName", getDisplayName());
 		builder.append("netid", getNetid());
 		builder.append("studentNumber", getStudentNumber());

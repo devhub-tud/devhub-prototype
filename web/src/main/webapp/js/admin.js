@@ -95,6 +95,7 @@ $(document).ready(function() {
 				data: JSON.stringify({ "name": courseName }), 
 				success: function() {
 					close();
+					window.location.reload();
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
 					showAlert("alert-error", jqXHR.responseText);

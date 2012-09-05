@@ -61,7 +61,7 @@ public class Course {
 		final ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
 		builder.append("id", getId());
 		builder.append("name", getName());
-		builder.append("owner", getOwner().getMailAddress());
+		builder.append("owner", getOwner().getEmail());
 		return builder.toString();
 	}
 

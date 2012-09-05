@@ -19,7 +19,7 @@ public class CourseDaoImpl extends AbstractDaoBase<Course> implements CourseDao 
 	@Transactional
 	public final Course findByName(final String name) {
 
-		final String query = "SELECT o FROM " + entityName + " o WHERE o.name = :name";
+		final String query = "SELECT c FROM Course c WHERE c.name = :name";
 
 		final TypedQuery<Course> tq = createQuery(query);
 		tq.setParameter("name", name);

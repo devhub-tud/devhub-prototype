@@ -41,7 +41,7 @@ public class ProjectMembership {
 	public String toString() {
 		final ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
 		builder.append("id", getId());
-		builder.append("user", getUser().getMailAddress());
+		builder.append("user", getUser().getEmail());
 		builder.append("project", getProject().getName());
 		return builder.toString();
 	}

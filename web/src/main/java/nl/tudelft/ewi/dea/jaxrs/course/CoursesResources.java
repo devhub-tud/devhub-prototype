@@ -1,7 +1,6 @@
 package nl.tudelft.ewi.dea.jaxrs.course;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -13,13 +12,18 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import nl.tudelft.ewi.dea.dao.CourseDao;
+import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.model.Course;
+import nl.tudelft.ewi.dea.model.User;
 
-import org.apache.commons.lang.NotImplementedException;
+import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
+import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
+
+@RequestScoped
 @Path("courses")
 @Produces(MediaType.APPLICATION_JSON)
 public class CoursesResources {
@@ -27,15 +31,18 @@ public class CoursesResources {
 	private static final Logger LOG = LoggerFactory.getLogger(CoursesResources.class);
 
 	private final CourseDao courseDao;
+	private final UserDao userDao;
 
 	@Inject
-	public CoursesResources(final CourseDao courseDao) {
+	public CoursesResources(final CourseDao courseDao, final UserDao userDao) {
 		this.courseDao = courseDao;
+		this.userDao = userDao;
 	}
 
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	@Path("checkName")
+	@Transactional
 	public Response checkCourseName(@QueryParam("name") final String name) {
 
 		LOG.trace("Checking course name: {}", name);
@@ -57,12 +64,20 @@ public class CoursesResources {
 
 	@POST
 	@Path("create")
+	@Transactional
 	public Course create(final CourseCreationRequest request) {
-		// TODO Implement
-		throw new NotImplementedException("Not yet implemented");
-	}
 
-	public static class CourseCreationRequest {
+		LOG.trace("Create: {}", request);
+
+		final String email = (String) SecurityUtils.getSubject().getPrincipal();
+		final User owner = userDao.findByEmail(email);
+
+		final String name = request.getName();
+
+		final Course course = new Course(name, owner);
+		courseDao.persist(course);
+
+		return course;
 
 	}
 
