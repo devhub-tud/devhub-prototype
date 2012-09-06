@@ -16,7 +16,7 @@ import com.google.common.collect.ImmutableMap;
 
 public class VerifyRegistrationMailFactory extends AbstractMailFactory {
 
-	public final static String SUBJECT_TEXT = "DevHub registration conformation";
+	public static final String SUBJECT_TEXT = "DevHub registration conformation";
 	private final MailProperties mailProps;
 
 	@Inject

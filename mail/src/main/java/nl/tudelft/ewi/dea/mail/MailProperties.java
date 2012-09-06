@@ -5,8 +5,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import javax.annotation.concurrent.Immutable;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@ToString
 @Immutable
-public class MailProperties {
+@EqualsAndHashCode
+public final class MailProperties {
+
+	private static final int MAX_PORT_NUMBER = 65535;
 
 	/**
 	 * Create a new {@link MailProperties} that uses authorization to conenct to
@@ -52,80 +59,9 @@ public class MailProperties {
 		this.from = checkNotNull(from);
 		this.password = checkNotNull(password);
 		this.ssl = checkNotNull(ssl);
-		checkArgument(port > 0 && port <= 65535, "Not a valid port number");
+		checkArgument(port > 0 && port <= MAX_PORT_NUMBER, "Not a valid port number");
 		this.port = port;
 		this.auth = auth;
-	}
-
-	@Override
-	public String toString() {
-		return "MailProperties [host=" + host + ", from=" + from + ", user=" + user + ", password=" + password + ", ssl=" + ssl + ", port=" + port + ", auth=" + auth + "]";
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (auth ? 1231 : 1237);
-		result = prime * result + ((from == null) ? 0 : from.hashCode());
-		result = prime * result + ((host == null) ? 0 : host.hashCode());
-		result = prime * result + ((password == null) ? 0 : password.hashCode());
-		result = prime * result + port;
-		result = prime * result + (ssl ? 1231 : 1237);
-		result = prime * result + ((user == null) ? 0 : user.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		MailProperties other = (MailProperties) obj;
-		if (auth != other.auth) {
-			return false;
-		}
-		if (from == null) {
-			if (other.from != null) {
-				return false;
-			}
-		} else if (!from.equals(other.from)) {
-			return false;
-		}
-		if (host == null) {
-			if (other.host != null) {
-				return false;
-			}
-		} else if (!host.equals(other.host)) {
-			return false;
-		}
-		if (password == null) {
-			if (other.password != null) {
-				return false;
-			}
-		} else if (!password.equals(other.password)) {
-			return false;
-		}
-		if (port != other.port) {
-			return false;
-		}
-		if (ssl != other.ssl) {
-			return false;
-		}
-		if (user == null) {
-			if (other.user != null) {
-				return false;
-			}
-		} else if (!user.equals(other.user)) {
-			return false;
-		}
-		return true;
 	}
 
 }

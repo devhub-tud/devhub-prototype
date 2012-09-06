@@ -14,7 +14,7 @@ import com.google.common.collect.ImmutableMap;
 
 public class PasswordResetMailFactory extends AbstractMailFactory {
 
-	public final static String SUBJECT_TEXT = "DevHub reset password";
+	public static final String SUBJECT_TEXT = "DevHub reset password";
 	private final MailProperties mailProps;
 
 	@Inject
