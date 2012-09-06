@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 @Immutable
 @EqualsAndHashCode
-public final class MailProperties {
+public class MailProperties {
 
 	private static final int MAX_PORT_NUMBER = 65535;
 
