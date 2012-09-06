@@ -16,7 +16,12 @@ $(document).ready(function() {
 				window.location.replace("/dashboard");
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				window.location.replace("/dashboard");
+				if (jqXHR.status === 405) {
+					window.alert("Wrong username or password");
+					$('#signin').find('input[name="password"]').val("");
+				} else {
+					window.alert("Uknown error");
+				}
 			}
 		});
 	});
