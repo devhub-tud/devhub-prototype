@@ -18,12 +18,15 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity
 @NotThreadSafe
 @Table(name = "Users")
+@EqualsAndHashCode
 public class User {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
@@ -99,80 +102,6 @@ public class User {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (id ^ id >>> 32);
-		result = prime * result + (displayName == null ? 0 : displayName.hashCode());
-		result = prime * result + (email == null ? 0 : email.hashCode());
-		result = prime * result + (netid == null ? 0 : netid.hashCode());
-		result = prime * result + (int) (studentNumber ^ studentNumber >>> 32);
-		result = prime * result + (password == null ? 0 : password.hashCode());
-		result = prime * result + (role == null ? 0 : role.hashCode());
-		result = prime * result + (salt == null ? 0 : salt.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final User other = (User) obj;
-		if (id != other.id) {
-			return false;
-		}
-		if (displayName == null) {
-			if (other.displayName != null) {
-				return false;
-			}
-		} else if (!displayName.equals(other.displayName)) {
-			return false;
-		}
-		if (email == null) {
-			if (other.email != null) {
-				return false;
-			}
-		} else if (!email.equals(other.email)) {
-			return false;
-		}
-		if (netid == null) {
-			if (other.netid != null) {
-				return false;
-			}
-		} else if (!netid.equals(other.netid)) {
-			return false;
-		}
-		if (studentNumber != other.studentNumber) {
-			return false;
-		}
-		if (password == null) {
-			if (other.password != null) {
-				return false;
-			}
-		} else if (!password.equals(other.password)) {
-			return false;
-		}
-		if (role != other.role) {
-			return false;
-		}
-		if (salt == null) {
-			if (other.salt != null) {
-				return false;
-			}
-		} else if (!salt.equals(other.salt)) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
 	public String toString() {
 		final ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
 		builder.append("id", getId());
@@ -205,6 +134,13 @@ public class User {
 
 		return pm;
 
+	}
+
+	/**
+	 * @param hashedPassword The hashed password.
+	 */
+	public void setPassword(String hashedPassword) {
+		this.password = hashedPassword;
 	}
 
 }

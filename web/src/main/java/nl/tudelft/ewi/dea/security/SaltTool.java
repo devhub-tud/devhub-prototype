@@ -7,7 +7,7 @@ import nl.tudelft.ewi.dea.model.User;
 import org.apache.shiro.util.ByteSource;
 import org.apache.shiro.util.SimpleByteSource;
 
-class SaltTool {
+final class SaltTool {
 
 	static final String APPLICATION_SALT = "skjhdf9834hj";
 
@@ -22,4 +22,6 @@ class SaltTool {
 	public static SimpleByteSource getFullSalt(String userSalt) {
 		return new SimpleByteSource(userSalt + APPLICATION_SALT);
 	}
+
+	private SaltTool() {}
 }

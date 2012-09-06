@@ -14,8 +14,15 @@ public class UserFactory {
 	public User createUser(final String mail, final String displayName, final String netid, final long studentNumber, final String plainPassword) {
 		final String userSalt = SaltTool.generateSalt();
 		final String hashedPassword = hashPassword(plainPassword, userSalt);
-		final User user = new User(displayName, mail, netid, studentNumber, userSalt, hashedPassword, UserRole.USER);
-		return user;
+		return new User(displayName, mail, netid, studentNumber, userSalt, hashedPassword, UserRole.USER);
+	}
+
+	/**
+	 * Reset the password for the given {@link User}.
+	 */
+	public void resetUserPassword(final User user, final String plainTextPassword) {
+		String hashedPassword = hashPassword(plainTextPassword, user.getSalt());
+		user.setPassword(hashedPassword);
 	}
 
 	@VisibleForTesting
