@@ -3,16 +3,21 @@ package nl.tudelft.ewi.dea.dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 
 /**
- * @param <T> The JPA entity.
+ * @param <T> The JPA entity type.
  */
 interface Dao<T> {
 
 	List<T> findAll();
 
 	/**
-	 * @see EntityManager#find(Class, Object)
+	 * Find the object of type T with the given identifier.
+	 * 
+	 * @param id The identifier to search for.
+	 * 
+	 * @throws NoResultException If no object was found for the given identifier.
 	 */
 	T findById(final long id);
 

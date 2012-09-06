@@ -44,6 +44,7 @@
 			<column name="token" type="varchar(255)">
 				<!-- This should really be uuid, but JPA/Hibernate doesn't understand it. -->
 				<!-- And if it is bytea (which hibernate generates for postgresql), it doesn't work with h2 -->
+				<!-- See also changeSet 5. -->
 				<constraints nullable="true" unique="true" />
 			</column>
 		</createTable>
@@ -144,6 +145,21 @@
 			<column name="name">IN9101 AFP</column>
 			<column name="owner_id">2</column>
 		</insert>
+	</changeSet>
+
+	<changeSet id="5" author="david">
+		<createTable tableName="passwordresettoken">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="user_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="token" type="varchar(255)">
+				<!-- See comment for column token in createTable registrationToken in changeSet 1. -->
+				<constraints nullable="true" unique="true" />
+			</column>
+		</createTable>
 	</changeSet>
 
 </databaseChangeLog>

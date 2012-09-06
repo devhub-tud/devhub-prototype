@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<title>Activate</title>
+<title>Reset account password</title>
 <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.1.0/css/bootstrap-combined.min.css" rel="stylesheet">
 <style>
 .hero-unit {
@@ -22,33 +22,32 @@ input[name="email"] {
 </head>
 <body>
 	<div class="hero-unit">
-		<h1>Activate account</h1>
+		<h1>Reset account password</h1>
 		<div class="alerts" style="margin-top: 10px;"></div>
-		<p style="margin-top: 20px;">You're just one step away from completing your registration.</p>
 		<div style="margin-top: 20px;">
-			<form id="activate" class="form-inline">
+			<form id="reset" class="form-inline">
+				<div class="control-group" hidden="true">
+					<label for="id">Your account ID</label>
+					<div class="controls">
+						<input type="text" name="id" value="$id" disabled />
+					</div>
+				</div>
+				<div class="control-group" hidden="true">
+					<label for="token">One-time password reset token</label>
+					<div class="controls">
+						<input type="text" name="token" value="$token" disabled />
+					</div>
+				</div>
 				<div class="control-group">
 					<label for="email">E-mail address</label>
 					<div class="controls">
-						<input type="text" name="email" value="$email" disabled/>
-					</div>
-				</div>
-				<div class="control-group">
-					<label for="net-id">Net ID</label>
-					<div class="controls">
-						<input type="text" name="net-id" placeholder="Net ID"/>
-					</div>
-				</div>
-				<div class="control-group">
-					<label for="student-number">Student number</label>
-					<div class="controls">
-						<input type="text" name="student-number" placeholder="Student number" />
+						<input type="text" name="email" value="$email" disabled />
 					</div>
 				</div>
 				<div class="control-group">
 					<label for="name">Your name</label>
 					<div class="controls">
-						<input type="text" name="name" placeholder="Your name" />
+						<input type="text" name="name" value="$displayName" disabled />
 					</div>
 				</div>
 				<div class="control-group">
@@ -64,13 +63,13 @@ input[name="email"] {
 					</div>
 				</div>
 				<div class="control-group" style="margin-top: 32px;">
-					<input class="btn btn-primary" name="submit" type="submit" value="Complete registration" />
+					<input class="btn btn-primary" name="submit" type="submit" value="Reset password" />
 				</div>
 			</form>
 		</div>
 	</div>
 	<script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
 	<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.0/js/bootstrap.min.js"></script>
-	<script src="/js/activate.js"></script>
+	<script src="/js/reset-account-password.js"></script>
 </body>
 </html>
