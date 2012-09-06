@@ -10,5 +10,7 @@ import com.google.inject.ImplementedBy;
 public interface DevHubMail {
 
 	void sendVerifyRegistrationMail(String toAdress, String url);
+	
+	void sendResetPasswordMail(String toAdress, String url);
 
 }
