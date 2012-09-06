@@ -3,26 +3,25 @@ package nl.tudelft.ewi.dea.mail.templates;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-import java.io.StringWriter;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import nl.tudelft.ewi.dea.mail.MailProperties;
 import nl.tudelft.ewi.dea.mail.SimpleMessage;
 
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
-public class VerifyRegistrationMailFactory {
+import com.google.common.collect.ImmutableMap;
+
+public class VerifyRegistrationMailFactory extends AbstractMailFactory {
 
 	public final static String SUBJECT_TEXT = "DevHub registration conformation";
-	private final VelocityEngine engine;
 	private final MailProperties mailProps;
 
 	@Inject
 	VerifyRegistrationMailFactory(VelocityEngine engine, MailProperties props) {
-		this.engine = engine;
+		super(engine);
 		this.mailProps = props;
 	}
 
@@ -30,25 +29,15 @@ public class VerifyRegistrationMailFactory {
 		checkArgument(!isNullOrEmpty(mailAddress));
 		checkArgument(!isNullOrEmpty(verifyUrl));
 
-		String body = generateBody(mailAddress, verifyUrl);
+		Map<String, Object> entities = ImmutableMap.of(
+				"link", (Object) verifyUrl,
+				"mailAddress", (Object) mailAddress);
+
+		String body = buildTemplate("verifyRegistrationMail.txt", entities);
 
 		SimpleMessage message = new SimpleMessage(mailAddress, SUBJECT_TEXT, body, mailProps.from);
 
 		return message;
 	}
 
-	private String generateBody(String mailAddress, String verifyUrl) {
-		VelocityContext context = new VelocityContext();
-		context.put("link", verifyUrl);
-		context.put("mailAddress", mailAddress);
-
-		Template t = engine.getTemplate("verifyRegistrationMail.txt");
-
-		StringWriter writer = new StringWriter();
-
-		t.merge(context, writer);
-
-		String body = writer.toString();
-		return body;
-	}
 }
