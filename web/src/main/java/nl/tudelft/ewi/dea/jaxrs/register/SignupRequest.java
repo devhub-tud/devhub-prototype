@@ -8,9 +8,11 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class SignupRequest {
+
 	private final String email;
 
 	public SignupRequest() {
-		this.email = null;
+		email = null;
 	}
+
 }

@@ -15,7 +15,7 @@
 #foreach($project in $projects)
 						<tr>
 							<td>
-								<a href="#">${project.name}</a> <!-- TODO: link to: /project/${project.id} -->
+								<a href="/project/${project.id}">${project.name}</a>
 							</td>
 						</tr>
 #end

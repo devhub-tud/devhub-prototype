@@ -9,7 +9,7 @@
 		</encoder>
 	</appender>
 	
-	<logger name="nl.tudelft" level="DEBUG"/>
+	<logger name="nl.tudelft" level="TRACE"/>
 
 	<root level="INFO">
 		<appender-ref ref="STDOUT" />

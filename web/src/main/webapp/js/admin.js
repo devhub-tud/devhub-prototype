@@ -84,7 +84,7 @@ $(document).ready(function() {
 	provisionNewCourseButton.click(function(e) {
 		e.preventDefault();
 		
-		var courseName = courseNameField.val();
+		var courseName = courseCodeField.val() + " " + courseNameField.val();
 		console.log(JSON.stringify({ "name": courseName }));
 		
 		$.ajax({

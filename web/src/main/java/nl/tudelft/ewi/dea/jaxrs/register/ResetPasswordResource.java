@@ -15,7 +15,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import nl.tudelft.ewi.dea.dao.PasswordResetTokenDaoImpl;
+import nl.tudelft.ewi.dea.dao.PasswordResetTokenDao;
 import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
 import nl.tudelft.ewi.dea.mail.DevHubMail;
@@ -38,14 +38,14 @@ public class ResetPasswordResource {
 	private final Provider<Renderer> renderers;
 
 	private final UserDao userDao;
-	private final PasswordResetTokenDaoImpl passwordResetTokenDao;
+	private final PasswordResetTokenDao passwordResetTokenDao;
 
 	private final String publicUrl;
 
 	private final DevHubMail mail;
 
 	@Inject
-	public ResetPasswordResource(final Provider<Renderer> renderers, final UserDao userDao, final PasswordResetTokenDaoImpl passwordResetTokenDao, @Named("webapp.public-url") final String publicUrl, final DevHubMail mail) {
+	public ResetPasswordResource(final Provider<Renderer> renderers, final UserDao userDao, final PasswordResetTokenDao passwordResetTokenDao, @Named("webapp.public-url") final String publicUrl, final DevHubMail mail) {
 		this.renderers = renderers;
 
 		this.userDao = userDao;
@@ -81,6 +81,17 @@ public class ResetPasswordResource {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 
+		boolean tokenExists = true;
+		try {
+			passwordResetTokenDao.findByEmail(email);
+		} catch (final NoResultException e) {
+			tokenExists = false;
+		}
+
+		if (tokenExists) {
+			return Response.status(Status.CONFLICT).entity("Token email was already sent").build();
+		}
+
 		final long id = user.getId();
 		final String token = UUID.randomUUID().toString();
 
@@ -93,5 +104,4 @@ public class ResetPasswordResource {
 		return Response.ok().build();
 
 	}
-
 }
