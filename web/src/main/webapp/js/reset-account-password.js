@@ -28,7 +28,7 @@ $(document).ready(function() {
 		$.ajax({
 			type: "post",
 			contentType: "application/json",
-			data: JSON.stringify({ "id": id, "token": token, "email": email, "displayName":, displayName, "password": password }),
+			data: JSON.stringify({ "id": id, "token": token, "email": email, "displayName": displayName, "password": password }),
 			success: function(data) {
 				window.location.replace("/account/" + data);
 			},
