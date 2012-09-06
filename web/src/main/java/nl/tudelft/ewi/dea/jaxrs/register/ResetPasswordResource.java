@@ -25,7 +25,6 @@ import nl.tudelft.ewi.dea.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
 import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -39,14 +38,14 @@ public class ResetPasswordResource {
 	private final Provider<Renderer> renderers;
 
 	private final UserDao userDao;
-	private PasswordResetTokenDaoImpl passwordResetTokenDao;
+	private final PasswordResetTokenDaoImpl passwordResetTokenDao;
 
 	private final String publicUrl;
 
-	private DevHubMail mail;
+	private final DevHubMail mail;
 
 	@Inject
-	public ResetPasswordResource(Provider<Renderer> renderers, UserDao userDao, PasswordResetTokenDaoImpl passwordResetTokenDao, @Named("webapp.public-url") String publicUrl, DevHubMail mail) {
+	public ResetPasswordResource(final Provider<Renderer> renderers, final UserDao userDao, final PasswordResetTokenDaoImpl passwordResetTokenDao, @Named("webapp.public-url") final String publicUrl, final DevHubMail mail) {
 		this.renderers = renderers;
 
 		this.userDao = userDao;
@@ -68,7 +67,7 @@ public class ResetPasswordResource {
 	@POST
 	@Path("{email}")
 	@Transactional
-	public Response sendPasswordResetEmail(@PathParam("email") String email) {
+	public Response sendPasswordResetEmail(@PathParam("email") final String email) {
 
 		LOG.trace("Recovering password for email: {}", email);
 
@@ -77,17 +76,17 @@ public class ResetPasswordResource {
 		User user;
 		try {
 			user = userDao.findByEmail(email);
-		} catch (NoResultException e) {
+		} catch (final NoResultException e) {
 			LOG.trace("No user with email: {}", email);
 			return Response.status(Status.NOT_FOUND).build();
 		}
 
-		long id = user.getId();
-		String token = UUID.randomUUID().toString();
+		final long id = user.getId();
+		final String token = UUID.randomUUID().toString();
 
 		passwordResetTokenDao.persist(new PasswordResetToken(user, token));
 
-		final String url = publicUrl + "/account/" + id + "/reset-password/" + token;
+		final String url = publicUrl + "account/" + id + "/reset-password/" + token;
 
 		mail.sendResetPasswordMail(email, url);
 
