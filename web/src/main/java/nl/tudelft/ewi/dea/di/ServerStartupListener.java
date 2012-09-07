@@ -29,7 +29,8 @@ public class ServerStartupListener extends GuiceServletContextListener {
 				injector = Guice.createInjector(
 						new WebModule(servletContext),
 						new ProvisioningModule(),
-						new JenkinsWsClientGuiceModule("http://dea.hartveld.com/jenkins"));
+						new JenkinsWsClientGuiceModule("http://dea.hartveld.com/jenkins")
+						);
 			}
 			return injector;
 		} catch (Exception e) {

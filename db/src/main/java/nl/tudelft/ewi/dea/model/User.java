@@ -49,20 +49,20 @@ public class User {
 	@SuppressWarnings("unused")
 	private User() {}
 
-	public User(final String displayName, final String email, final String netid, final long studentNumber, final String salt, final String password, final UserRole user) {
+	public User(final String displayName, final String email, final String netid, final long studentNumber, final String salt, final String password, final UserRole role) {
 		checkArgument(!isNullOrEmpty(displayName));
 		checkArgument(!isNullOrEmpty(email));
 		checkArgument(!isNullOrEmpty(netid));
 		checkArgument(!isNullOrEmpty(password));
 		checkArgument(!isNullOrEmpty(salt));
-		checkNotNull(user);
+		checkNotNull(role);
 		this.displayName = displayName;
 		this.email = email;
 		this.netid = netid;
 		this.studentNumber = studentNumber;
 		this.salt = salt;
 		this.password = password;
-		role = user;
+		this.role = role;
 	}
 
 	public long getId() {
@@ -89,7 +89,7 @@ public class User {
 		return salt;
 	}
 
-	UserRole getRole() {
+	public UserRole getRole() {
 		return role;
 	}
 

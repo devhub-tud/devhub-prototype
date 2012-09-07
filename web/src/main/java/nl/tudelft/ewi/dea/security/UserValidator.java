@@ -70,6 +70,23 @@ public class UserValidator extends AuthorizingRealm {
 	}
 
 	@Override
+	public boolean hasRole(PrincipalCollection principals, String role) {
+		LOG.debug("Checking doGetAuthorizationInfo for {}", principals);
+		if (principals == null) {
+			throw new AuthorizationException("PrincipalCollection method argument cannot be null.");
+		}
+
+		final String email = (String) getAvailablePrincipal(principals);
+		final User user = userDao.get().findByEmail(email);
+
+		if (user == null) {
+			throw new UnknownAccountException("No user found with email: " + email);
+		}
+
+		return user.getRole().name().equals(role);
+	}
+
+	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(final AuthenticationToken token)
 			throws AuthenticationException {
 		final String email = extractMail(token);

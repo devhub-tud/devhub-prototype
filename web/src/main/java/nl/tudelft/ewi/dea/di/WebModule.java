@@ -2,17 +2,24 @@ package nl.tudelft.ewi.dea.di;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.servlet.ServletContext;
 
+import nl.tudelft.ewi.dea.jaxrs.exceptions.NotAuthorizedException;
 import nl.tudelft.ewi.dea.mail.MailModule;
 import nl.tudelft.ewi.dea.mail.MailProperties;
 import nl.tudelft.ewi.dea.template.TemplateEngine;
 
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.guice.web.GuiceShiroFilter;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.slf4j.Logger;
@@ -20,7 +27,10 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.inject.Scopes;
+import com.google.inject.matcher.AbstractMatcher;
+import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 import com.google.inject.persist.PersistFilter;
 import com.google.inject.servlet.ServletModule;
@@ -47,10 +57,10 @@ public class WebModule extends ServletModule {
 		final Properties configuration = loadConfiguration();
 		Names.bindProperties(binder(), configuration);
 
+		install(new SecurityModule(servletContext));
 		install(new PersistenceModule("test-h2", ""));
 		filter("/*").through(PersistFilter.class);
 
-		install(new SecurityModule(servletContext));
 		install(new MailModule(MailProperties.newWithAuth(
 				configuration.getProperty("webapp.smtp.host"),
 				configuration.getProperty("webapp.smtp.user"),
@@ -70,6 +80,32 @@ public class WebModule extends ServletModule {
 		params.put("com.sun.jersey.config.property.packages", "nl.tudelft.ewi.dea.jaxrs");
 		params.put(ServletContainer.PROPERTY_WEB_PAGE_CONTENT_REGEX, "/.*\\.(html|js|gif|png|css)");
 		filter("/*").through(GuiceContainer.class, params);
+
+		bindSecurityInterceptor(RequiresRoles.class, new MethodInterceptor() {
+			@Override
+			public Object invoke(MethodInvocation arg0) throws Throwable {
+				RequiresRoles annotation = arg0.getMethod().getAnnotation(RequiresRoles.class);
+				if (annotation == null) {
+					annotation = arg0.getMethod().getDeclaringClass().getAnnotation(RequiresRoles.class);
+				}
+
+				Set<String> roles = Sets.newHashSet(annotation.value());
+				if (SecurityUtils.getSubject().hasAllRoles(roles)) {
+					return arg0.proceed();
+				}
+
+				throw new NotAuthorizedException();
+			}
+		});
+	}
+
+	private void bindSecurityInterceptor(Class<? extends Annotation> annotation, MethodInterceptor interceptor) {
+		bindInterceptor(Matchers.any(), new AbstractMatcher<Method>() {
+			@Override
+			public boolean matches(Method method) {
+				return method.getAnnotation(RequiresRoles.class) != null || method.getDeclaringClass().getAnnotation(RequiresRoles.class) != null;
+			}
+		}, interceptor);
 	}
 
 	private Properties loadConfiguration() {

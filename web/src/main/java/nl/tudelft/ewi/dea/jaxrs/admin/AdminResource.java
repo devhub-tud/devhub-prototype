@@ -24,6 +24,7 @@ import com.google.inject.servlet.RequestScoped;
 @RequestScoped
 @Path("admin")
 @Produces(MediaType.APPLICATION_JSON)
+@RequiresRoles(UserRole.ROLE_ADMIN)
 public class AdminResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AdminResource.class);
@@ -41,7 +42,6 @@ public class AdminResource {
 
 	@GET
 	@Produces(MediaType.TEXT_HTML)
-	@RequiresRoles(UserRole.ROLE_ADMIN)
 	public String servePage() {
 		LOG.trace("Serving admin dashboard.");
 
@@ -51,7 +51,6 @@ public class AdminResource {
 				.setValue("courses", courses)
 				.setValue("scripts", Lists.newArrayList("admin.js"))
 				.render("admin.tpl");
-
 	}
 
 }
