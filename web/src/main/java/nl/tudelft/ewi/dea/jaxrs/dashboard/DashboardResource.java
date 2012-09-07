@@ -10,12 +10,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nl.tudelft.ewi.dea.dao.ProjectDao;
-import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
 import nl.tudelft.ewi.dea.model.Project;
 import nl.tudelft.ewi.dea.model.User;
+import nl.tudelft.ewi.dea.security.SecurityProvider;
 
-import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,13 +32,14 @@ public class DashboardResource {
 	private final Provider<Renderer> renderers;
 
 	private final ProjectDao projectDao;
-	private final UserDao userDao;
+
+	private final SecurityProvider subjectProvider;
 
 	@Inject
-	public DashboardResource(final Provider<Renderer> renderers, final ProjectDao projectDao, final UserDao userDao) {
+	public DashboardResource(final Provider<Renderer> renderers, final ProjectDao projectDao, SecurityProvider subjectProvider) {
 		this.renderers = renderers;
 		this.projectDao = projectDao;
-		this.userDao = userDao;
+		this.subjectProvider = subjectProvider;
 	}
 
 	@GET
@@ -48,9 +48,8 @@ public class DashboardResource {
 	public String servePage() {
 
 		LOG.debug("Looking up my projects ...");
+		final User me = subjectProvider.getUser();
 
-		final String email = (String) SecurityUtils.getSubject().getPrincipal();
-		final User me = userDao.findByEmail(email);
 		final List<Project> projects = projectDao.findByUser(me);
 
 		LOG.debug("Rendering page ...");

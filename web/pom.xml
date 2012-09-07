@@ -15,7 +15,7 @@
 	<packaging>war</packaging>
 
 	<properties>
-		<jetty.version>8.1.5.v20120716</jetty.version>
+		<jetty.version>8.1.6.v20120903</jetty.version>
 	</properties>
 
 	<dependencies>
