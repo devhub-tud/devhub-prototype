@@ -1,21 +1,29 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>nl.tudelft.ewi</groupId>
-    <artifactId>dev-env-admin</artifactId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
-  <artifactId>dev-env-admin-mail</artifactId>
-  <dependencies>
-  	<dependency>
-  		<groupId>org.apache.velocity</groupId>
-  		<artifactId>velocity</artifactId>
-  		<version>1.7</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>javax.mail</groupId>
-  		<artifactId>mail</artifactId>
-  		<version>1.4.5</version>
-  	</dependency>
-  </dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>nl.tudelft.ewi</groupId>
+		<artifactId>dev-env-admin</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>dev-env-admin-mail</artifactId>
+	<name>DevHub - Email module</name>
+	
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.5</version>
+		</dependency>
+	</dependencies>
+
 </project>
