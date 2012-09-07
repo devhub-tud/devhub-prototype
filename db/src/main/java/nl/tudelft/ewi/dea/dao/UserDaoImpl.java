@@ -51,9 +51,9 @@ class UserDaoImpl extends AbstractDaoBase<User> implements UserDao {
 
 		LOG.trace("Find by email: {}", email);
 
-		checkArgument(isNotEmpty(email));
+		checkArgument(isNotEmpty(email), "email must be non-empty");
 
-		final String query = "select u from User u where u.email = :email";
+		final String query = "SELECT u FROM User u WHERE u.email = :email";
 
 		final TypedQuery<User> tq = createQuery(query);
 		tq.setParameter("email", email);
@@ -68,7 +68,10 @@ class UserDaoImpl extends AbstractDaoBase<User> implements UserDao {
 
 		LOG.trace("Find by email substring: {}", email);
 
-		final String query = "select u from User u where u.email like :email";
+		checkArgument(isNotEmpty(email), "email must be non-empty");
+		checkArgument(containsNone(email, '%'), "email must not contain '%'");
+
+		final String query = "SELECT u FROM User u WHERE u.email LIKE :email";
 
 		final TypedQuery<User> tq = createQuery(query);
 		tq.setParameter("email", '%' + email + '%');

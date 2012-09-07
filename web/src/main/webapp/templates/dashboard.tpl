@@ -33,7 +33,8 @@
 
 				<div class="page-head">
 					<h3>Your projects</h3>
-					<a id="create-new-project" class="btn btn-primary">Sign up for a new project</a>
+					<a id="enroll-for-course" class="btn btn-primary">Enroll for course</a>
+					<a id="create-new-project" class="btn btn-primary">Create personal project</a>
 				</div>
 				<table class="table table-striped table-bordered table-hover">
 					<thead>
