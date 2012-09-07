@@ -17,10 +17,10 @@ $(document).ready(function() {
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				if (jqXHR.status === 405) {
-					window.alert("Wrong username or password");
+					showAlert("alert-error", "Wrong username or password");
 					$('#signin').find('input[name="password"]').val("");
 				} else {
-					window.alert("Uknown error");
+					showAlert("alert-error", "<strong>Uknown error</strong>");
 				}
 			}
 		});
