@@ -7,6 +7,10 @@ $(document).ready(function() {
 		var password = $('#signin').find('input[name="password"]').val();
 		var remember = $('#signin').find('input[name="rememberMe"]').attr('checked') ? true: false;
 		
+		if (!isTuAddress(email)) {
+			return;
+		}
+		
 		$.ajax({
 			type: "post",
 			url: "/login",
@@ -32,6 +36,10 @@ $(document).ready(function() {
 		var emailField = $('#signup').find('input[name="email"]');
 		var email = emailField.val();
 		
+		if (!isTuAddress(email)) {
+			return;
+		}
+		
 		var signUpBtn = $('#signup').find('input[type="submit"]');
 		setButtonState(signUpBtn, false);
 		
@@ -53,6 +61,26 @@ $(document).ready(function() {
 			}
 		});
 	});
+	
+	
+	$('#signup').find('input[name="email"]').blur(onAddressChange);
+	
+	$('#signin').find('input[name="email"]').blur(onAddressChange);
+	
+	function onAddressChange(event) {
+		if (!isTuAddress(event.srcElement.value)) {
+			showAlert("alert-error", "<strong>That's not a TU-Delft address.</strong>");
+		} else {
+			$('.alerts').hide();
+		}
+	}
+	
+	const teacherMail = "@tudelft.nl";
+	const studentMail = "@student.tudelft.nl";
+	function isTuAddress(address) {
+		return address.substr(0 - teacherMail.length) === teacherMail
+			|| address.substr(0 - studentMail.length) === studentMail;
+	}
 	
 	function setButtonState(button, valid) {
 		if (valid) {

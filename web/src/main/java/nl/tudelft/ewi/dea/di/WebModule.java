@@ -1,6 +1,8 @@
 package nl.tudelft.ewi.dea.di;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Properties;
@@ -16,6 +18,7 @@ import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.inject.Scopes;
 import com.google.inject.name.Names;
@@ -72,7 +75,9 @@ public class WebModule extends ServletModule {
 	private Properties loadConfiguration() {
 		try {
 			final Properties properties = new Properties();
-			properties.load(getClass().getResourceAsStream("/config.properties"));
+			InputStream configFile = WebModule.class.getResourceAsStream("/config.properties");
+			Preconditions.checkNotNull(configFile, "Config file not found");
+			properties.load(configFile);
 			return properties;
 		} catch (final IOException e) {
 			LOG.error(e.getMessage(), e);

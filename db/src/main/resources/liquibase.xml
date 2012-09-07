@@ -87,7 +87,7 @@
 		<insert tableName="users">
 			<column name="id">1</column>
 			<column name="displayname">Administrator</column>
-			<column name="email">test@test.com</column>
+			<column name="email">test@tudelft.nl</column>
 			<column name="netid">test-admin</column>
 			<column name="studentnumber">0</column>
 			<column name="salt">cafc393e</column>
