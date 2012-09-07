@@ -20,6 +20,7 @@ import nl.tudelft.ewi.dea.dao.RegistrationTokenDao;
 import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.mail.DevHubMail;
 import nl.tudelft.ewi.dea.model.RegistrationToken;
+import nl.tudelft.ewi.dea.security.AddressValidator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,6 +80,10 @@ public class RegisterResource {
 	@Transactional
 	public Response processSignupRequest(SignupRequest request) throws UnknownHostException {
 		LOG.info("Request: {}", request);
+
+		if (!AddressValidator.isTuAddress(request.getEmail())) {
+			return Response.status(Status.CONFLICT).entity("This is not a TU-Delft Address").build();
+		}
 
 		if (emailAlreadyRegistered(request.getEmail())) {
 			return Response.status(Status.CONFLICT).entity("This e-mail address is already registered!").build();

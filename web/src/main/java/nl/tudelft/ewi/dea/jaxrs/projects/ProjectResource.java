@@ -20,9 +20,6 @@ public class ProjectResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProjectResource.class);
 
-	@Inject
-	public ProjectResource() {}
-
 	@GET
 	@Path("{id}")
 	public Response serveProjectPage(@PathParam("id") final long id) {

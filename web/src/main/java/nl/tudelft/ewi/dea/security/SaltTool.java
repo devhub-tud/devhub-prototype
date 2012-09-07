@@ -9,6 +9,7 @@ import org.apache.shiro.util.SimpleByteSource;
 
 final class SaltTool {
 
+	private static final Random RANDOM = new Random();
 	static final String APPLICATION_SALT = "skjhdf9834hj";
 
 	static ByteSource getFullSalt(User user) {
@@ -16,7 +17,7 @@ final class SaltTool {
 	}
 
 	static String generateSalt() {
-		return Integer.toHexString(new Random().nextInt());
+		return Integer.toHexString(RANDOM.nextInt());
 	}
 
 	public static SimpleByteSource getFullSalt(String userSalt) {
