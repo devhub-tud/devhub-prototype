@@ -29,6 +29,7 @@ table .btn-panel {
 
 h3 .btn {
 	float: right;
+	margin-top: 5px;
 }
 
 h3 .btn-mini {
