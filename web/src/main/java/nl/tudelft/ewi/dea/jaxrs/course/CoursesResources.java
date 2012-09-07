@@ -1,5 +1,7 @@
 package nl.tudelft.ewi.dea.jaxrs.course;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
@@ -37,6 +39,17 @@ public class CoursesResources {
 	public CoursesResources(final CourseDao courseDao, final UserDao userDao) {
 		this.courseDao = courseDao;
 		this.userDao = userDao;
+	}
+
+	@GET
+	public List<Course> findBySubString(@QueryParam("substring") final String subString) {
+
+		LOG.trace("Find by substring: {}", subString);
+
+		final List<Course> courses = courseDao.findBySubString(subString);
+
+		return courses;
+
 	}
 
 	@GET
