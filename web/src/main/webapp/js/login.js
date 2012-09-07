@@ -71,7 +71,7 @@ $(document).ready(function() {
 		if (!isTuAddress(event.srcElement.value)) {
 			showAlert("alert-error", "<strong>That's not a TU-Delft address.</strong>");
 		} else {
-			$('.alerts').hide();
+			$('.alerts').hide('normal');
 		}
 	}
 	
@@ -94,7 +94,7 @@ $(document).ready(function() {
 	function showAlert(type, message) {
 		var alerts = $('.alerts');
 		var alert = "<div class=\"alert " + type + "\"><a class=\"close\" data-dismiss=\"alert\" href=\"#\">&times;</a>" + message + "</div>";
-		alerts.empty().append(alert);
+		alerts.empty().append(alert).show('normal');
 	}
 	
 });

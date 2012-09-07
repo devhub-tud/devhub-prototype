@@ -7,16 +7,15 @@
 		<artifactId>dev-env-admin</artifactId>
 		<groupId>nl.tudelft.ewi</groupId>
 		<version>1.0-SNAPSHOT</version>
-		<relativePath>../</relativePath>
 	</parent>
 
-	<name>Development Environment Admin</name>
+	<name>DevHub - Web interface</name>
 
 	<artifactId>dev-env-admin-web</artifactId>
 	<packaging>war</packaging>
 
 	<properties>
-		<jetty.version>8.1.5.v20120716</jetty.version>
+		<jetty.version>8.1.6.v20120903</jetty.version>
 	</properties>
 
 	<dependencies>
@@ -54,7 +53,7 @@
 		<dependency>
 			<groupId>com.sun.jersey.contribs</groupId>
 			<artifactId>jersey-guice</artifactId>
-			<version>1.12</version>
+			<version>1.13</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.shiro</groupId>

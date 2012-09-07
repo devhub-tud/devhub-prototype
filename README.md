@@ -1,10 +1,12 @@
+# DevHub
+
 This application is meant for Teachers from the TU-Delft to manage git repositories combined with a Jenkins and Sonar instance. 
 
 The project is sponsored by Arie van Deursen and was initially developed by David Hartveld, Michael de Jong and Alex Nederlof.
 
 ![image](http://home.tudelft.nl/fileadmin/Default/Templates/images/logo.gif)
 
-# Build
+## Build
 
 Build the project with
 
@@ -12,7 +14,7 @@ Build the project with
 
 In the web application module you will find the working Jar.
 
-# Run for development
+## Run for development
 
 Now you can run your webapp by going to the dev-env-admin-web folder and commanding maven with:
 
@@ -24,7 +26,7 @@ This will start the application on port 8080. The coffee scripts will be compile
 	
 Because this is a blocking thread, it cannot be run together with jetty:run, hence the two windows.
 
-# Test
+## Test
 
 All tests are run by Maven except for the Jasmine Javascript tests. They are started by running
 
@@ -32,7 +34,7 @@ All tests are run by Maven except for the Jasmine Javascript tests. They are sta
 	
 This will be automated sometime in the furute, when the Jasmine plugin is functioning properly.
 
-# Develop
+## Develop
 Make sure you use the codestile you can find in the root folder. The best way is to enable this as a post-save action in Eclipse.
 
 To work with Coffeescript in Eclipse, [this Eclipse Coffeescript plugin can be used](https://github.com/adamschmideg/coffeescript-eclipse). Note that this plugin depends on XText which can be found in the Eclipse Market place.

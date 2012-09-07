@@ -24,7 +24,7 @@ When
 	I choose one or more users,
 	And I click on 'promote users to teacher',
 Then
-	The chosen users are promoted, and
+	The chosen users are promoted (/account/{id}/promote), and
 	They receive an email notification, and
 	I am presented with a success message.
 

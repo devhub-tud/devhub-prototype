@@ -4,10 +4,13 @@ import javax.servlet.ServletContext;
 
 import nl.tudelft.ewi.dea.security.UserValidator;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.guice.aop.ShiroAopModule;
 import org.apache.shiro.guice.web.ShiroWebModule;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.subject.SubjectContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

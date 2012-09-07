@@ -1,5 +1,7 @@
 package nl.tudelft.ewi.dea.dao;
 
+import java.util.List;
+
 import nl.tudelft.ewi.dea.model.Course;
 
 import com.google.inject.ImplementedBy;
@@ -8,5 +10,7 @@ import com.google.inject.ImplementedBy;
 public interface CourseDao extends Dao<Course> {
 
 	Course findByName(final String name);
+
+	List<Course> findBySubString(final String subString);
 
 }
