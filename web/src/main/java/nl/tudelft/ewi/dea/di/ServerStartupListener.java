@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.persist.PersistService;
 import com.google.inject.servlet.GuiceServletContextListener;
 
 /**
@@ -56,12 +55,4 @@ public class ServerStartupListener extends GuiceServletContextListener {
 		LOG.info("Application is now fully started");
 	}
 
-	@Override
-	public void contextDestroyed(ServletContextEvent servletContextEvent) {
-		LOG.info("Shutting down application");
-		LOG.debug("Stopping persist unit");
-		injector.getInstance(PersistService.class).stop();
-		super.contextDestroyed(servletContextEvent);
-		LOG.debug("Clean shutdown completed");
-	}
 }
