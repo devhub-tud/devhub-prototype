@@ -11,6 +11,7 @@ public class AddressValidatorTest {
 	@Test
 	public void acceptStudentAddress() {
 		assertThat(isTuAddress("john.doe@student.tudelft.nl"), is(true));
+		assertThat(isTuAddress("j.l.doe@student.tudelft.nl"), is(true));
 	}
 
 	@Test

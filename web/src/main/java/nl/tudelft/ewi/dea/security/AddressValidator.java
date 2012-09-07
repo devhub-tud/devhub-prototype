@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 
 public final class AddressValidator {
 
-	private static final Pattern TU_MAIL_PATTERN = Pattern.compile("[\\w]+\\.[\\w\\-]+@(student.)?tudelft\\.nl$");
+	private static final Pattern TU_MAIL_PATTERN = Pattern.compile("([\\w]+\\.)+[\\w\\-]+@(student.)?tudelft\\.nl$");
 
 	public static boolean isTuAddress(@Nullable String address) {
 		return TU_MAIL_PATTERN.matcher(nullToEmpty(address)).matches();
