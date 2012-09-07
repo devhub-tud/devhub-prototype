@@ -48,7 +48,7 @@ public class RegistrationTokenDaoImpl extends AbstractDaoBase<RegistrationToken>
 
 		checkArgument(isNotEmpty(email));
 
-		final String query = "SELECT rt FROM RegistrationToken rt WHERE rt.user.email = :email";
+		final String query = "SELECT rt FROM RegistrationToken rt WHERE rt.email = :email";
 
 		final TypedQuery<RegistrationToken> tq = createQuery(query);
 		tq.setParameter("email", email);
