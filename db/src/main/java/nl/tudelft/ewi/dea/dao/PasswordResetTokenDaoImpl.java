@@ -31,7 +31,7 @@ public class PasswordResetTokenDaoImpl extends AbstractDaoBase<PasswordResetToke
 
 		checkArgument(isNotEmpty(token), "token must be non-empty");
 
-		final String query = "SELECT prt FROM PasswordResetToken prt WHERE prt.user.token = :token";
+		final String query = "SELECT prt FROM PasswordResetToken prt WHERE prt.token = :token";
 
 		final TypedQuery<PasswordResetToken> tq = createQuery(query);
 		tq.setParameter("token", token);
