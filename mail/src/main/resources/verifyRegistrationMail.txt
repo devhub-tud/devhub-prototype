@@ -1,6 +1,8 @@
 Hi prospective DevHub user!
 
-You have requested a registration for the DevHub application with your email address: $mailAddress. To complete your request, click the following link: $link
+You have requested a registration for the DevHub application with your email address: $mailAddress. To complete your request, click the following link:
+
+$link
 
 If you did not register, disregard this e-mail.
 
