@@ -27,13 +27,27 @@ table .btn-panel {
 	float: right;
 }
 
-h3 .btn {
-	float: right;
-	margin-top: 5px;
+.page-head {
+	height: 60px;
 }
 
-h3 .btn-mini {
-	margin-top: 11px;
+.page-head h1, .page-head h2, .page-head h3, .page-head h4, .page-head h5, .page-head h6 {
+	display: inline;
+}
+
+.page-head .btn-group {
+	width: 300px;
+	display: inline;
+	float: right;
+}
+
+.page-head .btn {
+	margin-top: 5px;
+	float: right;
+}
+
+.page-head .dropdown-menu {
+	width: 300px;
 }
 
 @media (max-width: 320px) {
