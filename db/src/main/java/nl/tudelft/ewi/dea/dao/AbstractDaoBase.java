@@ -1,5 +1,9 @@
 package nl.tudelft.ewi.dea.dao;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -64,7 +68,23 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 
 		LOG.trace("{}: Persist: {}", entityName, object);
 
+		checkNotNull(object, "object must be non-null");
+
 		em.persist(object);
+
+	}
+
+	@Override
+	@Transactional
+	public final void persist(final Object... objects) {
+
+		LOG.trace("{}: Persist: {}", entityName, objects);
+
+		checkNotNull(objects, "objects must be non-null");
+
+		for (final Object object : objects) {
+			em.persist(object);
+		}
 
 	}
 
@@ -74,8 +94,23 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 
 		LOG.trace("{}: Remove: {}", entityName, object);
 
+		checkNotNull(object, "object must be non-null");
+
 		em.remove(object);
 
+	}
+
+	@Override
+	@Transactional
+	public final void remove(final Object... objects) {
+
+		LOG.trace("{}: Remove: {}", entityName, objects);
+
+		checkNotNull(objects, "objects must be non-null");
+
+		for (final Object object : objects) {
+			em.remove(object);
+		}
 	}
 
 	@Transactional
@@ -85,7 +120,11 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 
 	@Transactional
 	protected final TypedQuery<T> createQuery(final String query) {
+
+		checkArgument(isNotEmpty(query), "query must be non-empty");
+
 		return em.createQuery(query, entityClass);
+
 	}
 
 }

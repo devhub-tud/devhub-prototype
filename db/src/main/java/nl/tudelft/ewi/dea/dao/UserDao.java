@@ -11,6 +11,8 @@ public interface UserDao extends Dao<User> {
 
 	User findByEmail(final String email);
 
+	List<User> findBySubString(final String subString);
+
 	List<User> findByEmailSubString(final String email);
 
 }

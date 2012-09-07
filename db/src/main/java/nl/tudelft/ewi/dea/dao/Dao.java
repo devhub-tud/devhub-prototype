@@ -10,6 +10,11 @@ import javax.persistence.NoResultException;
  */
 interface Dao<T> {
 
+	/**
+	 * Find all objects of this dao's type.
+	 * 
+	 * @return A {@link List} of objects of type T.
+	 */
 	List<T> findAll();
 
 	/**
@@ -27,8 +32,24 @@ interface Dao<T> {
 	void persist(final T object);
 
 	/**
+	 * Persist each of the given objects, as if {@link #persist(Object)} was
+	 * invoked for each of them.
+	 * 
+	 * @param objects The array of objects to remove.
+	 */
+	void persist(final Object... objects);
+
+	/**
 	 * @see EntityManager#remove(Object)
 	 */
 	void remove(final T object);
+
+	/**
+	 * Remove each of the given objects, as if {@link #remove(Object)} was
+	 * invoked for each of them.
+	 * 
+	 * @param objects The array of objects to remove.
+	 */
+	void remove(final Object... objects);
 
 }

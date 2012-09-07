@@ -15,6 +15,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -53,6 +54,30 @@ public class AccountsResource {
 		this.userDao = userDao;
 		this.registrationTokenDao = registrationTokenDao;
 		this.userFactory = userFactory;
+	}
+
+	@GET
+	public List<User> findBySubString(@QueryParam("substring") final String subString) {
+
+		LOG.trace("Find by substring: {}", subString);
+
+		final List<User> users = userDao.findBySubString(subString);
+
+		return users;
+
+	}
+
+	@GET
+	@Path("email/{email}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<User> findByEmailSubString(@PathParam("email") final String email) {
+
+		LOG.trace("Find accounts by email: {}", email);
+
+		final List<User> users = userDao.findByEmailSubString(email);
+
+		return users;
+
 	}
 
 	@GET
@@ -133,19 +158,6 @@ public class AccountsResource {
 
 		LOG.debug("Created account with id: " + accountId);
 		return Response.ok(Long.toString(accountId)).build();
-
-	}
-
-	@GET
-	@Path("email/{email}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<User> findByEmail(@PathParam("email") final String email) {
-
-		LOG.trace("Find accounts by email: {}", email);
-
-		final List<User> users = userDao.findByEmailSubString(email);
-
-		return users;
 
 	}
 

@@ -3,6 +3,8 @@ package nl.tudelft.ewi.dea.dao;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.List;
+
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 
@@ -75,6 +77,59 @@ public class UserDaoImplTest extends DatabaseTest {
 			markTransactionForRollback();
 		}
 		assertThat(exceptionWasThrown, is(true));
+
+	}
+
+	@Test
+	public void testThatFindByEmailSubStringReturnsFilledListOnHits() throws Exception {
+
+		// Given
+		final User first = newTestUser("abc");
+		final User second = newTestUser("abcde");
+		final User third = newTestUser("xyz");
+
+		dao.persist(first, second, third);
+
+		// When
+		final List<User> users = dao.findByEmailSubString("abc");
+
+		// Then
+		assertThat(users.size(), is(2));
+
+	}
+
+	@Test
+	public void testThatFindBySubStringReturnsNothingForNonMatchingSubString() throws Exception {
+
+		// Given
+		final User first = newTestUser("ABC");
+		final User second = newTestUser("DEF");
+
+		dao.persist(first, second);
+
+		// When
+		final List<User> users = dao.findBySubString("DOESNOTEXIST");
+
+		// Then
+		assertThat(users.isEmpty(), is(true));
+
+	}
+
+	@Test
+	public void testThatFindBySubStringReturnsMatches() throws Exception {
+
+		// Given
+		final User first = newTestUser("aaabcddd");
+		final User second = newTestUser("aaabceee");
+		final User third = newTestUser("other");
+
+		dao.persist(first, second, third);
+
+		// When
+		final List<User> users = dao.findBySubString("bc");
+
+		// Then
+		assertThat(users.size(), is(2));
 
 	}
 
