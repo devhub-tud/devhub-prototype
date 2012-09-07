@@ -4,7 +4,19 @@
 		<div class="container">
 			<div class="content">
 
-				<h3>Administrator dashboard<a id="promote-user" class="btn btn-primary btn-mini">Promote user</a><a id="create-new-course" class="btn btn-primary btn-mini">Create new course</a></h3>
+				<div class="page-head">
+					<h3>Administrator dashboard</h3>
+					<div class="btn-group">
+						<a class="btn dropdown-toggle" data-toggle="dropdown" href="#"> Actions
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a href="#" id="create-new-course">Create new course</a></li>
+							<li class="divider"></li>
+							<li><a href="#" id="promote-user">Promote student to assistant</a></li>
+						</ul>
+					</div>
+				</div>
 				<table class="table table-striped table-bordered table-hover">
 					<thead>
 						<tr>

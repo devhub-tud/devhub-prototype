@@ -48,7 +48,7 @@ public class PasswordResetTokenDaoImpl extends AbstractDaoBase<PasswordResetToke
 
 		checkArgument(isNotEmpty(email), "email must be non-empty");
 
-		final String query = "SELECT prt FROM PasswordResetToken prt WHERE prt.email = :email";
+		final String query = "SELECT prt FROM PasswordResetToken prt WHERE prt.user.email = :email";
 
 		final TypedQuery<PasswordResetToken> tq = createQuery(query);
 		tq.setParameter("email", email);

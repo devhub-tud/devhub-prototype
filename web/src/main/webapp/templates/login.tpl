@@ -30,7 +30,7 @@ footer {
 				<form id="signin" class="form-inline">
 					<div class="control-group">
 						<div class="controls">
-							<input class="input-xlarge" type="text" name="email" placeholder="john@example.org" />
+							<input class="input-xlarge" type="text" name="email" placeholder="john@tudelft.nl" />
 						</div>
 					</div>
 					<div class="control-group">
@@ -54,7 +54,7 @@ footer {
 				<form id="signup" class="form-inline">
 					<div class="control-group">
 						<div class="controls">
-							<input class="input-xlarge" type="text" name="email" placeholder="john@example.org" />
+							<input class="input-xlarge" type="text" name="email" placeholder="john@tudelft.nl" />
 						</div>
 					</div>
 					<div class="control-group">

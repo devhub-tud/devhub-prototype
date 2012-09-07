@@ -40,6 +40,7 @@ class DevHubMailImpl implements DevHubMail {
 	@Override
 	public void sendResetPasswordMail(String toAdress, String url) {
 		LOG.debug("Sending reset password mail to {} with url {}", toAdress, url);
-		passwordResetFac.get().newMail(toAdress, url);
+		SimpleMessage message = passwordResetFac.get().newMail(toAdress, url);
+		sender.deliver(message);
 	}
 }

@@ -64,6 +64,11 @@ $(document).ready(function() {
 	}
 	
 	function checkProjectName(projectName, callback) {
+		if (projectName == "") {
+			callback.call(this, "invalid-name");
+			return;
+		}
+		
 		$.ajax({
 				url: "/projects/checkName", 
 				data: { "name": projectName }, 
