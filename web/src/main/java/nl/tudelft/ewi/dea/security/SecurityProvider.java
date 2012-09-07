@@ -41,6 +41,9 @@ public class SecurityProvider {
 		return SecurityUtils.getSubject();
 	}
 
+	/**
+	 * @return The user from the current {@link HttpSession}.
+	 */
 	public User getUser() {
 		// Yes, this isn't truly threadsafe
 		// but chances of this happening concurrent are pretty slim

@@ -14,7 +14,7 @@
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">${userDisplayName}<b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="/profile/${userId}">Show profile</a></li>
+							<li><a href="/account/${userId}">Show profile</a></li>
 							<li class="divider"></li>
 							<li><a href="/logout">Logout</a></li>
 						</ul>
