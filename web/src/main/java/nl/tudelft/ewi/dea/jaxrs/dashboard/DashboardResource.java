@@ -33,13 +33,13 @@ public class DashboardResource {
 
 	private final ProjectDao projectDao;
 
-	private final SecurityProvider subjectProvider;
+	private final SecurityProvider securityProvider;
 
 	@Inject
 	public DashboardResource(final Provider<Renderer> renderers, final ProjectDao projectDao, SecurityProvider subjectProvider) {
 		this.renderers = renderers;
 		this.projectDao = projectDao;
-		this.subjectProvider = subjectProvider;
+		this.securityProvider = subjectProvider;
 	}
 
 	@GET
@@ -48,7 +48,7 @@ public class DashboardResource {
 	public String servePage() {
 
 		LOG.debug("Looking up my projects ...");
-		final User me = subjectProvider.getUser();
+		final User me = securityProvider.getUser();
 
 		final List<Project> projects = projectDao.findByUser(me);
 
