@@ -1,6 +1,5 @@
 package nl.tudelft.ewi.dea.jaxrs.projects;
 
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;

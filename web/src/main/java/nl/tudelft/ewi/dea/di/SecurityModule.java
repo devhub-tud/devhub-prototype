@@ -4,16 +4,14 @@ import javax.servlet.ServletContext;
 
 import nl.tudelft.ewi.dea.security.UserValidator;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.guice.aop.ShiroAopModule;
 import org.apache.shiro.guice.web.ShiroWebModule;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.subject.SubjectContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.name.Names;
 
@@ -22,36 +20,23 @@ import com.google.inject.name.Names;
  * also be achieved using annotations so this is not the sole place for
  * configuration.
  */
-public class SecurityModule extends ShiroWebModule {
+public class SecurityModule extends AbstractModule {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SecurityModule.class);
 	public static final int NUMBER_OF_HASH_ITERATIONS = 1024;
 
+	private final ServletContext sc;
+
 	public SecurityModule(final ServletContext sc) {
-		super(sc);
+		this.sc = sc;
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	protected void configureShiroWeb() {
-		LOG.debug("Configuring Shiro Security module");
+	public void configure() {
+		// This module needs to be installed separately to avoid private bindings.
 		install(new ShiroAopModule());
 
-		bindRealm().to(UserValidator.class);
-		bindConstant().annotatedWith(Names.named("shiro.loginUrl")).to("/login");
-
-		addFilterChain("/js/**", ANON);
-		addFilterChain("/css/**", ANON);
-		addFilterChain("/img/**", ANON);
-		addFilterChain("/register", ANON);
-		addFilterChain("/register/**", ANON);
-		addFilterChain("/accounts/activate/*", ANON);
-		addFilterChain("/account/*/reset-password/*", ANON);
-		addFilterChain("/reset-password", ANON);
-		addFilterChain("/reset-password/*", ANON);
-		addFilterChain("/logout", LOGOUT);
-		addFilterChain("/login", AUTHC);
-		addFilterChain("/**", AUTHC);
+		// Install module containing Shiro configuration.
+		install(new ShiroConfigurationModule(sc));
 	}
 
 	@Provides
@@ -61,4 +46,34 @@ public class SecurityModule extends ShiroWebModule {
 		return hashedCredentialsMatcher;
 	}
 
+	public static class ShiroConfigurationModule extends ShiroWebModule {
+
+		private static final Logger LOG = LoggerFactory.getLogger(SecurityModule.class);
+
+		public ShiroConfigurationModule(ServletContext sc) {
+			super(sc);
+		}
+
+		@Override
+		@SuppressWarnings("unchecked")
+		protected void configureShiroWeb() {
+			LOG.debug("Configuring Shiro Security module");
+
+			bindRealm().to(UserValidator.class);
+			bindConstant().annotatedWith(Names.named("shiro.loginUrl")).to("/login");
+
+			addFilterChain("/js/**", ANON);
+			addFilterChain("/css/**", ANON);
+			addFilterChain("/img/**", ANON);
+			addFilterChain("/register", ANON);
+			addFilterChain("/register/**", ANON);
+			addFilterChain("/accounts/activate/*", ANON);
+			addFilterChain("/account/*/reset-password/*", ANON);
+			addFilterChain("/reset-password", ANON);
+			addFilterChain("/reset-password/*", ANON);
+			addFilterChain("/logout", LOGOUT);
+			addFilterChain("/login", AUTHC);
+			addFilterChain("/**", AUTHC);
+		}
+	}
 }

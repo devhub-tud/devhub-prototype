@@ -23,7 +23,7 @@ input[name="email"] {
 <body>
 	<div class="hero-unit">
 		<h1>Activate account</h1>
-		<div class="alerts" style="margin-top: 10px;"></div>
+		<div class="alerts hide" style="margin-top: 20px;"></div>
 		<p style="margin-top: 20px;">You're just one step away from completing your registration.</p>
 		<div style="margin-top: 20px;">
 			<form id="activate" class="form-inline">
