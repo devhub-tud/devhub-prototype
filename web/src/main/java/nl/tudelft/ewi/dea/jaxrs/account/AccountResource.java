@@ -4,7 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
-import java.util.List;
+import java.util.Arrays;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -22,7 +22,6 @@ import nl.tudelft.ewi.dea.dao.PasswordResetTokenDao;
 import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
 import nl.tudelft.ewi.dea.model.PasswordResetToken;
-import nl.tudelft.ewi.dea.model.Project;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.model.UserRole;
 import nl.tudelft.ewi.dea.security.SecurityProvider;
@@ -36,7 +35,6 @@ import org.apache.shiro.crypto.hash.Md5Hash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 
@@ -71,18 +69,23 @@ public class AccountResource {
 		LOG.debug("Looking up my projects ...");
 
 		User user = subjectProvider.getUser();
-		if (!user.isAdmin() && id != user.getId()) {
-			// TODO server better page
-			throw new AuthorizationException("You can only view your own profile");
-		}
+		verifyUserIsAdminOrOwnAccount(id, user);
 
 		String hashedEmail = new Md5Hash(user.getEmail()).toHex();
 
 		return renderers.get()
 				.setValue("user", user)
 				.setValue("hashedEmail", hashedEmail)
+				.setValue("scripts", Arrays.asList("account.js"))
 				.render("account.tpl");
 
+	}
+
+	private void verifyUserIsAdminOrOwnAccount(final long id, User user) {
+		if (!user.isAdmin() && id != user.getId()) {
+			// TODO server better page
+			throw new AuthorizationException("You can only view your own profile");
+		}
 	}
 
 	@POST
@@ -178,6 +181,22 @@ public class AccountResource {
 
 		return Response.ok(Long.toString(id)).build();
 
+	}
+
+	@POST
+	@Path("{id}/reset-password")
+	@Transactional
+	public Response resetPassword(@PathParam("id") long id, NewPasswordRequest request) {
+		User user = subjectProvider.getUser();
+
+		LOG.trace("Updating password for {} with request {}", user, request);
+		verifyUserIsAdminOrOwnAccount(id, user);
+
+		userFactory.resetUserPassword(user, request.getPassword());
+
+		LOG.trace("Password updated");
+
+		return Response.ok(Long.toString(id)).build();
 	}
 
 }
