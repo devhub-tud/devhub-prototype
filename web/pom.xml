@@ -116,7 +116,7 @@
 					</webResources>
 				</configuration>
 			</plugin>
-			<plugin>
+			<!-- <plugin>
 				<groupId>com.voltvoodoo</groupId>
 				<artifactId>brew</artifactId>
 				<version>0.2.10</version>
@@ -130,7 +130,7 @@
 				<configuration>
 					<coffeeOutputDir>${basedir}/src/main/webapp/js</coffeeOutputDir>
 				</configuration>
-			</plugin>
+			</plugin> -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>tomcat-maven-plugin</artifactId>
@@ -147,6 +147,7 @@
 
 		<pluginManagement>
 			<plugins>
+				
 				<plugin>
 					<groupId>com.github.searls</groupId>
 					<artifactId>jasmine-maven-plugin</artifactId>
@@ -159,14 +160,28 @@
 						</execution>
 					</executions>
 					<configuration>
-						<jsSrcDir>${project.basedir}/src/main/coffeescript</jsSrcDir>
-						<jsTestSrcDir>${project.basedir}/src/test/coffeescript</jsTestSrcDir>
+						<jsSrcDir>${project.basedir}/src/main/webapp/js</jsSrcDir>
 						<preloadSources>
 							<source>http://code.jquery.com/jquery-1.8.0.min.js</source>
 						</preloadSources>
 						<junitXmlReportFileName>
 							../surefire-reports/TEST-jasmine.xml</junitXmlReportFileName>
 					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.12.2</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>test</goal>
+							</goals>
+							<!-- ensures surefire runs after jasmine: -->
+							<phase>package</phase>
+						</execution>
+					</executions>
 				</plugin>
 
 

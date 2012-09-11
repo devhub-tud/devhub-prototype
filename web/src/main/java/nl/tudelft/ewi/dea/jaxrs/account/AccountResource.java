@@ -4,6 +4,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
+import java.util.Arrays;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.persistence.NoResultException;
@@ -11,6 +13,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -20,11 +24,14 @@ import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
 import nl.tudelft.ewi.dea.model.PasswordResetToken;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.model.UserRole;
+import nl.tudelft.ewi.dea.security.SecurityProvider;
 import nl.tudelft.ewi.dea.security.UserFactory;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.crypto.hash.Md5Hash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,23 +51,41 @@ public class AccountResource {
 
 	private final UserFactory userFactory;
 
+	private final SecurityProvider subjectProvider;
+
 	@Inject
-	public AccountResource(final Provider<Renderer> renderers, final UserDao userDao, final PasswordResetTokenDao passwordResetTokenDao, final UserFactory userFactory) {
+	public AccountResource(final Provider<Renderer> renderers, final UserDao userDao, final PasswordResetTokenDao passwordResetTokenDao, final UserFactory userFactory, SecurityProvider subjectProvider) {
 		this.renderers = renderers;
 		this.userDao = userDao;
 		this.passwordResetTokenDao = passwordResetTokenDao;
 		this.userFactory = userFactory;
+		this.subjectProvider = subjectProvider;
 	}
 
 	@GET
 	@Path("{id}")
-	@Transactional
-	public Response serveAccountPage(@PathParam("id") final long id) {
+	@Produces(MediaType.TEXT_HTML)
+	public String serveAccountPage(@PathParam("id") final long id) {
+		LOG.debug("Looking up my projects ...");
 
-		LOG.trace("Serving page for account: {} - not yet implemented", id);
+		User user = subjectProvider.getUser();
+		verifyUserIsAdminOrOwnAccount(id, user);
 
-		return Response.serverError().entity("Not yet implemented. Go to the <a href=\"/dashboard\">dashboard</a>.").build();
+		String hashedEmail = new Md5Hash(user.getEmail()).toHex();
 
+		return renderers.get()
+				.setValue("user", user)
+				.setValue("hashedEmail", hashedEmail)
+				.setValue("scripts", Arrays.asList("account.js"))
+				.render("account.tpl");
+
+	}
+
+	private void verifyUserIsAdminOrOwnAccount(final long id, User user) {
+		if (!user.isAdmin() && id != user.getId()) {
+			// TODO server better page
+			throw new AuthorizationException("You can only view your own profile");
+		}
 	}
 
 	@POST
@@ -156,6 +181,22 @@ public class AccountResource {
 
 		return Response.ok(Long.toString(id)).build();
 
+	}
+
+	@POST
+	@Path("{id}/reset-password")
+	@Transactional
+	public Response resetPassword(@PathParam("id") long id, NewPasswordRequest request) {
+		User user = subjectProvider.getUser();
+
+		LOG.trace("Updating password for {} with request {}", user, request);
+		verifyUserIsAdminOrOwnAccount(id, user);
+
+		userFactory.resetUserPassword(user, request.getPassword());
+
+		LOG.trace("Password updated");
+
+		return Response.ok(Long.toString(id)).build();
 	}
 
 }

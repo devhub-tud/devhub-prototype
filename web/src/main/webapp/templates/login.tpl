@@ -23,7 +23,6 @@ footer {
 <body>
 	<div class="hero-unit">
 		<h1>DevHub</h1>
-		<div class="alerts hide" style="margin-top: 20px;"></div>
 		<div style="margin-top: 20px; height: 200px;">
 			<div class="pull-left" style="width: 334px; border-right: 1px solid #999;">
 				<p>Sign in with your TU Delft email</p>
@@ -63,6 +62,7 @@ footer {
 				</form>
 			</div>
 		</div>
+		<div class="alerts" style="margin: 50px 0px -30px; display: none;"></div>
 	</div>
 	<script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
 	<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.0/js/bootstrap.min.js"></script>
