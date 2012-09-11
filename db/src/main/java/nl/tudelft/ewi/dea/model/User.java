@@ -39,7 +39,7 @@ public class User {
 	@Column(nullable = false) private String salt;
 	@Column(nullable = false) private String password;
 
-	@Enumerated(EnumType.STRING) @Column(name = "role", nullable = false) private UserRole role;
+	@Enumerated(EnumType.STRING) @Column(name = "access_role", nullable = false) private UserRole role;
 
 	@OneToMany(mappedBy = "user") private Set<ProjectMembership> memberships = new HashSet<>();
 

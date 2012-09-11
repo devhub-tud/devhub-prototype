@@ -49,7 +49,7 @@ public class AdminResource {
 
 		return renderers.get()
 				.setValue("courses", courses)
-				.setValue("scripts", Lists.newArrayList("admin.js"))
+				.setValue("scripts", Lists.newArrayList("admin-create-course.js", "admin-promote-user.js"))
 				.render("admin.tpl");
 	}
 

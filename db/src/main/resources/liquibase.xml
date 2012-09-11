@@ -161,5 +161,10 @@
 			</column>
 		</createTable>
 	</changeSet>
+	
+	<!-- Renaming column 'role' to 'access_role' since, 'role' is a reserved keyword in most DBs. -->
+	<changeSet id="6" author="michaelj">
+		<renameColumn tableName="users" oldColumnName="role" newColumnName="access_role"/>
+	</changeSet>
 
 </databaseChangeLog>
