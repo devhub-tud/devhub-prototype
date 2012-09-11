@@ -71,7 +71,7 @@ $(document).ready(function() {
 		if (!isTuAddress(event.srcElement.value)) {
 			showAlert("alert-error", "<strong>That's not a TU-Delft address.</strong>");
 		} else {
-			$('.alerts').hide('normal');
+			$('.alerts').empty();
 		}
 	}
 	
