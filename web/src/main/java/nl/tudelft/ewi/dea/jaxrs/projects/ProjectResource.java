@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Provider;
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
@@ -63,6 +64,7 @@ public class ProjectResource {
 	@GET
 	@Path("{id}")
 	@Produces(MediaType.TEXT_HTML)
+	@Transactional
 	public String serveProjectPage(@PathParam("id") final long id) {
 
 		LOG.trace("Serving page for project: {}", id);
@@ -76,51 +78,66 @@ public class ProjectResource {
 		}
 
 		final Set<ProjectMembership> members = project.getMembers();
+		final List<ProjectInvitation> invitations = invitationDao.findByProject(project);
 
 		return renderers.get()
 				.setValue("project", project)
 				.setValue("members", members)
+				.setValue("invitations", invitations)
 				.render("project.tpl");
 
 	}
 
 	@GET
 	@Path("{projectId}/invite/{userId}")
+	@Transactional
 	public Response inviteUser(@PathParam("projectId") final long projectId, @PathParam("userId") final long userId) {
 
-		LOG.trace("Inviting user {} for project {} - not yet implemented", userId, projectId);
+		LOG.trace("Inviting user {} for project {}", userId, projectId);
 
 		final Project project = projectDao.findById(projectId);
 		final User otherUser = userDao.findById(userId);
+
+		if (userIsAlreadyInvited(project, otherUser)) {
+			return Response.status(Status.CONFLICT)
+					.entity("User is already invited")
+					.build();
+		}
 
 		final ProjectInvitation invitation = new ProjectInvitation(otherUser, project);
 		invitationDao.persist(invitation);
 
 		// TODO Send email to invited user. Low priority, after demo!
 
-		return Response.serverError().entity("Not yet implemented. Go to the <a href=\"/dashboard\">dashboard</a>.").build();
+		return Response.ok().build();
+
+	}
+
+	private boolean userIsAlreadyInvited(final Project project, final User user) {
+
+		LOG.trace("Testing whether user {} is already invited for project {} ...", user, project);
+
+		boolean userIsAlreadyInvited = true;
+
+		try {
+			invitationDao.findByProjectAndUser(project, user);
+
+			LOG.trace("Invitation found - user is already invited");
+		} catch (final NoResultException e) {
+			LOG.trace("Invitation not found - user is not yet invited");
+			userIsAlreadyInvited = false;
+		}
+
+		return userIsAlreadyInvited;
 
 	}
 
 	@GET
 	@Path("{id}/invitation")
-	@Produces(MediaType.TEXT_HTML)
-	public Response serveInvitationPage(@PathParam("id") final long id) {
-
-		LOG.trace("Serving invitation page for project: {} - Not yet implemented", id);
-
-		// TODO Implement serving of page. Could also be implemented client-side
-		// as a pop-up.
-
-		return Response.serverError().entity("Not yet implemented. Go to the <a href=\"/dashboard\">dashboard</a>.").build();
-
-	}
-
-	@POST
-	@Path("{id}/invitation")
+	@Transactional
 	public Response answerInvitation(@PathParam("id") final long id, @QueryParam("accept") final boolean accept) {
 
-		LOG.trace("Answering invitation: {} - accept? {} - Not yet implemented", id, accept);
+		LOG.trace("Answering invitation for project: {} - accept? {}", id, accept);
 
 		final User currentUser = securityProvider.getUser();
 		final Project project = projectDao.findById(id);
@@ -140,6 +157,7 @@ public class ProjectResource {
 
 	@GET
 	@Path("{id}/provision")
+	@Transactional
 	public Response provisionProject(@PathParam("id") final long id) {
 
 		LOG.trace("Provisioning project: {} - Not yet implemented", id);
