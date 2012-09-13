@@ -72,6 +72,8 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 
 		em.persist(object);
 
+		LOG.trace("{}: Persisted: {}", entityName, object);
+
 	}
 
 	@Override
