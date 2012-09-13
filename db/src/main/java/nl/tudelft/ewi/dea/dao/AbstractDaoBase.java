@@ -90,6 +90,26 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 
 	@Override
 	@Transactional
+	public void detach(final T entity) {
+
+		checkNotNull(entity, "entity must be non-null");
+
+		em.detach(entity);
+
+	}
+
+	@Override
+	@Transactional
+	public final T merge(final T entity) {
+
+		checkNotNull(entity, "entity must be non-null");
+
+		return em.merge(entity);
+
+	}
+
+	@Override
+	@Transactional
 	public final void remove(final T object) {
 
 		LOG.trace("{}: Remove: {}", entityName, object);
@@ -127,8 +147,4 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 
 	}
 
-	@Transactional
-	public final T merge(final T entity) {
-		return em.merge(entity);
-	}
 }

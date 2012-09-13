@@ -40,6 +40,28 @@ interface Dao<T> {
 	void persist(final Object... objects);
 
 	/**
+	 * Remove the given entity from the persistence context, causing a managed
+	 * entity to become detached. Unflushed changes made to the entity if any
+	 * (including removal of the entity), will not be synchronized to the
+	 * database. Entities which previously referenced the detached entity will
+	 * continue to reference it.
+	 * 
+	 * @param entity The entity that must be detached.
+	 * 
+	 * @see EntityManager#detach(Object)
+	 */
+	void detach(final T entity);
+
+	/**
+	 * Merge the state of the given entity into the current persistence context.
+	 * 
+	 * @param entity The entity you want to merge
+	 * @return the managed entity.
+	 * @see EntityManager#merge(Object);
+	 */
+	T merge(final T entity);
+
+	/**
 	 * @see EntityManager#remove(Object)
 	 */
 	void remove(final T object);
@@ -51,14 +73,5 @@ interface Dao<T> {
 	 * @param objects The array of objects to remove.
 	 */
 	void remove(final Object... objects);
-
-	/**
-	 * Merge the state of the given entity into the current persistence context.
-	 * 
-	 * @param entity The entity you want to merge
-	 * @return the managed entity.
-	 * @see EntityManager#merge(Object);
-	 */
-	T merge(T entity);
 
 }
