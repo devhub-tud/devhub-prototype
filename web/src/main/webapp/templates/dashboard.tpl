@@ -16,7 +16,7 @@
 				<tbody>
 					#foreach($invitation in $invitations)
 					<tr>
-						<td>${invitation.name}
+						<td>${invitation.getProject().getName()}
 							<div class="btn-panel">
 								<a class="btn btn-mini btn-success">Join project</a> <a
 									class="btn btn-mini btn-danger">Ignore</a>

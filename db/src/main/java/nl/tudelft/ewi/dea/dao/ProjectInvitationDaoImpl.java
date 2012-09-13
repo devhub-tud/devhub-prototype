@@ -62,4 +62,20 @@ public class ProjectInvitationDaoImpl extends AbstractDaoBase<ProjectInvitation>
 
 	}
 
+	@Override
+	public List<ProjectInvitation> findByUser(final User user) {
+
+		LOG.trace("Find by user: {}", user);
+
+		checkNotNull(user, "user must be non-null");
+
+		final String query = "SELECT pi FROM ProjectInvitation pi WHERE pi.user = :user";
+
+		final TypedQuery<ProjectInvitation> tq = createQuery(query);
+		tq.setParameter("user", user);
+
+		return tq.getResultList();
+
+	};
+
 }

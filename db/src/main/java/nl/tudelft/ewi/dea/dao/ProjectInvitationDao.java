@@ -15,4 +15,6 @@ public interface ProjectInvitationDao extends Dao<ProjectInvitation> {
 
 	List<ProjectInvitation> findByProject(final Project project);
 
+	List<ProjectInvitation> findByUser(final User user);
+
 }

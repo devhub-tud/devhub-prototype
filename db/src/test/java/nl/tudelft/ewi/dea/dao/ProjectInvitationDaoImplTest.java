@@ -134,4 +134,54 @@ public class ProjectInvitationDaoImplTest extends DatabaseTest {
 		assertThat(retrievedInvitation.getProject(), is(project));
 
 	}
+
+	@Test
+	public void testThatFindByUserReturnsNoInvitationWhenNotInvited() throws Exception {
+
+		// Given
+
+		final String name = "X";
+		final User other = new User(name, name, name, 0, name, name, UserRole.USER);
+		final Course course = new Course("Course", other);
+		final Project project = new Project("Project", course);
+		final ProjectInvitation invitation0 = new ProjectInvitation(other, project);
+
+		final String u = "U";
+		final User user = new User(u, u, u, 0, u, u, UserRole.USER);
+
+		invitationDao.persist(other, user, course, project, invitation0);
+
+		// When
+		final List<ProjectInvitation> invitations = invitationDao.findByUser(user);
+
+		// Then
+		assertThat(invitations.isEmpty(), is(true));
+
+	}
+
+	@Test
+	public void testThatFindByUserReturnsInvitationWhenInvited() throws Exception {
+
+		// Given
+
+		final String name = "X";
+		final User other = new User(name, name, name, 0, name, name, UserRole.USER);
+		final Course course = new Course("Course", other);
+		final Project project = new Project("Project", course);
+		final ProjectInvitation invitation0 = new ProjectInvitation(other, project);
+
+		final String u = "U";
+		final User user = new User(u, u, u, 0, u, u, UserRole.USER);
+		final ProjectInvitation invitation1 = new ProjectInvitation(user, project);
+
+		invitationDao.persist(other, user, course, project, invitation0, invitation1);
+
+		// When
+		final List<ProjectInvitation> invitations = invitationDao.findByUser(user);
+
+		// Then
+		assertThat(invitations, hasSize(1));
+
+	}
+
 }

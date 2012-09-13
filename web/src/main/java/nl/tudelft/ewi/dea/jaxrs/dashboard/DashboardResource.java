@@ -10,8 +10,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nl.tudelft.ewi.dea.dao.ProjectDao;
+import nl.tudelft.ewi.dea.dao.ProjectInvitationDao;
 import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
 import nl.tudelft.ewi.dea.model.Project;
+import nl.tudelft.ewi.dea.model.ProjectInvitation;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.security.SecurityProvider;
 
@@ -35,11 +37,16 @@ public class DashboardResource {
 
 	private final SecurityProvider securityProvider;
 
+	private final ProjectInvitationDao invitationDao;
+
 	@Inject
-	public DashboardResource(final Provider<Renderer> renderers, final ProjectDao projectDao, SecurityProvider subjectProvider) {
+	public DashboardResource(final Provider<Renderer> renderers, final ProjectDao projectDao, final ProjectInvitationDao invitationDao, final SecurityProvider securityProvider) {
 		this.renderers = renderers;
+
+		this.securityProvider = securityProvider;
+
 		this.projectDao = projectDao;
-		this.securityProvider = subjectProvider;
+		this.invitationDao = invitationDao;
 	}
 
 	@GET
@@ -51,10 +58,12 @@ public class DashboardResource {
 		final User me = securityProvider.getUser();
 
 		final List<Project> projects = projectDao.findByUser(me);
+		final List<ProjectInvitation> invitations = invitationDao.findByUser(me);
 
 		LOG.debug("Rendering page ...");
 
 		return renderers.get()
+				.setValue("invitations", invitations)
 				.setValue("projects", projects)
 				.setValue("scripts", Lists.newArrayList("dashboard.js"))
 				.render("dashboard.tpl");
