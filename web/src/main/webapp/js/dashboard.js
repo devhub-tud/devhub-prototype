@@ -1,7 +1,8 @@
 $(document).ready(function() {
 
 	var newProjectModal = $('#create-new-project-modal');
-	
+	var enrollForCourseModal = $('#enroll-for-course-modal');
+	var enrollForCourseButton = $('#enroll-for-course');
 	var projectNameField = $('#project-name');
 	var newProjectButton = $('#create-new-project');
 	var closeButton = $('#close-create-new-project-modal');
@@ -96,6 +97,10 @@ $(document).ready(function() {
 		close();
 	});
 	
+	enrollForCourseButton.click(function() {
+		enrollForCourseModal.modal('show');
+	});
+	
 	provisionNewProjectButton.click(function(e) {
 		e.preventDefault();
 		
@@ -140,5 +145,11 @@ $(document).ready(function() {
 		newProjectMessage.find('.bar').removeClass(".bar-danger");
 		projectNameField.val("");
 	}
+	
+	var nextSearch = null;
+	$('#course-search').keyup(function(event) {
+		nextSearch = $('#course-search').val();
+		// TODO Got to go. This is where the search should be implemented.
+	});
 	
 });

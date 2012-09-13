@@ -104,4 +104,35 @@
 	</div>
 </div>
 
+<div id="enroll-for-course-modal" class="modal hide fade">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-hidden="true">&times;</button>
+		<h3>Enroll for course</h3>
+	</div>
+	<div class="modal-body">
+		<div class="alerts"></div>
+		<form id="promote-user-to-teacher-form" class="form-horizontal">
+			<div class="control-group">
+				<label class="control-label" for="user-search">Search</label>
+				<div class="controls">
+					<input type="text" id='course-search'
+						placeholder="Course name or code" class="input-xlarge" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="user-search">Results</label>
+				<div class="controls">
+					<div id="results" class="results-box input-xlarge"></div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<a href="#" id="cancel-promote-user-to-teacher-modal" class="btn">Cancel</a>
+		<a href="#" id="promote-user-to-teacher" class="btn btn-primary">Confirm
+			changes</a>
+	</div>
+</div>
+
 #parse("footer.tpl")
