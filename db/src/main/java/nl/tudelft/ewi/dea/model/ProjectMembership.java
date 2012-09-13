@@ -40,9 +40,13 @@ public class ProjectMembership {
 	@Override
 	public String toString() {
 		final ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
+
 		builder.append("id", getId());
-		builder.append("user", getUser().getEmail());
-		builder.append("project", getProject().getName());
+		builder.append("user.id", getUser().getId());
+		builder.append("user.email", getUser().getEmail());
+		builder.append("project.id", getProject().getId());
+		builder.append("project.name", getProject().getName());
+
 		return builder.toString();
 	}
 

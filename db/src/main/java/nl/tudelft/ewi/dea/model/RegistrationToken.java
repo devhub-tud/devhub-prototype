@@ -40,9 +40,11 @@ public class RegistrationToken {
 	@Override
 	public String toString() {
 		final ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
+
 		builder.append("id", getId());
 		builder.append("email", getEmail());
 		builder.append("token", getToken());
+
 		return builder.toString();
 	}
 

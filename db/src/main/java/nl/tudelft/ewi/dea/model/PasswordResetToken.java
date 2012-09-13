@@ -6,6 +6,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 @Entity
 public class PasswordResetToken {
 
@@ -19,7 +22,7 @@ public class PasswordResetToken {
 
 	}
 
-	public PasswordResetToken(User user, String token) {
+	public PasswordResetToken(final User user, final String token) {
 		this.user = user;
 		this.token = token;
 	}
@@ -34,6 +37,18 @@ public class PasswordResetToken {
 
 	public String getToken() {
 		return token;
+	}
+
+	@Override
+	public String toString() {
+		final ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
+
+		builder.append("id", getId());
+		builder.append("user.id", getUser().getId());
+		builder.append("user.displayName", getUser().getDisplayName());
+		builder.append("token", getToken());
+
+		return builder.toString();
 	}
 
 }
