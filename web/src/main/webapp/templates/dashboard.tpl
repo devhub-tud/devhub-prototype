@@ -3,7 +3,7 @@
 <div class="container">
 	<div class="content">
 
-		#if($invitations && !$invitations.isEmtpy())
+		#if($invitations && !$invitations.isEmpty())
 		<div id="invitations" class="alert alert-info">
 
 			#if($invitations.size() == 1)
@@ -18,8 +18,8 @@
 					<tr>
 						<td>${invitation.getProject().getName()}
 							<div class="btn-panel">
-								<a class="btn btn-mini btn-success">Join project</a> <a
-									class="btn btn-mini btn-danger">Ignore</a>
+								<a class="btn btn-mini btn-success">Join project</a>
+								<a class="btn btn-mini btn-danger">Ignore</a>
 							</div>
 						</td>
 					</tr>
@@ -31,9 +31,8 @@
 
 		<div class="page-head">
 			<h3>Your projects</h3>
-			<a id="enroll-for-course" class="btn btn-primary">Enroll for
-				course</a> <a id="create-new-project" class="btn btn-primary"
-				style="margin-right: 10px;">Create personal project</a>
+			<a id="enroll-for-course" class="btn btn-primary">Enroll for course</a>
+			<a id="create-new-project" class="btn btn-primary" style="margin-right: 10px;">Create personal project</a>
 		</div>
 		<table class="table table-striped table-bordered table-hover">
 			<thead>
@@ -54,16 +53,14 @@
 
 <div id="create-new-project-modal" class="modal hide fade">
 	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal"
-			aria-hidden="true">&times;</button>
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 		<h3>Create a new project</h3>
 	</div>
 	<div class="step-1">
 		<div class="modal-body">
 			<form id="create-new-project-form" class="form-horizontal">
 				<div class="control-group">
-					<label class="control-label" for="project-name">Project
-						name</label>
+					<label class="control-label" for="project-name">Project name</label>
 					<div class="controls">
 						<input type="text" id="project-name" placeholder="Project name" />
 						<img src="/img/loader.gif" class="loader hide" />
@@ -74,8 +71,7 @@
 		</div>
 		<div class="modal-footer">
 			<a href="#" id="cancel-create-new-project-modal" class="btn">Cancel</a>
-			<a href="#" id="provision-new-project" class="btn btn-primary">Create
-				project</a>
+			<a href="#" id="provision-new-project" class="btn btn-primary">Create project</a>
 		</div>
 	</div>
 	<div class="step-2 hide">
@@ -98,16 +94,14 @@
 			</div>
 		</div>
 		<div class="modal-footer">
-			<a href="#" id="close-create-new-project-modal"
-				class="btn btn-primary">Close</a>
+			<a href="#" id="close-create-new-project-modal" class="btn btn-primary">Close</a>
 		</div>
 	</div>
 </div>
 
 <div id="enroll-for-course-modal" class="modal hide fade">
 	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal"
-			aria-hidden="true">&times;</button>
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 		<h3>Enroll for course</h3>
 	</div>
 	<div class="modal-body">
@@ -116,8 +110,7 @@
 			<div class="control-group">
 				<label class="control-label" for="user-search">Search</label>
 				<div class="controls">
-					<input type="text" id='course-search'
-						placeholder="Course name or code" class="input-xlarge" />
+					<input type="text" id='course-search' placeholder="Course name or code" class="input-xlarge" />
 				</div>
 			</div>
 			<div class="control-group">
@@ -130,8 +123,7 @@
 	</div>
 	<div class="modal-footer">
 		<a href="#" id="cancel-promote-user-to-teacher-modal" class="btn">Cancel</a>
-		<a href="#" id="promote-user-to-teacher" class="btn btn-primary">Confirm
-			changes</a>
+		<a href="#" id="promote-user-to-teacher" class="btn btn-primary">Confirm changes</a>
 	</div>
 </div>
 
