@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 
 import nl.tudelft.ewi.dea.dao.ProjectDao;
 import nl.tudelft.ewi.dea.dao.ProjectInvitationDao;
+import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
 import nl.tudelft.ewi.dea.model.Project;
 import nl.tudelft.ewi.dea.model.ProjectInvitation;
@@ -33,18 +34,19 @@ public class DashboardResource {
 
 	private final Provider<Renderer> renderers;
 
-	private final ProjectDao projectDao;
-
 	private final SecurityProvider securityProvider;
 
+	private final UserDao userDao;
+	private final ProjectDao projectDao;
 	private final ProjectInvitationDao invitationDao;
 
 	@Inject
-	public DashboardResource(final Provider<Renderer> renderers, final ProjectDao projectDao, final ProjectInvitationDao invitationDao, final SecurityProvider securityProvider) {
+	public DashboardResource(final Provider<Renderer> renderers, final UserDao userDao, final ProjectDao projectDao, final ProjectInvitationDao invitationDao, final SecurityProvider securityProvider) {
 		this.renderers = renderers;
 
 		this.securityProvider = securityProvider;
 
+		this.userDao = userDao;
 		this.projectDao = projectDao;
 		this.invitationDao = invitationDao;
 	}
@@ -56,6 +58,7 @@ public class DashboardResource {
 
 		LOG.debug("Looking up my projects ...");
 		final User me = securityProvider.getUser();
+		userDao.merge(me);
 
 		final List<Project> projects = projectDao.findByUser(me);
 		final List<ProjectInvitation> invitations = invitationDao.findByUser(me);
