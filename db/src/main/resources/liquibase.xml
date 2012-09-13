@@ -161,10 +161,24 @@
 			</column>
 		</createTable>
 	</changeSet>
-	
+
 	<!-- Renaming column 'role' to 'access_role' since, 'role' is a reserved keyword in most DBs. -->
 	<changeSet id="6" author="michaelj">
-		<renameColumn tableName="users" oldColumnName="role" newColumnName="access_role"/>
+		<renameColumn tableName="users" oldColumnName="role" newColumnName="access_role" />
+	</changeSet>
+
+	<changeSet id="7" author="david">
+		<createTable tableName="projectinvitation">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="user_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="project_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
 	</changeSet>
 
 </databaseChangeLog>
