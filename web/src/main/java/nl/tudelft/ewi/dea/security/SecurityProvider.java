@@ -26,10 +26,10 @@ public class SecurityProvider {
 	private static final String USER_KEY = "user";
 
 	private final HttpSession session;
-	private UserDao userDao;
+	private final UserDao userDao;
 
 	@Inject
-	SecurityProvider(HttpSession session, UserDao userDao) {
+	SecurityProvider(final HttpSession session, final UserDao userDao) {
 		this.session = session;
 		this.userDao = userDao;
 	}
@@ -53,10 +53,15 @@ public class SecurityProvider {
 		User me = (User) session.getAttribute(USER_KEY);
 		if (me == null) {
 			LOG.debug("Getting the user from the database and caching it in the session");
-			String email = (String) getSubject().getPrincipal();
+			final String email = (String) getSubject().getPrincipal();
 			me = userDao.findByEmail(email);
 			session.setAttribute(USER_KEY, me);
+		} else {
+			// TODO: Pre-merge the 'me' object. This removes a lot of merge() calls
+			// from the logic layer at the cost of a little overhead. This can wait
+			// until after the demo.
 		}
+
 		return me;
 	}
 
