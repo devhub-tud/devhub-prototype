@@ -7,9 +7,9 @@ $(document).ready(function() {
 		var password = $('#signin').find('input[name="password"]').val();
 		var remember = $('#signin').find('input[name="rememberMe"]').attr('checked') ? true: false;
 		
-		if (!isTuAddress(email)) {
-			return;
-		}
+		//if (!isTuAddress(email)) {
+		//	return;
+		//}
 		
 		$.ajax({
 			type: "post",
