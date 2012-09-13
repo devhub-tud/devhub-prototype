@@ -1,6 +1,7 @@
 package nl.tudelft.ewi.dea.jaxrs.projects;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -17,15 +18,18 @@ import nl.tudelft.ewi.dea.dao.ProjectDao;
 import nl.tudelft.ewi.dea.dao.ProjectInvitationDao;
 import nl.tudelft.ewi.dea.dao.ProjectMembershipDao;
 import nl.tudelft.ewi.dea.dao.UserDao;
+import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
 import nl.tudelft.ewi.dea.model.Project;
 import nl.tudelft.ewi.dea.model.ProjectInvitation;
 import nl.tudelft.ewi.dea.model.ProjectMembership;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.security.SecurityProvider;
 
+import org.apache.shiro.authz.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Provider;
 import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
@@ -42,8 +46,12 @@ public class ProjectResource {
 	private final ProjectInvitationDao invitationDao;
 	private final ProjectMembershipDao membershipDao;
 
+	private final Provider<Renderer> renderers;
+
 	@Inject
-	public ProjectResource(final SecurityProvider securityProvider, final ProjectDao projectDao, final UserDao userDao, final ProjectInvitationDao invitationDao, final ProjectMembershipDao membershipDao) {
+	public ProjectResource(final Provider<Renderer> renderers, final SecurityProvider securityProvider, final ProjectDao projectDao, final UserDao userDao, final ProjectInvitationDao invitationDao, final ProjectMembershipDao membershipDao) {
+		this.renderers = renderers;
+
 		this.securityProvider = securityProvider;
 
 		this.userDao = userDao;
@@ -54,13 +62,25 @@ public class ProjectResource {
 
 	@GET
 	@Path("{id}")
-	public Response serveProjectPage(@PathParam("id") final long id) {
+	@Produces(MediaType.TEXT_HTML)
+	public String serveProjectPage(@PathParam("id") final long id) {
 
-		LOG.trace("Serving page for project: {} - not yet implemented", id);
+		LOG.trace("Serving page for project: {}", id);
 
-		// TODO Implement serving project overview page.
+		final User currentUser = securityProvider.getUser();
 
-		return Response.serverError().entity("Not yet implemented. Go to the <a href=\"/dashboard\">dashboard</a>.").build();
+		final Project project = projectDao.findById(id);
+
+		if (!currentUser.isAdmin()) {
+			validateThatUserIsMemberOfProject(currentUser, project);
+		}
+
+		final Set<ProjectMembership> members = project.getMembers();
+
+		return renderers.get()
+				.setValue("project", project)
+				.setValue("members", members)
+				.render("project.tpl");
 
 	}
 
@@ -120,7 +140,7 @@ public class ProjectResource {
 
 	@GET
 	@Path("{id}/provision")
-	public Response provisionProject(final long id) {
+	public Response provisionProject(@PathParam("id") final long id) {
 
 		LOG.trace("Provisioning project: {} - Not yet implemented", id);
 
@@ -135,6 +155,22 @@ public class ProjectResource {
 		// TODO: Provision project.
 
 		return Response.serverError().entity("Not yet implemented. Go to the <a href=\"/dashboard\">dashboard</a>.").build();
+
+	}
+
+	private void validateThatUserIsMemberOfProject(final User user, final Project project) {
+
+		boolean isMember = false;
+		for (final ProjectMembership membership : project.getMembers()) {
+			if (membership.getUser().getId() == user.getId()) {
+				isMember = true;
+				break;
+			}
+		}
+
+		if (!isMember) {
+			throw new UnauthorizedException("Current user is not a member of the requested project");
+		}
 
 	}
 
