@@ -42,13 +42,14 @@ public class SecurityProvider {
 	}
 
 	/**
-	 * @return The user from the current {@link HttpSession}.
+	 * @return The user from the current {@link HttpSession}. Note that this user
+	 *         could be detached from it's persisted state.
 	 */
 	public User getUser() {
 		// Yes, this isn't truly threadsafe
 		// but chances of this happening concurrent are pretty slim
 		// and even if it does it's only ah double database call
-		// boohoo cry me a river. 
+		// boohoo cry me a river.
 		User me = (User) session.getAttribute(USER_KEY);
 		if (me == null) {
 			LOG.debug("Getting the user from the database and caching it in the session");
