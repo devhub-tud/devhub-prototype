@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
@@ -42,6 +43,7 @@ public class AdminResource {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	@RequiresRoles(UserRole.ROLE_ADMIN)
+	@Transactional
 	public String servePage() {
 		LOG.trace("Serving admin dashboard.");
 

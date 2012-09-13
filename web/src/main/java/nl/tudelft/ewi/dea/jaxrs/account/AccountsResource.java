@@ -57,6 +57,7 @@ public class AccountsResource {
 	}
 
 	@GET
+	@Transactional
 	public List<User> findBySubString(@QueryParam("substring") final String subString) {
 
 		LOG.trace("Find by substring: {}", subString);
@@ -70,6 +71,7 @@ public class AccountsResource {
 	@GET
 	@Path("email/{email}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@Transactional
 	public List<User> findByEmailSubString(@PathParam("email") final String email) {
 
 		LOG.trace("Find accounts by email: {}", email);
