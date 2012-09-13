@@ -52,4 +52,13 @@ interface Dao<T> {
 	 */
 	void remove(final Object... objects);
 
+	/**
+	 * Merge the state of the given entity into the current persistence context.
+	 * 
+	 * @param entity The entity you want to merge
+	 * @return the managed entity.
+	 * @see EntityManager#merge(Object);
+	 */
+	T merge(T entity);
+
 }

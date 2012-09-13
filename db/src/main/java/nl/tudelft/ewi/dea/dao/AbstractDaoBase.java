@@ -127,4 +127,8 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 
 	}
 
+	@Transactional
+	public final T merge(final T entity) {
+		return em.merge(entity);
+	}
 }
