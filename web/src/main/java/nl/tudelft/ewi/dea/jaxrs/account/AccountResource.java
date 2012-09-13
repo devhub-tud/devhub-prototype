@@ -187,12 +187,14 @@ public class AccountResource {
 	@Path("{id}/reset-password")
 	@Transactional
 	public Response resetPassword(@PathParam("id") long id, NewPasswordRequest request) {
-		User user = subjectProvider.getUser();
+		User actingUser = subjectProvider.getUser();
+		LOG.trace("Updating password for {} with request {}", actingUser, request);
+		verifyUserIsAdminOrOwnAccount(id, actingUser);
 
-		LOG.trace("Updating password for {} with request {}", user, request);
-		verifyUserIsAdminOrOwnAccount(id, user);
-
-		userFactory.resetUserPassword(user, request.getPassword());
+		// We have to get the user from the DAO to make sure we get the
+		// persistence instance, not the cached instance.
+		User subject = userDao.findById(id);
+		userFactory.resetUserPassword(subject, request.getPassword());
 
 		LOG.trace("Password updated");
 

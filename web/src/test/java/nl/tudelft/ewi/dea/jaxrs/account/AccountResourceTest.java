@@ -31,12 +31,15 @@ public class AccountResourceTest {
 	@Mock private UserFactory userFactory;
 	@Mock private SecurityProvider subjectProvider;
 	@Mock private User user;
+	@Mock private User userFromPersist;
 	@InjectMocks private AccountResource resource;
 
 	@Before
 	public void before() {
 		when(subjectProvider.getUser()).thenReturn(user);
 		when(user.getId()).thenReturn(userId);
+
+		when(userDao.findById(user.getId())).thenReturn(userFromPersist);
 	}
 
 	@Test
@@ -45,9 +48,12 @@ public class AccountResourceTest {
 		NewPasswordRequest request = mock(NewPasswordRequest.class);
 
 		when(request.getPassword()).thenReturn(password);
+		when(userFromPersist.getId()).thenReturn(userId);
+
 		resource.resetPassword(userId, request);
 
-		verify(userFactory).resetUserPassword(user, password);
+		verify(userDao).findById(userId);
+		verify(userFactory).resetUserPassword(userFromPersist, password);
 	}
 
 	@Test(expected = AuthorizationException.class)
@@ -62,10 +68,11 @@ public class AccountResourceTest {
 		NewPasswordRequest request = mock(NewPasswordRequest.class);
 		when(user.isAdmin()).thenReturn(true);
 		long otherUserId = 2l;
+		when(userDao.findById(otherUserId)).thenReturn(userFromPersist);
 		when(request.getPassword()).thenReturn(password);
 		resource.resetPassword(otherUserId, request);
 
-		verify(userFactory).resetUserPassword(user, password);
+		verify(userFactory).resetUserPassword(userFromPersist, password);
 	}
 
 }
