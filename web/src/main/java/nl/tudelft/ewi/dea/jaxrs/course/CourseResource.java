@@ -15,13 +15,14 @@ import javax.ws.rs.core.Response.Status;
 
 import nl.tudelft.ewi.dea.dao.CourseDao;
 import nl.tudelft.ewi.dea.dao.ProjectDao;
-import nl.tudelft.ewi.dea.dao.UserDao;
+import nl.tudelft.ewi.dea.dao.ProjectMembershipDao;
 import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
 import nl.tudelft.ewi.dea.model.Course;
 import nl.tudelft.ewi.dea.model.Project;
+import nl.tudelft.ewi.dea.model.ProjectMembership;
 import nl.tudelft.ewi.dea.model.User;
+import nl.tudelft.ewi.dea.security.SecurityProvider;
 
-import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,16 +39,21 @@ public class CourseResource {
 
 	private final Provider<Renderer> renderers;
 
-	private final UserDao userDao;
 	private final CourseDao courseDao;
 	private final ProjectDao projectDao;
+	private final ProjectMembershipDao membershipDao;
+
+	private final SecurityProvider securityProvider;
 
 	@Inject
-	public CourseResource(final Provider<Renderer> renderers, final UserDao userDao, final CourseDao courseDao, final ProjectDao projectDao) {
+	public CourseResource(final Provider<Renderer> renderers, final CourseDao courseDao, final ProjectDao projectDao, final ProjectMembershipDao membershipDao, final SecurityProvider securityProvider) {
 		this.renderers = renderers;
+
 		this.courseDao = courseDao;
 		this.projectDao = projectDao;
-		this.userDao = userDao;
+		this.membershipDao = membershipDao;
+
+		this.securityProvider = securityProvider;
 	}
 
 	@GET
@@ -86,13 +92,15 @@ public class CourseResource {
 			return Response.status(Status.NOT_FOUND).entity("Course does not exist").build();
 		}
 
-		final String email = (String) SecurityUtils.getSubject().getPrincipal();
-		final User user = userDao.findByEmail(email);
+		final User currentUser = securityProvider.getUser();
 
-		final String name = course.getName() + "-" + user.getDisplayName();
+		final String projectName = course.getName() + "-" + currentUser.getDisplayName();
 
-		final Project project = new Project(name, course);
-		user.addProjectMembership(project);
+		final Project project = new Project(projectName, course);
+		projectDao.persist(project);
+
+		final ProjectMembership membership = currentUser.addProjectMembership(project);
+		membershipDao.persist(membership);
 
 		return Response.ok().build();
 
