@@ -45,7 +45,7 @@ public class CourseResourseTest {
 	@Before
 	public void setUp() {
 
-		resource = new CourseResource(renderers, courseDao, projectDao, membershipDao, securityProvider);
+		resource = new CourseResource(renderers, userDao, courseDao, projectDao, membershipDao, securityProvider);
 
 	}
 

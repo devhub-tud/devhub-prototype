@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response.Status;
 import nl.tudelft.ewi.dea.dao.CourseDao;
 import nl.tudelft.ewi.dea.dao.ProjectDao;
 import nl.tudelft.ewi.dea.dao.ProjectMembershipDao;
+import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
 import nl.tudelft.ewi.dea.model.Course;
 import nl.tudelft.ewi.dea.model.Project;
@@ -45,10 +46,13 @@ public class CourseResource {
 
 	private final SecurityProvider securityProvider;
 
+	private final UserDao userDao;
+
 	@Inject
-	public CourseResource(final Provider<Renderer> renderers, final CourseDao courseDao, final ProjectDao projectDao, final ProjectMembershipDao membershipDao, final SecurityProvider securityProvider) {
+	public CourseResource(final Provider<Renderer> renderers, final UserDao userDao, final CourseDao courseDao, final ProjectDao projectDao, final ProjectMembershipDao membershipDao, final SecurityProvider securityProvider) {
 		this.renderers = renderers;
 
+		this.userDao = userDao;
 		this.courseDao = courseDao;
 		this.projectDao = projectDao;
 		this.membershipDao = membershipDao;
@@ -64,12 +68,15 @@ public class CourseResource {
 
 		LOG.trace("Finding course: {}", id);
 
-		// TODO: Use the exception mapper to map NoResultFound to 404.
+		final User currentUser = securityProvider.getUser();
+		userDao.merge(currentUser);
+
 		final Course course = courseDao.findById(id);
 
 		final List<Project> projects = projectDao.findByCourse(course);
 
 		return renderers.get()
+				.setValue("currentUser", currentUser)
 				.setValue("course", course)
 				.setValue("projects", projects)
 				.setValue("scripts", Lists.newArrayList("course.js"))
