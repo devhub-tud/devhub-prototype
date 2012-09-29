@@ -130,8 +130,6 @@ public class User {
 
 		final ProjectMembership pm = new ProjectMembership(this, p);
 
-		memberships.add(pm);
-
 		return pm;
 
 	}
@@ -139,8 +137,8 @@ public class User {
 	/**
 	 * @param hashedPassword The hashed password.
 	 */
-	public void setPassword(String hashedPassword) {
-		this.password = hashedPassword;
+	public void setPassword(final String hashedPassword) {
+		password = hashedPassword;
 	}
 
 }

@@ -54,7 +54,7 @@ public class AccountResource {
 	private final SecurityProvider subjectProvider;
 
 	@Inject
-	public AccountResource(final Provider<Renderer> renderers, final UserDao userDao, final PasswordResetTokenDao passwordResetTokenDao, final UserFactory userFactory, SecurityProvider subjectProvider) {
+	public AccountResource(final Provider<Renderer> renderers, final UserDao userDao, final PasswordResetTokenDao passwordResetTokenDao, final UserFactory userFactory, final SecurityProvider subjectProvider) {
 		this.renderers = renderers;
 		this.userDao = userDao;
 		this.passwordResetTokenDao = passwordResetTokenDao;
@@ -65,13 +65,14 @@ public class AccountResource {
 	@GET
 	@Path("{id}")
 	@Produces(MediaType.TEXT_HTML)
+	@Transactional
 	public String serveAccountPage(@PathParam("id") final long id) {
 		LOG.debug("Looking up my projects ...");
 
-		User user = subjectProvider.getUser();
+		final User user = subjectProvider.getUser();
 		verifyUserIsAdminOrOwnAccount(id, user);
 
-		String hashedEmail = new Md5Hash(user.getEmail()).toHex();
+		final String hashedEmail = new Md5Hash(user.getEmail()).toHex();
 
 		return renderers.get()
 				.setValue("user", user)
@@ -81,7 +82,7 @@ public class AccountResource {
 
 	}
 
-	private void verifyUserIsAdminOrOwnAccount(final long id, User user) {
+	private void verifyUserIsAdminOrOwnAccount(final long id, final User user) {
 		if (!user.isAdmin() && id != user.getId()) {
 			// TODO server better page
 			throw new AuthorizationException("You can only view your own profile");
@@ -186,13 +187,15 @@ public class AccountResource {
 	@POST
 	@Path("{id}/reset-password")
 	@Transactional
-	public Response resetPassword(@PathParam("id") long id, NewPasswordRequest request) {
-		User user = subjectProvider.getUser();
+	public Response resetPassword(@PathParam("id") final long id, final NewPasswordRequest request) {
+		final User actingUser = subjectProvider.getUser();
+		LOG.trace("Updating password for {} with request {}", actingUser, request);
+		verifyUserIsAdminOrOwnAccount(id, actingUser);
 
-		LOG.trace("Updating password for {} with request {}", user, request);
-		verifyUserIsAdminOrOwnAccount(id, user);
-
-		userFactory.resetUserPassword(user, request.getPassword());
+		// We have to get the user from the DAO to make sure we get the
+		// persistence instance, not the cached instance.
+		final User subject = userDao.findById(id);
+		userFactory.resetUserPassword(subject, request.getPassword());
 
 		LOG.trace("Password updated");
 

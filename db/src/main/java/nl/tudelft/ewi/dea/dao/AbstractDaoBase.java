@@ -72,6 +72,8 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 
 		em.persist(object);
 
+		LOG.trace("{}: Persisted: {}", entityName, object);
+
 	}
 
 	@Override
@@ -85,6 +87,26 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 		for (final Object object : objects) {
 			em.persist(object);
 		}
+
+	}
+
+	@Override
+	@Transactional
+	public void detach(final T entity) {
+
+		checkNotNull(entity, "entity must be non-null");
+
+		em.detach(entity);
+
+	}
+
+	@Override
+	@Transactional
+	public final T merge(final T entity) {
+
+		checkNotNull(entity, "entity must be non-null");
+
+		return em.merge(entity);
 
 	}
 

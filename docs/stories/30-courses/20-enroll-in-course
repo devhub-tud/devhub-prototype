@@ -26,7 +26,7 @@ When
 	I select one course from the list, and
 	I click on 'enroll',
 Then
-	I am presented with the course project screen (e.g. /course/{courseId})
+	I am presented with the course project screen (e.g. /project/{projectId})
 
 
 -- Opening list of other students to invite
@@ -51,7 +51,7 @@ Then
 
 -- Receiving an invitation and acting on it
 Given
-	I have received a course project invitation email,
+	I have received a course project invitation email,
 When
 	I click on the link in the email,
 Then

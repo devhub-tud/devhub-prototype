@@ -10,17 +10,17 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity
-public class ProjectMembership {
+public class ProjectInvitation {
 
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) long id;
 
 	@ManyToOne(optional = false) private User user;
 	@ManyToOne(optional = false) private Project project;
 
 	@SuppressWarnings("unused")
-	private ProjectMembership() {}
+	private ProjectInvitation() {}
 
-	public ProjectMembership(final User user, final Project project) {
+	public ProjectInvitation(final User user, final Project project) {
 		this.user = user;
 		this.project = project;
 	}
@@ -43,7 +43,7 @@ public class ProjectMembership {
 
 		builder.append("id", getId());
 		builder.append("user.id", getUser().getId());
-		builder.append("user.email", getUser().getEmail());
+		builder.append("user.displayName", getUser().getDisplayName());
 		builder.append("project.id", getProject().getId());
 		builder.append("project.name", getProject().getName());
 

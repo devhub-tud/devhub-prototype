@@ -27,6 +27,7 @@ import nl.tudelft.jenkins.client.JenkinsClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
@@ -47,6 +48,7 @@ public class ProjectsResource {
 
 	@GET
 	@Path("checkName")
+	@Transactional
 	public Response checkProjectName(@QueryParam("name") final String name) {
 		if (!isValidProjectName(name)) {
 			return Response.status(Status.CONFLICT).entity("invalid-name").build();
@@ -60,6 +62,7 @@ public class ProjectsResource {
 	@POST
 	@Path("create")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Transactional
 	public Response provisionNewProject(final CreateProjectRequest request) {
 		final String name = request.getName();
 		if (!isValidProjectName(name) || !projectNameIsAvailable(name)) {

@@ -56,9 +56,12 @@ public class Project {
 	@Override
 	public String toString() {
 		final ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
+
 		builder.append("id", getId());
 		builder.append("name", getName());
-		builder.append("course", getCourse().getName());
+		builder.append("course.id", getCourse().getId());
+		builder.append("course.name", getCourse().getName());
+
 		return builder.toString();
 	}
 

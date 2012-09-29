@@ -42,6 +42,7 @@ public class CoursesResources {
 	}
 
 	@GET
+	@Transactional
 	public List<Course> findBySubString(@QueryParam("substring") final String subString) {
 
 		LOG.trace("Find by substring: {}", subString);
