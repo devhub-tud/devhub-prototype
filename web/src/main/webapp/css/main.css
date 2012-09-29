@@ -2,6 +2,12 @@ body {
 	margin-bottom: 20px;
 }
 
+.rounded {
+	-webkit-border-radius 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
 .content {
 	margin-top: 30px;
 }
@@ -55,6 +61,13 @@ table .btn-panel {
 	padding: 10px;
 	height: 120px;
 	max-height: 120px;
+	overflow: scroll;
+}
+
+.results-box .result {
+	border: 1px solid #eee;
+	padding: 5px;
+	margin-bottom: 3px;
 }
 
 .results-box-low {

@@ -2,9 +2,9 @@ $(document).ready(function() {
 
 	var newPromotionModal = $('#promote-user-to-teacher-modal');
 	
-	var searchField = $('#search-field');
+	var searchField = $('#user-search');
 	var assistents = $('#assistents');
-	var results = $('#results');
+	var searchResults = $('#results');
 	var openModalButton = $('#promote-user-to-teacher');
 	var cancelModalButton = $('#cancel-promote-user-to-teacher-modal');
 	var promoteUserButton = $('#promote-user-to-teacher-btn');
@@ -29,20 +29,31 @@ $(document).ready(function() {
 		
 		promoteUserButton.attr("disabled", "disabled");
 		
-		checkCourseName(currentCourseName, function(result) {
+		queryUsers(searchField.val(), function(result) {
 			var currentQuery = searchField.val();
 			if (query == currentQuery) {
-				// TODO: implement this.
+				searchResults.empty();
+				for (var i = 0; i < result.length; i++) {
+					searchResults.append("<div class='result rounded'>" 
+							+ result[i].name
+							+ "<i class='icon-plus' style='float: right;'></i>"
+							+ "</div>");
+				}
 			}
 		});
 	}
 
-	function queryUser(query, callback) {
+	function queryUsers(query, callback) {
+		if (query == undefined || query.length == 0) {
+			return;
+		}
+		
 		$.ajax({
 				type: "get",
-				url: "/accounts?substring=" + courseName,
+				contentType: "application/json",
+				url: "/accounts?substring=" + query,
 				success: function(data) {
-					callback.call(this, "ok");
+					callback.call(this, data);
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
 					callback.call(this, jqXHR.responseText);

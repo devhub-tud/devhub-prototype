@@ -16,6 +16,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -57,14 +58,13 @@ public class AccountsResource {
 	}
 
 	@GET
-	public List<User> findBySubString(@QueryParam("substring") final String subString) {
-
+	@Transactional
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response findBySubString(@QueryParam("substring") final String subString) {
 		LOG.trace("Find by substring: {}", subString);
-
-		final List<User> users = userDao.findBySubString(subString);
-
-		return users;
-
+		final List<Account> users = Account.convert(userDao.findBySubString(subString));
+		GenericEntity<List<Account>> entity = new GenericEntity<List<Account>>(users) {};
+		return Response.ok(entity).build();
 	}
 
 	@GET
