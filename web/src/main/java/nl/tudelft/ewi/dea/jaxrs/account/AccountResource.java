@@ -94,14 +94,25 @@ public class AccountResource {
 	@RequiresRoles(UserRole.ROLE_ADMIN)
 	@Transactional
 	public Response promoteUserToTeacher(@PathParam("id") final long id) {
-
 		LOG.trace("Promote user to admin: {}", id);
 
 		final User u = userDao.findById(id);
-		u.makeAdmin();
+		u.promoteToAdmin();
 
 		return Response.ok().build();
+	}
 
+	@POST
+	@Path("{id}/demote")
+	@RequiresRoles(UserRole.ROLE_ADMIN)
+	@Transactional
+	public Response demoteTeacherToUser(@PathParam("id") final long id) {
+		LOG.trace("Demote admin to user: {}", id);
+
+		final User u = userDao.findById(id);
+		u.demoteToUser();
+
+		return Response.ok().build();
 	}
 
 	@GET

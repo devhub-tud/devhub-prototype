@@ -114,8 +114,12 @@ public class User {
 		return builder.toString();
 	}
 
-	public void makeAdmin() {
+	public void promoteToAdmin() {
 		role = UserRole.ADMIN;
+	}
+
+	public void demoteToUser() {
+		role = UserRole.USER;
 	}
 
 	public Set<ProjectMembership> getProjectMemberships() {

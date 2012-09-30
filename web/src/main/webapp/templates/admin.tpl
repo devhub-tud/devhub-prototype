@@ -73,26 +73,19 @@
 					<div class="control-group">
 						<label class="control-label" for="user-search">Search</label>
 						<div class="controls">
-							<input type="text" id="user-search" placeholder="Name or e-mail" class="input-xlarge" />
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" for="user-search">Assistents</label>
-						<div class="controls">
-							<div id="assistents" class="results-box results-box-low input-xlarge"></div>
+							<input type="text" id="user-search" placeholder="Name or e-mail" class="input-wide" />
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="user-search">Results</label>
 						<div class="controls">
-							<div id="results" class="results-box input-xlarge"></div>
+							<div id="search-results" class="results-box input-wide"></div>
 						</div>
 					</div>
 				</form>
 			</div>
 			<div class="modal-footer">
-				<a href="#" id="cancel-promote-user-to-teacher-modal" class="btn">Cancel</a>
-				<a href="#" id="promote-user-to-teacher" class="btn btn-primary">Confirm changes</a>
+				<a href="#" id="close-promote-user-to-teacher-modal" class="btn">Close</a>
 			</div>
 		</div>
 

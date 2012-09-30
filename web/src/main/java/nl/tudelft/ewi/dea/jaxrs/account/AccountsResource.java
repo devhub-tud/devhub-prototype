@@ -71,14 +71,11 @@ public class AccountsResource {
 	@Path("email/{email}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
-	public List<User> findByEmailSubString(@PathParam("email") final String email) {
-
+	public Response findByEmailSubString(@PathParam("email") final String email) {
 		LOG.trace("Find accounts by email: {}", email);
-
-		final List<User> users = userDao.findByEmailSubString(email);
-
-		return users;
-
+		final List<Account> users = Account.convert(userDao.findByEmailSubString(email));
+		GenericEntity<List<Account>> entity = new GenericEntity<List<Account>>(users) {};
+		return Response.ok(entity).build();
 	}
 
 	@GET

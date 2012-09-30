@@ -3,12 +3,15 @@ $(document).ready(function() {
 	var newPromotionModal = $('#promote-user-to-teacher-modal');
 	
 	var searchField = $('#user-search');
-	var assistents = $('#assistents');
-	var searchResults = $('#results');
+	var searchResults = $('#search-results');
 	var openModalButton = $('#promote-user-to-teacher');
-	var cancelModalButton = $('#cancel-promote-user-to-teacher-modal');
-	var promoteUserButton = $('#promote-user-to-teacher-btn');
-
+	var closeModalButton = $('#close-promote-user-to-teacher-modal');
+	
+	newPromotionModal.on("hidden", function() {
+		searchField.val("");
+		searchResults.empty();
+	});
+	
 	var lastValue;
 
 	setInterval(function() {
@@ -20,25 +23,69 @@ $(document).ready(function() {
 			}
 		}, 250);
 	}, 100);
-
+	
 	function startUserSearch(query) {
 		var currentQuery = searchField.val();
 		if (query != currentQuery) {
 			return;
 		}
 		
-		promoteUserButton.attr("disabled", "disabled");
-		
-		queryUsers(searchField.val(), function(result) {
+		queryUsers(searchField.val(), function(results) {
 			var currentQuery = searchField.val();
 			if (query == currentQuery) {
 				searchResults.empty();
-				for (var i = 0; i < result.length; i++) {
-					searchResults.append("<div class='result rounded'>" 
-							+ result[i].name
-							+ "<i class='icon-plus' style='float: right;'></i>"
-							+ "</div>");
+				searchResults.find(".btn").unbind();
+				for (var i = 0; i < results.length; i++) {
+					searchResults.append(createResultDiv(results[i]));
 				}
+				searchResults.find(".btn").click(function() {
+					var parent = $(this).parent();
+					var id = parent.attr("account-id");
+					var admin = parent.find(".teacher").hasClass("btn-primary");
+					
+					$.ajax({
+						type: "post",
+						contentType: "application/json",
+						url: "/account/" + id + "/" + (admin ? "demote" : "promote"),
+						success: function(data) {
+							updateButtons(parent, !admin);
+						},
+						error: function(jqXHR, textStatus, errorThrown) {
+							showAlert("alert-error", jqXHR.responseText);
+						}
+					});
+				});
+			}
+			
+			function updateButtons(parent, isAdmin) {
+				if (isAdmin) {
+					parent.find(".user").removeClass("btn-primary");
+					parent.find(".teacher").addClass("btn-primary");
+				}
+				else {
+					parent.find(".teacher").removeClass("btn-primary");
+					parent.find(".user").addClass("btn-primary");
+				}
+			}
+			
+			function createResultDiv(result) {
+				var div = "<div class='result rounded'>";
+				div += result.name;
+				div += "<div account-id='" + result.id + "' style='float: right;' class='btn-group'>";
+				
+				if (result.admin) {
+					div += "<button type='button' class='user btn btn-mini'>User</button>";
+					div += "<button type='button' class='teacher btn btn-mini btn-primary'>Teacher</button>";
+				}
+				else {
+					div += "<button type='button' class='user btn btn-mini btn-primary'>User</button>";
+					div += "<button type='button' class='teacher btn btn-mini'>Teacher</button>";
+				}
+				
+				div += "</div>";
+				div += "</div>";
+				
+				return div;
 			}
 		});
 	}
@@ -66,23 +113,9 @@ $(document).ready(function() {
 		newPromotionModal.modal('show');
 	});
 	
-	cancelModalButton.click(function(e) {
-		e.preventDefault();
-		close();
-	});
-	
-	promoteUserButton.click(function(e) {
-		e.preventDefault();
-		
-		// Implement this.
-	});
-	
-	function close() {
+	closeModalButton.click(function(e) {
 		newPromotionModal.modal('hide');
-		searchField.val("");
-		assistents.empty();
-		results.empty();
-	}
+	});
 	
 	function showAlert(type, message) {
 		var alerts = $('.alerts');

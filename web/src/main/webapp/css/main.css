@@ -56,23 +56,26 @@ table .btn-panel {
 	width: 300px;
 }
 
+.input-wide {
+	width: 330px;
+}
+
+input.input-wide {
+	width: 340px;
+}
+
 .results-box {
 	border: 1px solid #ccc;
 	padding: 10px;
-	height: 120px;
-	max-height: 120px;
+	height: 180px;
+	max-height: 180px;
 	overflow: scroll;
 }
 
 .results-box .result {
 	border: 1px solid #eee;
-	padding: 5px;
+	padding: 5px 4px 7px 4px;
 	margin-bottom: 3px;
-}
-
-.results-box-low {
-	height: 60px;
-	max-height: 60px;
 }
 
 @media (max-width: 320px) {
