@@ -85,7 +85,7 @@ public class ProjectsResource {
 			jenkinsClient.createJob(projectName, gitUrl, owners);
 		} catch (final Exception e) {
 			LOG.warn("Failed to create job", e);
-			return Response.serverError().entity("Failed to create job: " + e.getMessage()).build();
+			return Response.serverError().entity("Failed to create Jenkins job").build();
 		}
 
 		return Response.ok().build();
