@@ -39,17 +39,15 @@ public class CourseDaoImpl extends AbstractDaoBase<Course> implements CourseDao 
 
 	@Override
 	@Transactional
-	public final List<Course> findBySubString(final String subString) {
-
+	public final List<Course> find(final Boolean enrolled, final String subString) {
 		LOG.trace("Find by subString: {}", subString);
 
-		final String query = "SELECT c FROM Course c WHERE c.name like :name";
+		// TODO: Make sure we can also filter out enrolled / non-enrolled...
 
+		final String query = "SELECT c FROM Course c WHERE c.name like :name";
 		final TypedQuery<Course> tq = createQuery(query);
 		tq.setParameter("name", '%' + subString + '%');
-
 		return tq.getResultList();
-
 	}
 
 }

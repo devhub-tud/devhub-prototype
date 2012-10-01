@@ -11,6 +11,6 @@ public interface CourseDao extends Dao<Course> {
 
 	Course findByName(final String name);
 
-	List<Course> findBySubString(final String subString);
+	List<Course> find(Boolean enrolled, final String subString);
 
 }

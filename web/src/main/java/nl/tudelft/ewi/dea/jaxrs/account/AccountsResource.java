@@ -62,8 +62,8 @@ public class AccountsResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response findBySubString(@QueryParam("substring") final String subString) {
 		LOG.trace("Find by substring: {}", subString);
-		final List<Account> users = Account.convert(userDao.findBySubString(subString));
-		GenericEntity<List<Account>> entity = new GenericEntity<List<Account>>(users) {};
+		final List<AccountDto> users = AccountDto.convert(userDao.findBySubString(subString));
+		GenericEntity<List<AccountDto>> entity = new GenericEntity<List<AccountDto>>(users) {};
 		return Response.ok(entity).build();
 	}
 
@@ -73,8 +73,8 @@ public class AccountsResource {
 	@Transactional
 	public Response findByEmailSubString(@PathParam("email") final String email) {
 		LOG.trace("Find accounts by email: {}", email);
-		final List<Account> users = Account.convert(userDao.findByEmailSubString(email));
-		GenericEntity<List<Account>> entity = new GenericEntity<List<Account>>(users) {};
+		final List<AccountDto> users = AccountDto.convert(userDao.findByEmailSubString(email));
+		GenericEntity<List<AccountDto>> entity = new GenericEntity<List<AccountDto>>(users) {};
 		return Response.ok(entity).build();
 	}
 

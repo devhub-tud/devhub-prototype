@@ -77,7 +77,7 @@ public class CourseDaoImplTest extends DatabaseTest {
 		persistAll(owner0, owner1, owner2, c0, c1, c2);
 
 		// When
-		final List<Course> courses = dao.findBySubString("BB");
+		final List<Course> courses = dao.find("BB");
 
 		// Then
 		assertThat(courses.size(), is(2));

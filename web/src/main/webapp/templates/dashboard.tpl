@@ -31,7 +31,7 @@
 
 		<div class="page-head">
 			<h3>Your projects</h3>
-			<a id="enroll-for-course" class="btn btn-primary">Enroll for course</a>
+			<a id="enroll-to-course" class="btn btn-primary">Enroll to course</a>
 			<a id="create-new-project" class="btn btn-primary" style="margin-right: 10px;">Create personal project</a>
 		</div>
 		<table class="table table-striped table-bordered table-hover">
@@ -70,7 +70,7 @@
 			</form>
 		</div>
 		<div class="modal-footer">
-			<a href="#" id="cancel-create-new-project-modal" class="btn">Cancel</a>
+			<a href="#" id="cancel-create-new-project-modal" class="btn" data-dismiss="modal">Cancel</a>
 			<a href="#" id="provision-new-project" class="btn btn-primary">Create project</a>
 		</div>
 	</div>
@@ -94,36 +94,36 @@
 			</div>
 		</div>
 		<div class="modal-footer">
-			<a href="#" id="close-create-new-project-modal" class="btn btn-primary">Close</a>
+			<a href="#" id="close-create-new-project-modal" class="btn btn-primary" data-dismiss="modal">Close</a>
 		</div>
 	</div>
 </div>
 
-<div id="enroll-for-course-modal" class="modal hide fade">
+<div id="enroll-to-course-modal" class="modal hide fade">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		<h3>Enroll for course</h3>
+		<h3>Enroll to course</h3>
 	</div>
 	<div class="modal-body">
 		<div class="alerts"></div>
-		<form id="promote-user-to-teacher-form" class="form-horizontal">
+		<form id="enroll-to-course-form" class="form-horizontal">
 			<div class="control-group">
-				<label class="control-label" for="user-search">Search</label>
+				<label class="control-label" for="course-search">Search</label>
 				<div class="controls">
 					<input type="text" id='course-search' placeholder="Course name or code" class="input-xlarge" />
 				</div>
 			</div>
 			<div class="control-group">
-				<label class="control-label" for="user-search">Results</label>
+				<label class="control-label" for="course-results">Results</label>
 				<div class="controls">
-					<div id="results" class="results-box input-xlarge"></div>
+					<div id="course-results" class="results-box input-xlarge"></div>
 				</div>
 			</div>
 		</form>
 	</div>
 	<div class="modal-footer">
-		<a href="#" id="cancel-promote-user-to-teacher-modal" class="btn">Cancel</a>
-		<a href="#" id="promote-user-to-teacher" class="btn btn-primary">Confirm changes</a>
+		<a href="#" class="btn" data-dismiss="modal">Cancel</a>
+		<a href="#" id="enroll-btn" class="btn btn-primary">Enroll</a>
 	</div>
 </div>
 

@@ -11,7 +11,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -95,8 +94,8 @@ public class ProjectsResource {
 		Config config = null;
 		try {
 			config = gitManager.getConfig();
-		} catch (/* TODO: Fix this in gitolite-admin */NullPointerException | IOException e) {
-			return Response.serverError().entity(new GenericEntity<String>("Currently unable to create git repositories!", String.class)).build();
+		} catch (/* TODO: Fix this in gitolite-admin */Exception e) {
+			return Response.serverError().entity("Currently unable to create git repositories!").build();
 		}
 
 		if (config.hasRepository(name)) {

@@ -1,12 +1,8 @@
 $(document).ready(function() {
 
 	var newProjectModal = $('#create-new-project-modal');
-	var enrollForCourseModal = $('#enroll-for-course-modal');
-	var enrollForCourseButton = $('#enroll-for-course');
 	var projectNameField = $('#project-name');
 	var newProjectButton = $('#create-new-project');
-	var closeButton = $('#close-create-new-project-modal');
-	var cancelButton = $('#cancel-create-new-project-modal');
 	var provisionNewProjectButton = $('#provision-new-project');
 	var newProjectForm = $('#create-new-project-form');
 	var newProjectProgress = $('#create-new-project-progress');
@@ -15,6 +11,17 @@ $(document).ready(function() {
 	var step1 = newProjectModal.find('.step-1');
 	var step2 = newProjectModal.find('.step-2');
 	var step3 = newProjectModal.find('.step-3');
+	
+	newProjectModal.on("hidden", function() {
+		step1.show();
+		step2.hide();
+		step3.hide();
+
+		newProjectMessage.find('strong').text("");
+		newProjectMessage.find('.bar').removeClass(".bar-success");
+		newProjectMessage.find('.bar').removeClass(".bar-danger");
+		projectNameField.val("");
+	});
 	
 	var lastValue;
 	
@@ -57,7 +64,8 @@ $(document).ready(function() {
 					helpBlock.html("Project names may only consist of letters and numbers, and must be at least 4 characters long!").show();
 					controlGroup.addClass("error");
 					provisionNewProjectButton.attr("disabled", "disabled");
-				} else {
+				} 
+				else {
 					// Errors are not handled!
 				}
 			}
@@ -87,20 +95,6 @@ $(document).ready(function() {
 		newProjectModal.modal('show');
 	});
 	
-	closeButton.click(function(e) {
-		e.preventDefault();
-		close();
-	});
-	
-	cancelButton.click(function(e) {
-		e.preventDefault();
-		close();
-	});
-	
-	enrollForCourseButton.click(function() {
-		enrollForCourseModal.modal('show');
-	});
-	
 	provisionNewProjectButton.click(function(e) {
 		e.preventDefault();
 		
@@ -108,8 +102,6 @@ $(document).ready(function() {
 		step2.show();
 		
 		var projectName = projectNameField.val();
-		console.log(JSON.stringify({ "name": projectName }));
-		
 		$.ajax({
 				type: "post",
 				dataType: "text",
@@ -131,25 +123,6 @@ $(document).ready(function() {
 					newProjectMessage.find('.bar').addClass("bar-danger");
 				}
 		});
-	});
-	
-	function close() {
-		newProjectModal.modal('hide');
-
-		step1.show();
-		step2.hide();
-		step3.hide();
-
-		newProjectMessage.find('strong').text("");
-		newProjectMessage.find('.bar').removeClass(".bar-success");
-		newProjectMessage.find('.bar').removeClass(".bar-danger");
-		projectNameField.val("");
-	}
-	
-	var nextSearch = null;
-	$('#course-search').keyup(function(event) {
-		nextSearch = $('#course-search').val();
-		// TODO Got to go. This is where the search should be implemented.
 	});
 	
 });

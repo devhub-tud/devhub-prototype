@@ -9,12 +9,12 @@ import nl.tudelft.ewi.dea.model.UserRole;
 import com.google.common.collect.Lists;
 
 @Data
-public class Account {
+public class AccountDto {
 
-	public static List<Account> convert(List<User> users) {
-		List<Account> accounts = Lists.newArrayList();
+	public static List<AccountDto> convert(List<User> users) {
+		List<AccountDto> accounts = Lists.newArrayList();
 		for (User user : users) {
-			accounts.add(new Account(user.getId(), user.getEmail(), user.getDisplayName(), user.getRole() == UserRole.ADMIN));
+			accounts.add(new AccountDto(user.getId(), user.getEmail(), user.getDisplayName(), user.getRole() == UserRole.ADMIN));
 		}
 		return accounts;
 	}
