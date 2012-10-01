@@ -24,7 +24,6 @@ import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
 @Path("admin")
-@RequiresRoles(UserRole.ROLE_ADMIN)
 @Produces(MediaType.APPLICATION_JSON)
 public class AdminResource {
 
@@ -43,6 +42,7 @@ public class AdminResource {
 
 	@GET
 	@Produces(MediaType.TEXT_HTML)
+	@RequiresRoles(UserRole.ROLE_ADMIN)
 	@Transactional
 	public String servePage() {
 		LOG.trace("Serving admin dashboard.");

@@ -71,5 +71,4 @@ public class DashboardResource {
 				.setValue("scripts", Lists.newArrayList("dashboard.js"))
 				.render("dashboard.tpl");
 	}
-
 }

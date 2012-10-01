@@ -37,9 +37,7 @@ public class Renderer {
 	private void setDefaultValuesForTemplate() {
 		LOG.debug("Setting default values for template");
 		final User user = securityProvider.getUser();
-		setValue("userDisplayName", user.getDisplayName());
-		setValue("userId", user.getId());
-		setValue("isAdmin", user.isAdmin());
+		setValue("user", user);
 	}
 
 	public Renderer setValue(final String key, final Object value) {

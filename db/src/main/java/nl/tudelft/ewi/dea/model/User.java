@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import liquibase.util.MD5Util;
 import lombok.EqualsAndHashCode;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -75,6 +76,10 @@ public class User {
 
 	public String getEmail() {
 		return email;
+	}
+
+	public String getGravatarUrl(int size) {
+		return "http://www.gravatar.com/avatar/" + MD5Util.computeMD5(email.toLowerCase()) + "?s=" + size;
 	}
 
 	public String getNetid() {
