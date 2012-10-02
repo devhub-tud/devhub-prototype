@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,7 +20,7 @@ public class Project {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
 
-	private String name;
+	@Column(unique = true) private String name;
 
 	@ManyToOne(optional = false) private Course course;
 

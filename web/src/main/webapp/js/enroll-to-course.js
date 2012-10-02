@@ -109,7 +109,7 @@ $(document).ready(function() {
 						}
 					},
 					error: function(jqXHR, textStatus, errorThrown) {
-						errors.push(errorThrown);
+						errors.push(jqXHR.responseText);
 						if (success + errors.length == total) {
 							closeOrShowErrors(errors);
 						}
@@ -125,7 +125,7 @@ $(document).ready(function() {
 			window.location.replace("/dashboard");
 		}
 		else {
-			var errorMessages = "Could not enroll you for one or more courses: <ul>";
+			var errorMessages = "Could not complete your request: <ul>";
 			for (var i = 0; i < errors.length; i++) {
 				errorMessages += "<li>" + errors[i] + "</li>";
 			}

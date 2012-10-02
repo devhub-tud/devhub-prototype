@@ -101,7 +101,13 @@ public class CourseResource {
 
 		final User currentUser = securityProvider.getUser();
 
-		final String projectName = course.getName() + "-" + currentUser.getDisplayName();
+		if (membershipDao.hasEnrolled(course, currentUser)) {
+			return Response.status(Status.CONFLICT).entity("User: " + currentUser.getDisplayName()
+					+ " is already enrolled in the course: " + course.getName()).build();
+		}
+
+		// TODO: Make this into the form: IN4321: Functional programming - Group 2
+		final String projectName = course.getName() + " - " + currentUser.getDisplayName();
 
 		final Project project = new Project(projectName, course);
 		projectDao.persist(project);
@@ -110,7 +116,6 @@ public class CourseResource {
 		membershipDao.persist(membership);
 
 		return Response.ok().build();
-
 	}
 
 }
