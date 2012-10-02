@@ -52,7 +52,7 @@
 		#else
 		<div class="well">
 			<h1>Welcome to DevHub!</h1>
-			<p>You're not registered to any projects yet. To start, create your own project, enroll for a course, or accept an inventation to another project.</p>
+			<p>You don't seem to be part of any projects yet. To start using DevHub, create your own project, enroll for a course, or accept a project invitation from someone in your team.</p>
 		</div>
 		#end
 	</div>
