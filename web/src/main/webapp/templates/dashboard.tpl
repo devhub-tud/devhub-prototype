@@ -34,7 +34,8 @@
 			<a id="enroll-to-course" class="btn btn-primary">Enroll to course</a>
 			<a id="create-new-project" class="btn btn-primary" style="margin-right: 10px;">Create personal project</a>
 		</div>
-		<table class="table table-striped table-bordered table-hover">
+		#if(!$projects.isEmpty())
+		<table class="table table-striped table-bordered table-hover" id="$projects.size()">
 			<thead>
 				<tr>
 					<th>Project name</th>
@@ -48,6 +49,12 @@
 				#end
 			</tbody>
 		</table>
+		#else
+		<div class="well">
+			<h1>Welcome to DevHub!</h1>
+			<p>You're not registered to any projects yet. To start, create your own project, enroll for a course, or accept an inventation to another project.</p>
+		</div>
+		#end
 	</div>
 </div>
 
