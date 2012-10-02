@@ -8,10 +8,8 @@ import static org.junit.Assert.assertThat;
 import java.io.IOException;
 
 import nl.tudelft.ewi.dea.mail.SimpleMessage;
+import nl.tudelft.ewi.dea.mail.TestFactory;
 
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,11 +22,7 @@ public class PasswordResetMailFactoryTest {
 
 	@Before
 	public void setup() {
-		VelocityEngine engine = new VelocityEngine();
-		engine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
-		engine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
-		engine.init();
-		factory = new PasswordResetMailFactory(engine, MAIL_PROPS);
+		factory = new PasswordResetMailFactory(TestFactory.getVelocityEngine(), MAIL_PROPS);
 	}
 
 	@Test

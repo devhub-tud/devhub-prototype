@@ -3,6 +3,7 @@ package nl.tudelft.ewi.dea.mail;
 import javax.inject.Inject;
 
 import nl.tudelft.ewi.dea.mail.internals.MailSender;
+import nl.tudelft.ewi.dea.mail.templates.InviteProjectFactory;
 import nl.tudelft.ewi.dea.mail.templates.PasswordResetMailFactory;
 import nl.tudelft.ewi.dea.mail.templates.VerifyRegistrationMailFactory;
 
@@ -20,13 +21,16 @@ class DevHubMailImpl implements DevHubMail {
 
 	private final Provider<VerifyRegistrationMailFactory> verifyRegMailFactory;
 	private final Provider<PasswordResetMailFactory> passwordResetFac;
+	private final Provider<InviteProjectFactory> inviteProjectFac;
 	private final MailSender sender;
 
 	@Inject
-	public DevHubMailImpl(Provider<VerifyRegistrationMailFactory> verifyRegMailFactory, Provider<PasswordResetMailFactory> passwordResetFac, MailSender sender) {
+	public DevHubMailImpl(Provider<VerifyRegistrationMailFactory> verifyRegMailFactory, Provider<PasswordResetMailFactory> passwordResetFac, MailSender sender,
+			Provider<InviteProjectFactory> inviteProjectFac) {
 		this.verifyRegMailFactory = verifyRegMailFactory;
 		this.passwordResetFac = passwordResetFac;
 		this.sender = sender;
+		this.inviteProjectFac = inviteProjectFac;
 	}
 
 	@Override
@@ -42,5 +46,10 @@ class DevHubMailImpl implements DevHubMail {
 		LOG.debug("Sending reset password mail to {} with url {}", toAdress, url);
 		SimpleMessage message = passwordResetFac.get().newMail(toAdress, url);
 		sender.deliver(message);
+	}
+
+	@Override
+	public void sendProjectInvite(String email, String displayName, String projectName, String url) {
+		inviteProjectFac.get().sendProjectInvite(email, displayName, projectName, url);
 	}
 }

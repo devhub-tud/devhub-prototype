@@ -1,0 +1,9 @@
+Hi there!
+
+$userName has invited you to join his project $projectName on DevHub. Go to DevHub to accept his invenvation.
+
+$url
+
+Kind regards,
+
+The DevHub team

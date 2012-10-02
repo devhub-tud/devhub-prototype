@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -19,6 +20,7 @@ import nl.tudelft.ewi.dea.dao.ProjectInvitationDao;
 import nl.tudelft.ewi.dea.dao.ProjectMembershipDao;
 import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
+import nl.tudelft.ewi.dea.mail.DevHubMail;
 import nl.tudelft.ewi.dea.model.Project;
 import nl.tudelft.ewi.dea.model.ProjectInvitation;
 import nl.tudelft.ewi.dea.model.ProjectMembership;
@@ -49,8 +51,13 @@ public class ProjectResource {
 
 	private final Provider<Renderer> renderers;
 
+	private final DevHubMail mail;
+
+	private final String publicUrl;
+
 	@Inject
-	public ProjectResource(final Provider<Renderer> renderers, final SecurityProvider securityProvider, final ProjectDao projectDao, final UserDao userDao, final ProjectInvitationDao invitationDao, final ProjectMembershipDao membershipDao) {
+	public ProjectResource(final Provider<Renderer> renderers, final SecurityProvider securityProvider, final ProjectDao projectDao, final UserDao userDao, final ProjectInvitationDao invitationDao, final ProjectMembershipDao membershipDao,
+			DevHubMail mail, @Named("webapp.public-url") String publicUrl) {
 		this.renderers = renderers;
 
 		this.securityProvider = securityProvider;
@@ -59,6 +66,8 @@ public class ProjectResource {
 		this.projectDao = projectDao;
 		this.invitationDao = invitationDao;
 		this.membershipDao = membershipDao;
+		this.mail = mail;
+		this.publicUrl = publicUrl;
 	}
 
 	@GET
@@ -107,7 +116,11 @@ public class ProjectResource {
 		final ProjectInvitation invitation = new ProjectInvitation(otherUser, project);
 		invitationDao.persist(invitation);
 
-		// TODO Send email to invited user. Low priority, after demo!
+		String fromName = otherUser.getDisplayName();
+		if (fromName == null || fromName.isEmpty()) {
+			fromName = otherUser.getEmail();
+		}
+		mail.sendProjectInvite(otherUser.getEmail(), fromName, project.getName(), publicUrl);
 
 		return Response.ok().build();
 
