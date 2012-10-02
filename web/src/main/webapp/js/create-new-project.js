@@ -66,7 +66,8 @@ $(document).ready(function() {
 					provisionNewProjectButton.attr("disabled", "disabled");
 				} 
 				else {
-					// Errors are not handled!
+					console.error("Unexpected result " + result);
+					//No serious error handling.
 				}
 			}
 		});
