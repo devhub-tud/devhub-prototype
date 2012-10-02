@@ -14,6 +14,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.Response.StatusType;
 
 import nl.tudelft.ewi.dea.dao.ProjectDao;
 import nl.tudelft.ewi.dea.dao.ProjectInvitationDao;
@@ -31,6 +32,7 @@ import org.apache.shiro.authz.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
 import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -93,19 +95,25 @@ public class ProjectResource {
 				.setValue("project", project)
 				.setValue("members", members)
 				.setValue("invitations", invitations)
+				.setValue("scripts", Lists.newArrayList("invite-user.js"))
 				.render("project.tpl");
 
 	}
 
 	@GET
-	@Path("{projectId}/invite/{userId}")
+	@Path("{projectId}/invite/{userMail}")
 	@Transactional
-	public Response inviteUser(@PathParam("projectId") final long projectId, @PathParam("userId") final long userId) {
+	public Response inviteUser(@PathParam("projectId") final long projectId, @PathParam("userMail") final String email) {
 
-		LOG.trace("Inviting user {} for project {}", userId, projectId);
+		LOG.trace("Inviting user {} for project {}", email, projectId);
 
 		final Project project = projectDao.findById(projectId);
-		final User otherUser = userDao.findById(userId);
+		final User otherUser;
+		try {
+			otherUser = userDao.findByEmail(email);
+		} catch (NoResultException e) {
+			return Response.status(Status.CONFLICT).entity("unknown-user").build();
+		}
 
 		if (userIsAlreadyInvited(project, otherUser)) {
 			return Response.status(Status.CONFLICT)
@@ -134,7 +142,6 @@ public class ProjectResource {
 
 		try {
 			invitationDao.findByProjectAndUser(project, user);
-
 			LOG.trace("Invitation found - user is already invited");
 		} catch (final NoResultException e) {
 			LOG.trace("Invitation not found - user is not yet invited");

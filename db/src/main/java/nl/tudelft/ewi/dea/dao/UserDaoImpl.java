@@ -7,6 +7,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
 import nl.tudelft.ewi.dea.model.User;
@@ -47,7 +48,7 @@ class UserDaoImpl extends AbstractDaoBase<User> implements UserDao {
 
 	@Override
 	@Transactional
-	public User findByEmail(final String email) {
+	public User findByEmail(final String email) throws NoResultException {
 
 		LOG.trace("Find by email: {}", email);
 
