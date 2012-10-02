@@ -15,6 +15,7 @@ import liquibase.Liquibase;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import nl.tudelft.ewi.dea.DevHubException;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -45,7 +46,7 @@ public class DatabaseStructure {
 		create();
 	}
 
-	public void create() {
+	public final void create() {
 		try (Connection conn = createConnection()) {
 			LOG.info("Processing all liquibase changesets...");
 			Liquibase liquibase = new Liquibase("liquibase.xml", new ClassLoaderResourceAccessor(), new JdbcConnection(conn));
@@ -54,7 +55,7 @@ public class DatabaseStructure {
 			LOG.debug("Finished processing all liquibase changesets.");
 		} catch (LiquibaseException | ClassNotFoundException | SQLException e) {
 			LOG.error(e.getMessage(), e);
-			throw new RuntimeException(e.getMessage(), e);
+			throw new DevHubException(e.getMessage(), e);
 		}
 	}
 

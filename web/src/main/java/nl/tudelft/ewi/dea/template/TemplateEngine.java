@@ -15,6 +15,9 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+
+import nl.tudelft.ewi.dea.DevHubException;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.app.VelocityEngine;
@@ -28,78 +31,87 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Maps;
 
 /**
- * The {@link TemplateEngine} class is responsible for loading and parsing template
- * files found in the resources folder. Its main purpose is HTML formatting for 
- * the web-frontend.
+ * The {@link TemplateEngine} class is responsible for loading and parsing
+ * template files found in the resources folder. Its main purpose is HTML
+ * formatting for the web-frontend.
  */
 public class TemplateEngine {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TemplateEngine.class);
-	
+
 	private final Map<String, Long> modificationTimes;
 	private final VelocityEngine engine;
 
 	private Path path;
-	
+
+	private final ExecutorService executor;
+
 	/**
-	 * Constructs a new {@link TemplateEngine} object, and initializes it.
-	 * This constructor will throw a {@link RuntimeException} if initializing fails.
+	 * Constructs a new {@link TemplateEngine} object, and initializes it. This
+	 * constructor will throw a {@link RuntimeException} if initializing fails.
 	 * 
-	 * @param path 
-	 * 		The path containing all the templates.
+	 * @param path The path containing all the templates.
+	 * @param executor
 	 */
-	public TemplateEngine(Path path) {
+	public TemplateEngine(Path path, ExecutorService executor) {
+		this.executor = executor;
 		try {
 			this.path = path;
 			this.modificationTimes = Maps.newHashMap();
 			this.engine = new VelocityEngine();
-			
+
 			engine.setProperty("resource.loader", "string");
 			engine.setProperty("runtime.log.logsystem.class", getPath(NullLogChute.class));
 			engine.setProperty("string.resource.loader.class", getPath(StringResourceLoader.class));
 			engine.setProperty("string.resource.loader.description", "Velocity StringResource loader");
 			engine.setProperty("string.resource.loader.repository.class", getPath(StringResourceRepositoryImpl.class));
 			engine.init();
-			
+
 			updateTemplates();
 
-			startWatcher();
-		} 
-		catch (Exception e) {
+		} catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
-			throw new RuntimeException("Could not initialize the TemplateEngine", e);
+			throw new DevHubException("Could not initialize the TemplateEngine", e);
 		}
 	}
 
-	private void startWatcher() {
-		Runnable runnable = new Runnable() {
+	/**
+	 * Start the watcher.
+	 */
+	public void watchForChanges() {
+		executor.execute(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					WatchService watcher = path.getFileSystem().newWatchService();
-					path.register(watcher, 
-							StandardWatchEventKinds.ENTRY_CREATE, 
-							StandardWatchEventKinds.ENTRY_MODIFY, 
-							StandardWatchEventKinds.ENTRY_DELETE);
-					
-					LOG.info("Now watching template folder: " + path.toFile().getAbsolutePath());
-					
-					while (true) {
-						WatchKey key = watcher.take();
-						List<WatchEvent<?>> events = key.pollEvents();
-						if (!events.isEmpty()) {
-							updateTemplates();
-						}
-						key.reset();
-					}
+					initWatcher();
 				}
-				catch (InterruptedException | IOException e) {
-					LOG.error(e.getMessage(), e);
+				catch (InterruptedException e) {
+					LOG.debug("Template engine interrupted.");
+				} catch (IOException e) {
+					LOG.error("Template enginge stopped due to IO error: " + e.getLocalizedMessage(), e);
 				}
 			}
-		};
-		
-		new Thread(runnable).start();
+		});
+
+	}
+
+	private void initWatcher() throws IOException, InterruptedException {
+		WatchService watcher = path.getFileSystem().newWatchService();
+		path.register(watcher,
+				StandardWatchEventKinds.ENTRY_CREATE,
+				StandardWatchEventKinds.ENTRY_MODIFY,
+				StandardWatchEventKinds.ENTRY_DELETE);
+
+		LOG.info("Now watching template folder: " + path.toFile().getAbsolutePath());
+
+		while (true) {
+			WatchKey key = watcher.take();
+			List<WatchEvent<?>> events = key.pollEvents();
+			if (!events.isEmpty()) {
+				updateTemplates();
+			}
+			key.reset();
+		}
 	}
 
 	private void updateTemplates() {
@@ -110,9 +122,9 @@ public class TemplateEngine {
 			LOG.error("Could not locate templates folder!");
 			return;
 		}
-		
+
 		File dir = new File(uri);
-		
+
 		File[] templates = dir.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File arg0, String arg1) {
@@ -120,11 +132,11 @@ public class TemplateEngine {
 				if (!isTemplateFile) {
 					return false;
 				}
-				
+
 				return fileHasBeenModified(new File(arg0, arg1));
 			}
 		});
-		
+
 		if (templates != null && templates.length > 0) {
 			for (File template : templates) {
 				repo.putStringResource(template.getName(), getTemplateFromResource(template.getName()));
@@ -144,7 +156,7 @@ public class TemplateEngine {
 			return false;
 		}
 	}
-	
+
 	private String getPath(Class<?> clazz) {
 		Package clazzPackage = clazz.getPackage();
 		String packagePath = clazzPackage.getName();
@@ -153,11 +165,11 @@ public class TemplateEngine {
 		}
 		return clazz.getSimpleName();
 	}
-	
+
 	private String getTemplateFromResource(final String templatePath) {
 		InputStream stream = null;
 		BufferedReader reader = null;
-		
+
 		try {
 			StringBuilder builder = new StringBuilder();
 			stream = new FileInputStream(new File(path.toFile(), templatePath));
@@ -167,17 +179,15 @@ public class TemplateEngine {
 				if (line == null) {
 					break;
 				}
-				
+
 				builder.append(line + "\n");
 			}
-			
+
 			return builder.toString();
-		} 
-		catch (IOException ex) {
+		} catch (IOException ex) {
 			LOG.error("Could not load template: " + templatePath);
-			throw new RuntimeException(ex);
-		}
-		finally {
+			throw new DevHubException(ex);
+		} finally {
 			try {
 				if (reader != null) {
 					reader.close();
@@ -185,23 +195,21 @@ public class TemplateEngine {
 				if (stream != null) {
 					stream.close();
 				}
-			} 
-			catch (IOException e) {
+			} catch (IOException e) {
 				// Ignore...
 			}
 		}
 	}
 
 	/**
-	 * This method will return a {@link Template} object containing the requested template.
-	 * This method will also throw a {@link RuntimeException} if the template could not be loaded,
-	 * in which case you probably specified the wrong file.
+	 * This method will return a {@link Template} object containing the requested
+	 * template. This method will also throw a {@link RuntimeException} if the
+	 * template could not be loaded, in which case you probably specified the
+	 * wrong file.
 	 * 
-	 * @param templatePath
-	 * 		The template file to load.
+	 * @param templatePath The template file to load.
 	 * 
-	 * @return
-	 * 		The loaded {@link Template} object.
+	 * @return The loaded {@link Template} object.
 	 */
 	public Template getTemplate(final String templatePath) {
 		synchronized (engine) {
@@ -209,15 +217,14 @@ public class TemplateEngine {
 				StringResourceRepository repo = StringResourceLoader.getRepository();
 				repo.putStringResource(templatePath, getTemplateFromResource(templatePath));
 			}
-			
+
 			try {
 				return engine.getTemplate(templatePath);
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				LOG.error(e.getLocalizedMessage(), e);
 				throw new RuntimeException(e);
 			}
 		}
 	}
-	
+
 }

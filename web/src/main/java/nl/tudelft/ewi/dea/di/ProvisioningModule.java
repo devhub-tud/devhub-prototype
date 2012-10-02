@@ -5,6 +5,7 @@ import java.io.IOException;
 import nl.minicom.gitolite.manager.ConfigManager;
 import nl.minicom.gitolite.manager.git.PassphraseCredentialsProvider;
 import nl.minicom.gitolite.manager.models.Config;
+import nl.tudelft.ewi.dea.DevHubException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class ProvisioningModule extends AbstractModule {
 					+ "groups: " + config.getGroups().size() + ", "
 					+ "users: " + config.getUsers().size() + " }");
 		} catch (final IOException e) {
-			throw new RuntimeException(e.getMessage(), e);
+			throw new DevHubException(e.getMessage(), e);
 		}
 
 		bind(ConfigManager.class).toInstance(manager);
