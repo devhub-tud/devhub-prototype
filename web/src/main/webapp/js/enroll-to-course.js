@@ -56,6 +56,7 @@ $(document).ready(function() {
 
 	function queryCourses(query, callback) {
 		if (query == undefined || query.length == 0) {
+			courseResults.empty();
 			return;
 		}
 		
