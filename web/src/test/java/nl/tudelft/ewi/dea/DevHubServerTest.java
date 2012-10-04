@@ -16,13 +16,16 @@ public class DevHubServerTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DevHubServerTest.class);
 
+	private static final int PORT = 10_000;
+
 	private Server server;
 
 	@Before
 	public void setUp() throws Exception {
-		server = new Server(8080);
+		server = new Server(PORT);
 		server.setHandler(DevHubServer.buildWebAppContext());
 		server.start();
+
 	}
 
 	@After
@@ -34,7 +37,7 @@ public class DevHubServerTest {
 	public void f() throws Exception {
 
 		HttpClient client = new DefaultHttpClient();
-		HttpGet get = new HttpGet("http://localhost:8080/");
+		HttpGet get = new HttpGet("http://localhost:" + PORT + "/");
 
 		HttpResponse response = client.execute(get);
 		LOG.info("Response status  : {}", response.getStatusLine());
