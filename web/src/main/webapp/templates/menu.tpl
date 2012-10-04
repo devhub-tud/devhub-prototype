@@ -10,7 +10,7 @@
 							<img src="${user.getGravatarUrl(24)}" />
 							${user.getDisplayName()} <b class="caret"> </b>
 						</a>
-						<ul class="dropdown-menu" style="width: 230px;">
+						<ul class="dropdown-menu user-menu" style="width: 230px; left: -75px !important;">
 							<li style="margin: 0px 6px 0px 6px; height: 44px; ">
 								<img style="float: left;" src="${user.getGravatarUrl(48)}" />
 								<span style="float: left; padding-left: 6px;">
