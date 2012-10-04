@@ -19,6 +19,15 @@ body {
 	left: 200px !important;
 }
 
+.navbar .user-menu {
+	width: 230px; 
+	left: -75px !important;
+}
+
+.navbar .user-menu .bordered {
+	border: 1px solid #bbb;
+}
+
 .rounded {
 	-webkit-border-radius 3px;
 	-moz-border-radius: 3px;

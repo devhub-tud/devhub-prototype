@@ -10,9 +10,9 @@
 							<img src="${user.getGravatarUrl(24)}" />
 							${user.getDisplayName()} <b class="caret"> </b>
 						</a>
-						<ul class="dropdown-menu user-menu" style="width: 230px; left: -75px !important;">
-							<li style="margin: 0px 6px 0px 6px; height: 44px; ">
-								<img style="float: left;" src="${user.getGravatarUrl(48)}" />
+						<ul class="dropdown-menu user-menu">
+							<li style="margin: 0px 6px 0px 6px; height: 46px; ">
+								<img class="bordered" style="float: left;" src="${user.getGravatarUrl(48)}" />
 								<span style="float: left; padding-left: 6px;">
 									<span style="display: block;"><strong>${user.getDisplayName()}</strong></span>
 									<span style="display: block;">$user.getRole().getDisplayName()</span>
