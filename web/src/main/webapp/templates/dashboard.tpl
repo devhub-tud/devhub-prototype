@@ -2,19 +2,21 @@
 
 <div class="container">
 	<div class="content">
-
-		#if($invitations && !$invitations.isEmpty())
+		
+#set ( $hasInvites = false)
+#if($invitations && !$invitations.isEmpty())
+	#set ( $hasInvites = true)
 		<div id="invitations" class="alert alert-info">
 
-			#if($invitations.size() == 1)
+	#if($invitations.size() == 1)
 			<h3>You have 1 new invitation awaiting...</h3>
-			#else
+	#else
 			<h3>You have $invitations.size() new invitations awaiting...</h3>
-			#end
+	#end
 
 			<table class="table table-condensed">
 				<tbody>
-					#foreach($invitation in $invitations)
+	#foreach($invitation in $invitations)
 					<tr>
 						<td>${invitation.getProject().getName()}
 							<div class="btn-panel">
@@ -23,18 +25,17 @@
 							</div>
 						</td>
 					</tr>
-					#end
+	#end
 				</tbody>
 			</table>
 		</div>
-		#end
+#end
 
+#if(!$projects.isEmpty())
 		<div class="page-head">
 			<h3>Your projects</h3>
-			<a id="enroll-to-course" class="btn btn-primary">Enroll to course</a>
-			<a id="create-new-project" class="btn btn-primary" style="margin-right: 10px;">Create personal project</a>
+			<a id="start-new-project-modal-btn" class="btn btn-primary">Start a new project</a>
 		</div>
-		#if(!$projects.isEmpty())
 		<table class="table table-striped table-bordered table-hover" id="$projects.size()">
 			<thead>
 				<tr>
@@ -42,19 +43,33 @@
 				</tr>
 			</thead>
 			<tbody>
-				#foreach($project in $projects)
+	#foreach($project in $projects)
 				<tr>
 					<td><a href="/project/${project.id}">$project.getName()</a></td>
 				</tr>
-				#end
+	#end
 			</tbody>
 		</table>
-		#else
-		<div class="well">
+#else
+		<div class="well" style="margin-top: 96px;">
 			<h1>Welcome to DevHub!</h1>
-			<p>You don't seem to be part of any projects yet. To start using DevHub, create your own project, enroll for a course, or accept a project invitation from someone in your team.</p>
+			<p>	
+	#if ($hasInvites) 
+				<strong>Hey there stranger!</strong> By the looks of it, you don't seem to be participating in any projects yet. 
+				To get started you can either accept a pending project invitation at the top of the page, or set up 
+				your own project by clicking on the blue button on the right. Before you know it you'll be 
+				collaborating with your team mates.
+	#else
+				<strong>Hey there stranger!</strong> By the looks of it, you don't seem to be participating in any projects yet. 
+				To get started you must set up your own project by clicking on the blue button on the right. 
+				Before you know it you'll be collaborating with your team mates.
+	#end	
+			</p>
+			<div style="height: 38px; margin-top: 32px;">
+				<a id="start-new-project-modal-btn" class="pull-right btn btn-primary btn-large">Let's set up a project!</a>
+			</div>
 		</div>
-		#end
+#end
 	</div>
 </div>
 

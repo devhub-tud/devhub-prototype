@@ -7,15 +7,15 @@
 				<ul class="nav">
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<img src="${user.getGravatarUrl(16)}" style="vertical-align: top;" />
-							${user.getDisplayName()}<b class="caret"> </b>
+							<img src="${user.getGravatarUrl(24)}" />
+							${user.getDisplayName()} <b class="caret"> </b>
 						</a>
 						<ul class="dropdown-menu" style="width: 230px;">
-							<li style="margin: 3px 6px 0px 6px; height: 38px; ">
-								<img style="float: left;" src="${user.getGravatarUrl(40)}" />
+							<li style="margin: 0px 6px 0px 6px; height: 44px; ">
+								<img style="float: left;" src="${user.getGravatarUrl(48)}" />
 								<span style="float: left; padding-left: 6px;">
 									<span style="display: block;"><strong>${user.getDisplayName()}</strong></span>
-									<span style="display: block;">$user.getRole().name()</span>
+									<span style="display: block;">$user.getRole().getDisplayName()</span>
 								</span>
 							</li>
 							<li class="divider"></li>

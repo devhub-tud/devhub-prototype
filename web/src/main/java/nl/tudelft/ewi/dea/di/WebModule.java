@@ -6,7 +6,6 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.inject.Singleton;
 import javax.servlet.ServletContext;
@@ -17,7 +16,6 @@ import nl.tudelft.ewi.dea.mail.MailProperties;
 import nl.tudelft.ewi.dea.template.TemplateEngine;
 
 import org.apache.shiro.guice.web.GuiceShiroFilter;
-import org.apache.shiro.session.mgt.ExecutorServiceSessionValidationScheduler;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

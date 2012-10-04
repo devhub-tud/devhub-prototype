@@ -34,7 +34,7 @@ public class User {
 
 	@Column(unique = true, nullable = false) private String email;
 	@Column(nullable = false) private String displayName;
-	@Column(unique = true, nullable = false) private String netid;
+	@Column(unique = true, nullable = false) private String netId;
 	private long studentNumber;
 
 	@Column(nullable = false) private String salt;
@@ -50,16 +50,16 @@ public class User {
 	@SuppressWarnings("unused")
 	private User() {}
 
-	public User(final String displayName, final String email, final String netid, final long studentNumber, final String salt, final String password, final UserRole role) {
+	public User(final String displayName, final String email, final String netId, final long studentNumber, final String salt, final String password, final UserRole role) {
 		checkArgument(!isNullOrEmpty(displayName));
 		checkArgument(!isNullOrEmpty(email));
-		checkArgument(!isNullOrEmpty(netid));
+		checkArgument(!isNullOrEmpty(netId));
 		checkArgument(!isNullOrEmpty(password));
 		checkArgument(!isNullOrEmpty(salt));
 		checkNotNull(role);
 		this.displayName = displayName;
 		this.email = email;
-		this.netid = netid;
+		this.netId = netId;
 		this.studentNumber = studentNumber;
 		this.salt = salt;
 		this.password = password;
@@ -82,8 +82,8 @@ public class User {
 		return "http://www.gravatar.com/avatar/" + MD5Util.computeMD5(email.toLowerCase()) + "?s=" + size;
 	}
 
-	public String getNetid() {
-		return netid;
+	public String getNetId() {
+		return netId;
 	}
 
 	public long getStudentNumber() {
@@ -112,7 +112,7 @@ public class User {
 		builder.append("id", getId());
 		builder.append("email", getEmail());
 		builder.append("displayName", getDisplayName());
-		builder.append("netid", getNetid());
+		builder.append("netid", getNetId());
 		builder.append("studentNumber", getStudentNumber());
 		builder.append("role", getRole());
 		builder.append("memberships", getProjectMemberships());

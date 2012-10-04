@@ -2,31 +2,29 @@
 
 <div class="container">
 	<div class="content">
-		<h1>$user.getDisplayName()</h1>
-		<!-- (GR)Avatar hidden as long as hashing does not work. -->
-		<!-- 		<div style="float: left; width: 100px;"> -->
-		<!-- 			<a href="http://gravatar.com"> -->
-		<!-- 		<img src="http://www.gravatar.com/avatar/e73e47d53aa7d653abba096280c1f610"> -->
-		<!-- 			</a> -->
-		<!-- 		</div> -->
-		<div style="overflow: hidden;">
-			<table class="table table-condensed">
-				<tbody>
-					<tr>
-						<td>Mail</td>
-						<td>${user.email}</td>
-					</tr>
-					<tr>
-						<td>NetId</td>
-						<td>${user.netid}</td>
-					</tr>
-					<tr>
-						<td>Student number</td>
-						<td>${user.studentNumber}</td>
-					</tr>
-				</tbody>
-			</table>
+		<div style="height: 96px;">
+			<img style="float: left;" src="${account.getGravatarUrl(96)}" />
+			<div style="float: left; margin-left: 24px;">
+				<h1>$account.getDisplayName()</h1>
+				<h5>$account.getRole().getDisplayName()</h5>
+			</div>
 		</div>
+		<table class="table table-condensed" style="margin-top: 12px;">
+			<tbody>
+				<tr>
+					<td>Email</td>
+					<td>${account.getEmail()}</td>
+				</tr>
+				<tr>
+					<td>Net ID</td>
+					<td>${account.getNetId()}</td>
+				</tr>
+				<tr>
+					<td>Student number</td>
+					<td>${account.getStudentNumber()}</td>
+				</tr>
+			</tbody>
+		</table>
 		<div class="well">
 			<h2>Change password</h2>
 			<input type="password" name='password' placeholder="Enter your new password" />

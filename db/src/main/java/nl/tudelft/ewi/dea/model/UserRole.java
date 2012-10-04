@@ -9,7 +9,18 @@ import com.google.common.collect.ImmutableSet;
  */
 public enum UserRole {
 
-	ADMIN, USER;
+	ADMIN("Administrator"),
+	USER("User");
+
+	private final String displayName;
+
+	private UserRole(String displayName) {
+		this.displayName = displayName;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
 
 	public static final String ROLE_USER = "USER";
 	public static final String ROLE_ADMIN = "ADMIN";

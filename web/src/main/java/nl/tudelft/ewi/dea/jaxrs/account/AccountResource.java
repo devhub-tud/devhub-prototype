@@ -31,7 +31,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.annotation.RequiresRoles;
-import org.apache.shiro.crypto.hash.Md5Hash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,14 +68,11 @@ public class AccountResource {
 	public String serveAccountPage(@PathParam("id") final long id) {
 		LOG.debug("Looking up my projects ...");
 
-		final User user = subjectProvider.getUser();
+		final User user = userDao.findById(id);
 		verifyUserIsAdminOrOwnAccount(id, user);
 
-		final String hashedEmail = new Md5Hash(user.getEmail()).toHex();
-
 		return renderers.get()
-				.setValue("user", user)
-				.setValue("hashedEmail", hashedEmail)
+				.setValue("account", user)
 				.setValue("scripts", Arrays.asList("account.js"))
 				.render("account.tpl");
 

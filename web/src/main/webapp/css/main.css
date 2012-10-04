@@ -2,6 +2,19 @@ body {
 	margin-bottom: 20px;
 }
 
+.navbar .brand {
+	margin-left: 0px;
+}
+
+.navbar .nav {
+	margin: 0px;
+}
+
+.navbar .nav > li > a {
+	padding: 8px;
+	height: 24px;
+}
+
 .rounded {
 	-webkit-border-radius 3px;
 	-moz-border-radius: 3px;
