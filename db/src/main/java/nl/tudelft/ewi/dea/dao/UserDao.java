@@ -22,7 +22,7 @@ public interface UserDao extends Dao<User> {
 	 * @throws NoResultException If no {@link User} corresponds to the given
 	 *            email.
 	 */
-	User findByEmail(final String email);
+	User findByEmail(final String email) throws NoResultException;
 
 	/**
 	 * Find all {@link User}s which have given substring in one of their fields.
