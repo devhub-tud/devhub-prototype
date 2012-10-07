@@ -44,10 +44,16 @@ public class CourseDaoImpl extends AbstractDaoBase<Course> implements CourseDao 
 
 		// TODO: Make sure we can also filter out enrolled / non-enrolled...
 
-		final String query = "SELECT c FROM Course c WHERE c.name like :name";
-		final TypedQuery<Course> tq = createQuery(query);
-		tq.setParameter("name", '%' + subString + '%');
-		return tq.getResultList();
+		if (subString == null || subString.isEmpty()) {
+			String query = "SELECT c FROM Course c ORDER BY c.name";
+			TypedQuery<Course> tq = createQuery(query);
+			return tq.getResultList();
+		}
+		else {
+			String query = "SELECT c FROM Course c WHERE c.name like :name ORDER BY c.name";
+			TypedQuery<Course> tq = createQuery(query);
+			tq.setParameter("name", '%' + subString + '%');
+			return tq.getResultList();
+		}
 	}
-
 }

@@ -1,6 +1,9 @@
 
 $(document).ready(function() {
 	
+	const teacherMail = "@tudelft.nl";
+	const studentMail = "@student.tudelft.nl";
+	
 	var openModalBtn = $("#open-new-project-modal-btn");
 	var modal = $("#start-new-project-modal");
 	var form = $("#start-new-project-form");
@@ -9,6 +12,26 @@ $(document).ready(function() {
 	
 	var courseSelector = $("#course-id");
 	var provisionBtn = $("#provision-btn");
+	
+	var formBusy = false;
+	
+	modal.on("show", function() {
+		courseSelector.empty().append("<option value='-1'></option>");
+		
+		$.ajax({
+			type: "get",
+			url: "/courses",
+			dataType: "json",
+			contentType: "application/json",
+			data: JSON.stringify({ "enrolled": false, "substring": "" }),
+			success: function(data) {
+				$.each(data, function(index, value) {
+					courseSelector.append("<option value='" + value.id + "'>" + value.name + "</option>");
+				});
+			},
+			error: function(jqXHR, textStatus, errorThrown) { }
+		});
+	});
 	
 	openModalBtn.click(function() {
 		modal.modal("show");
@@ -30,8 +53,49 @@ $(document).ready(function() {
 		
 	}, 250);
 	
+	provisionBtn.click(function(e) {
+		e.preventDefault();
+		
+		formBusy = true;
+		updateProvisionButtonState(false);
+		
+		var courseId = courseSelector.val(); 
+		var invites = listInvites();
+		
+		$.ajax({
+			type: "post",
+			url: "/projects",
+			contentType: "application/json",
+			data: JSON.stringify({ "course": courseId, "invites": invites }),
+			success: function(data) {
+				formBusy = false;
+				window.location.replace("/dashboard");
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				showAlert("alert-error", jqXHR.responseText);
+				formBusy = false;
+			}
+		});
+	});
+	
+	function listInvites() {
+		var invites = [];
+		var inviteBoxes = $(".inviteBox");
+		
+		var allValid = true;
+		var containsEmpty = false;
+		$.each(inviteBoxes, function(index, value) {
+			var inviteBox = $(value);
+			if (!isEmpty(inviteBox) && checkIfValid(inviteBox)) {
+				invites.push(inviteBox.val());
+			}
+		});
+		
+		return invites;
+	}
+	
 	function updateProvisionButtonState(valid) {
-		if (valid) {
+		if (valid && !formBusy) {
 			provisionBtn.removeClass("disabled").removeAttr("disabled", "");
 		}
 		else {
@@ -97,11 +161,15 @@ $(document).ready(function() {
 		}
 	}
 	
-	const teacherMail = "@tudelft.nl";
-	const studentMail = "@student.tudelft.nl";
 	function isTuAddress(address) {
 		return address.substr(0 - teacherMail.length) === teacherMail
 			|| address.substr(0 - studentMail.length) === studentMail;
+	}
+	
+	function showAlert(type, message) {
+		var alerts = $('.alerts');
+		var alert = "<div class=\"alert " + type + "\"><a class=\"close\" data-dismiss=\"alert\" href=\"#\">&times;</a>" + message + "</div>";
+		alerts.empty().append(alert).show('normal');
 	}
 	
 });

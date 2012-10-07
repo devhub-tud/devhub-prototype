@@ -101,7 +101,7 @@ public class CourseResource {
 
 		final User currentUser = securityProvider.getUser();
 
-		if (membershipDao.hasEnrolled(course, currentUser)) {
+		if (membershipDao.hasEnrolled(course.getId(), currentUser)) {
 			return Response.status(Status.CONFLICT).entity("User: " + currentUser.getDisplayName()
 					+ " is already enrolled in the course: " + course.getName()).build();
 		}

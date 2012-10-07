@@ -81,12 +81,12 @@
 	<div class="step-1">
 		<div class="modal-body">
 			<form id="start-new-project-form" class="form-horizontal">
+				<div class="alerts"></div>
 				<div class="control-group condensed">
 					<label class="control-label" for="course-id">Course name</label>
 					<div class="controls">
 						<select id="course-id" class="input-wide">
 							<option value="-1"></option>
-							<option value="1">IN 4305: Advanced Algorithms</option>
 						</select>
 					</div>
 				</div>
