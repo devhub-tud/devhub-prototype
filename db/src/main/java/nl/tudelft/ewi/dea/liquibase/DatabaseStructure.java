@@ -38,15 +38,25 @@ public class DatabaseStructure {
 		this.persistenceUnit = persistenceUnit;
 		this.context = context;
 
-		create();
+		prepareStructure();
 	}
 
-	public void dropAndCreate() {
-		drop();
-		create();
+	private void prepareStructure() {
+		Strategy strategy = getStrategy();
+		switch (strategy) {
+			case DROP_CREATE:
+				dropStructure();
+				updateStructure();
+				break;
+			case UPDATE:
+				updateStructure();
+				break;
+			default:
+				throw new IllegalArgumentException("No strategy defined in persistence.xml!");
+		}
 	}
 
-	public final void create() {
+	public final void updateStructure() {
 		try (Connection conn = createConnection()) {
 			LOG.info("Processing all liquibase changesets...");
 			Liquibase liquibase = new Liquibase("liquibase.xml", new ClassLoaderResourceAccessor(), new JdbcConnection(conn));
@@ -69,6 +79,11 @@ public class DatabaseStructure {
 
 		Class.forName(driver);
 		return DriverManager.getConnection(url, user, pass);
+	}
+
+	private Strategy getStrategy() {
+		Map<String, Object> properties = readPersistenceXmlProperties(persistenceUnit);
+		return Strategy.getStrategy(getValue(properties, "liquibase.liquibase-strategy"));
 	}
 
 	private Map<String, Object> readPersistenceXmlProperties(String persistenceUnit) {
@@ -106,12 +121,32 @@ public class DatabaseStructure {
 		return null;
 	}
 
-	public void drop() {
+	public void dropStructure() {
 		try (Connection conn = createConnection()) {
 			conn.createStatement().executeUpdate("DROP ALL OBJECTS");
 		} catch (ClassNotFoundException | SQLException e) {
 			LOG.error(e.getMessage(), e);
 			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
+
+	private enum Strategy {
+		DROP_CREATE("drop-create"),
+		UPDATE("update");
+
+		private final String value;
+
+		private Strategy(String value) {
+			this.value = value;
+		}
+
+		private static Strategy getStrategy(String value) {
+			for (Strategy strategy : values()) {
+				if (strategy.value.equals(value)) {
+					return strategy;
+				}
+			}
+			return null;
 		}
 	}
 

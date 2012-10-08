@@ -14,6 +14,7 @@
 			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost/devhub" />
 			<property name="javax.persistence.jdbc.user" value="devhub" />
 			<property name="javax.persistence.jdbc.password" value="BuildIt!" />
+			<property name="liquibase.liquibase-strategy" value="update" />
 
 			<!-- Auto detect annotated model classes -->
 			<property name="hibernate.archive.autodetection" value="class" />
@@ -33,6 +34,7 @@
 			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost/devhub-test" />
 			<property name="javax.persistence.jdbc.user" value="devhub-test" />
 			<property name="javax.persistence.jdbc.password" value="TestIt!" />
+			<property name="liquibase.liquibase-strategy" value="drop-create" />
 
 			<!-- Auto detect annotated model classes -->
 			<property name="hibernate.archive.autodetection" value="class" />
@@ -50,6 +52,7 @@
 			<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
 			<property name="hibernate.hbm2ddl.auto" value="validate" />
 			<property name="javax.persistence.jdbc.url" value="jdbc:h2:test;DB_CLOSE_DELAY=-1" />
+			<property name="liquibase.liquibase-strategy" value="drop-create" />
 
 			<!-- Auto detect annotated model classes -->
 			<property name="hibernate.archive.autodetection" value="class" />

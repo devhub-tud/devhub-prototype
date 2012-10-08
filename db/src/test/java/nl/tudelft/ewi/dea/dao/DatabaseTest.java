@@ -36,12 +36,10 @@ public class DatabaseTest {
 		em = injector.getInstance(EntityManager.class);
 
 		beginTransaction();
-
 	}
 
 	@After
 	public void tearDown() {
-
 		if (em.getTransaction().isActive()) {
 			if (em.getTransaction().getRollbackOnly()) {
 				rollbackTransaction();
@@ -51,11 +49,8 @@ public class DatabaseTest {
 		}
 
 		em.close();
-
 		persistService.stop();
-
-		structure.drop();
-
+		structure.dropStructure();
 	}
 
 	protected final <T> T getInstance(final Class<T> clazz) {
