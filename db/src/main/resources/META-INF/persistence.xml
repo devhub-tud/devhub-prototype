@@ -34,7 +34,7 @@
 			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost/devhub-test" />
 			<property name="javax.persistence.jdbc.user" value="devhub-test" />
 			<property name="javax.persistence.jdbc.password" value="TestIt!" />
-			<property name="liquibase.liquibase-strategy" value="drop-create" />
+			<property name="liquibase.liquibase-strategy" value="update" />
 
 			<!-- Auto detect annotated model classes -->
 			<property name="hibernate.archive.autodetection" value="class" />
