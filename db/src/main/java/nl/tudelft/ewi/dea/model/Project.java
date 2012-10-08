@@ -54,6 +54,20 @@ public class Project {
 		this.members = members;
 	}
 
+	public String getSafeName() {
+		String makeSafe = name;
+		makeSafe = makeSafe.replace(" - ", "-");
+		makeSafe = makeSafe.replace(" -", "-");
+		makeSafe = makeSafe.replace("- ", "-");
+		makeSafe = makeSafe.replace(" : ", "-");
+		makeSafe = makeSafe.replace(" :", "-");
+		makeSafe = makeSafe.replace(": ", "-");
+		makeSafe = makeSafe.replace(" ", "-");
+		makeSafe = makeSafe.toLowerCase();
+
+		return makeSafe;
+	}
+
 	@Override
 	public String toString() {
 		final ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);

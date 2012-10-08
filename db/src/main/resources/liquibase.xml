@@ -181,4 +181,9 @@
 		</createTable>
 	</changeSet>
 
+	<changeSet id="8" author="michaelj">
+		<addForeignKeyConstraint constraintName="project_projectinvitation" referencedTableName="project" baseColumnNames="project_id" baseTableName="projectinvitation" referencedColumnNames="id" />
+		<addForeignKeyConstraint constraintName="project_projectmembership" referencedTableName="project" baseColumnNames="project_id" baseTableName="projectmembership" referencedColumnNames="id" />
+	</changeSet>
+
 </databaseChangeLog>

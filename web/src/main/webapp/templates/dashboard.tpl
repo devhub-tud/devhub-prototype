@@ -110,6 +110,17 @@
 			<a href="#" id="provision-btn" class="btn btn-primary">Let's do this!</a>
 		</div>
 	</div>
+	<div class="step-2">
+		<div class="modal-body">
+			<div class="alerts"></div>
+			<div id="progress-bar" class="progress progress-striped active">
+				<div class="bar" style="width: 100%;"></div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<a href="#" id="done-btn" class="btn btn-primary">See project details</a>
+		</div>
+	</div>
 </div>
 
 #parse("footer.tpl")

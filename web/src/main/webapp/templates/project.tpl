@@ -7,11 +7,6 @@
 		<div class="page-head">
 			<h3>${project.getName()}</h3>
 			<a id="invite-user" class="btn btn-primary">Invite user</a>
-			#if($invitations && !$invitations.isEmpty())
-			<a id="provision-project" class="btn btn-primary disabled" style="margin-right: 10px;">Provision project</a>
-			#else
-			<a id="provision-project" class="btn btn-primary" style="margin-right: 10px;">Provision project</a>
-			#end
 		</div>
 		<table class="table table-striped table-bordered table-hover">
 			<thead>

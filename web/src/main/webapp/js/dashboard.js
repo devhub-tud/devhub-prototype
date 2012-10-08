@@ -12,10 +12,24 @@ $(document).ready(function() {
 	
 	var courseSelector = $("#course-id");
 	var provisionBtn = $("#provision-btn");
+	var progressBar = $("#progress-bar");
+	var doneBtn = $("#done-btn");
+	
+	var step1 = modal.find(".step-1");
+	var step2 = modal.find(".step-2").hide();
 	
 	var formBusy = false;
 	
+	modal.on("hide", function() {
+		formBusy = false;
+		courseSelector.val(-1);
+		inviteOthers.attr("checked", false);
+		$(".alerts").empty();
+	});
+	
 	modal.on("show", function() {
+		step1.show();
+		step2.hide();
 		courseSelector.empty().append("<option value='-1'></option>");
 		
 		$.ajax({
@@ -67,9 +81,9 @@ $(document).ready(function() {
 			url: "/projects",
 			contentType: "application/json",
 			data: JSON.stringify({ "course": courseId, "invites": invites }),
-			success: function(data) {
+			success: function(projectId) {
 				formBusy = false;
-				window.location.replace("/dashboard");
+				startProvisioning(projectId);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				showAlert("alert-error", jqXHR.responseText);
@@ -77,6 +91,30 @@ $(document).ready(function() {
 			}
 		});
 	});
+	
+	function startProvisioning(projectId) {
+		step1.hide();
+		step2.show();
+		
+		$.ajax({
+			type: "post",
+			url: "/projects/provision/" + projectId,
+			success: function(data) {
+				progressBar.removeClass("active").removeClass("progress-striped").addClass("bar-success");
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				progressBar.hide();
+				showAlert("alert-error", jqXHR.responseText);
+			}
+		});
+	}
+	
+	function wireDoneButton(projectId) {
+		doneBtn.unbind().click(function(e) {
+			e.preventDefault();
+			window.location.replace("/project/" + projectId);
+		});
+	}
 	
 	function listInvites() {
 		var invites = [];

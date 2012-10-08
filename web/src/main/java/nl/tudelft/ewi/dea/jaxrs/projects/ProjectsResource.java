@@ -1,17 +1,27 @@
 package nl.tudelft.ewi.dea.jaxrs.projects;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import nl.minicom.gitolite.manager.ConfigManager;
+import nl.minicom.gitolite.manager.models.Config;
+import nl.minicom.gitolite.manager.models.Permission;
+import nl.minicom.gitolite.manager.models.Repository;
 import nl.tudelft.ewi.dea.dao.CourseDao;
 import nl.tudelft.ewi.dea.dao.ProjectDao;
+import nl.tudelft.ewi.dea.dao.ProjectInvitationDao;
 import nl.tudelft.ewi.dea.dao.ProjectMembershipDao;
 import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.model.Course;
@@ -19,6 +29,7 @@ import nl.tudelft.ewi.dea.model.Project;
 import nl.tudelft.ewi.dea.model.ProjectMembership;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.security.SecurityProvider;
+import nl.tudelft.jenkins.auth.UserImpl;
 import nl.tudelft.jenkins.client.JenkinsClient;
 
 import org.slf4j.Logger;
@@ -37,6 +48,7 @@ public class ProjectsResource {
 	private final ConfigManager gitManager;
 	private final JenkinsClient jenkinsClient;
 	private final ProjectMembershipDao membershipDao;
+	private final ProjectInvitationDao invitationDao;
 	private final ProjectDao projectDao;
 	private final UserDao userDao;
 	private final CourseDao courseDao;
@@ -44,10 +56,12 @@ public class ProjectsResource {
 
 	@Inject
 	public ProjectsResource(UserDao userDao, CourseDao courseDao, ProjectMembershipDao membershipDao,
-			ProjectDao projectDao, SecurityProvider securityProvider, ConfigManager gitManager, JenkinsClient jenkinsClient) {
+			ProjectInvitationDao invitationDao, ProjectDao projectDao, SecurityProvider securityProvider,
+			ConfigManager gitManager, JenkinsClient jenkinsClient) {
 		this.userDao = userDao;
 		this.courseDao = courseDao;
 		this.membershipDao = membershipDao;
+		this.invitationDao = invitationDao;
 		this.projectDao = projectDao;
 		this.securityProvider = securityProvider;
 		this.gitManager = gitManager;
@@ -68,21 +82,33 @@ public class ProjectsResource {
 			inviteUserToProject(project, invite);
 		}
 
-		return Response.ok().build();
+		return Response.ok().entity(project.getId()).build();
 	}
 
-	private Response inviteUserToProject(Project project, String invite) {
+	private void inviteUserToProject(Project project, String invite) {
 		User user = null;
 		try {
 			user = userDao.findByEmail(invite);
-			membershipDao.persist(new ProjectMembership(user, project));
-			// TODO: Send e-mail to notify invited user of invitation.
-
-			return null;
-
+			if (!alreadyInvitedOrMember(user, project)) {
+				invitationDao.persist(new ProjectMembership(user, project));
+				// TODO: Send e-mail to notify invited user of invitation.
+			}
 		} catch (NoResultException e) {
 			// TODO: Make user account and invite user...
 			throw e;
+		}
+	}
+
+	private boolean alreadyInvitedOrMember(User user, Project project) {
+		if (membershipDao.hasEnrolled(project.getCourse().getId(), user)) {
+			return true;
+		}
+
+		try {
+			invitationDao.findByProjectAndUser(project, user);
+			return true;
+		} catch (NoResultException e) {
+			return false;
 		}
 	}
 
@@ -107,94 +133,60 @@ public class ProjectsResource {
 		return membershipDao.hasEnrolled(course, currentUser);
 	}
 
-	// @GET
-	// @Path("checkName")
-	// @Transactional
-	// public Response checkProjectName(@QueryParam("name") final String name) {
-	// if (!isValidProjectName(name)) {
-	// return Response.status(Status.CONFLICT).entity("invalid-name").build();
-	// }
-	// if (!projectNameIsAvailable(name)) {
-	// return Response.status(Status.CONFLICT).entity("already-taken").build();
-	// }
-	// return Response.ok().build();
-	// }
-	//
-	// @POST
-	// @Path("create")
-	// @Consumes(MediaType.APPLICATION_JSON)
-	// @Transactional
-	// public Response provisionNewProject(final CreateProjectRequest request) {
-	// final String name = request.getName();
-	// if (!isValidProjectName(name) || !projectNameIsAvailable(name)) {
-	// return
-	// Response.status(Status.CONFLICT).entity("Project name is not valid!").build();
-	// }
-	//
-	// final Response gitProvisioning = provisionGitRepository(name);
-	// if (gitProvisioning.getStatus() != Status.OK.getStatusCode()) {
-	// return gitProvisioning;
-	// }
-	//
-	// return provisionJenkins(name, "git@dea.hartveld.com:" + name,
-	// "M.deJong-2@student.tudelft.nl");
-	// }
-	//
-	// private Response provisionJenkins(final String projectName, final String
-	// gitUrl, final String email) {
-	// final List<nl.tudelft.jenkins.auth.User> owners = new ArrayList<>();
-	// owners.add(new UserImpl(email, email));
-	//
-	// try {
-	// jenkinsClient.createJob(projectName, gitUrl, owners);
-	// } catch (final Exception e) {
-	// LOG.warn("Failed to create job", e);
-	// return
-	// Response.serverError().entity("Failed to create Jenkins job").build();
-	// }
-	//
-	// return Response.ok().build();
-	// }
-	//
-	// private Response provisionGitRepository(final String name) {
-	// Config config = null;
-	// try {
-	// config = gitManager.getConfig();
-	// } catch (/* TODO: Fix this in gitolite-admin */Exception e) {
-	// return
-	// Response.serverError().entity("Currently unable to create git repositories!").build();
-	// }
-	//
-	// if (config.hasRepository(name)) {
-	// return
-	// Response.status(Status.CONFLICT).entity("Repository alreay exists!").build();
-	// }
-	//
-	// final User admin = config.ensureUserExists("git");
-	// final Repository repo = config.createRepository(name);
-	// repo.setPermission(admin, Permission.ALL);
-	//
-	// try {
-	// gitManager.applyConfig();
-	// } catch (final IOException e) {
-	// return
-	// Response.serverError().entity("Could not create git repository!").build();
-	// }
-	//
-	// return Response.ok().build();
-	// }
-	//
-	// private boolean isValidProjectName(final String name) {
-	// return name != null && name.matches("[a-zA-Z0-9]{4,}");
-	// }
-	//
-	// private boolean projectNameIsAvailable(final String name) {
-	// try {
-	// return !gitManager.getConfig().hasRepository(name);
-	// } catch (final IOException e) {
-	// LOG.error(e.getMessage(), e);
-	// }
-	// return false;
-	// }
+	@POST
+	@Path("provision/{projectId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Transactional
+	public Response provisionNewProject(@PathParam("projectId") long projectId) {
+		Project project = projectDao.findById(projectId);
+
+		Response gitProvisioning = provisionGitRepository(project.getSafeName());
+		if (gitProvisioning.getStatus() != Status.OK.getStatusCode()) {
+			return gitProvisioning;
+		}
+
+		ProjectMembership creator = project.getMembers().iterator().next();
+		return provisionJenkins(project.getName(), "git@dea.hartveld.com:" + project.getSafeName(),
+				creator.getUser().getEmail());
+	}
+
+	private Response provisionJenkins(String projectName, String gitUrl, String email) {
+		List<nl.tudelft.jenkins.auth.User> owners = new ArrayList<>();
+		owners.add(new UserImpl(email, email));
+
+		try {
+			jenkinsClient.createJob(projectName, gitUrl, owners);
+		} catch (Exception e) {
+			LOG.warn("Failed to create job", e);
+			return Response.serverError().entity("Failed to create Jenkins job").build();
+		}
+
+		return Response.ok().build();
+	}
+
+	private Response provisionGitRepository(String name) {
+		Config config = null;
+		try {
+			config = gitManager.getConfig();
+		} catch (/* TODO: Fix this in gitolite-admin */Exception e) {
+			return Response.serverError().entity("Currently unable to create git repositories!").build();
+		}
+
+		if (config.hasRepository(name)) {
+			return Response.status(Status.CONFLICT).entity("Repository alreay exists!").build();
+		}
+
+		final nl.minicom.gitolite.manager.models.User admin = config.ensureUserExists("git");
+		final Repository repo = config.createRepository(name);
+		repo.setPermission(admin, Permission.ALL);
+
+		try {
+			gitManager.applyConfig();
+		} catch (final IOException e) {
+			return Response.serverError().entity("Could not create git repository!").build();
+		}
+
+		return Response.ok().build();
+	}
 
 }

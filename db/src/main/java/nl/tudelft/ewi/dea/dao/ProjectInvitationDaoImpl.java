@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
 import nl.tudelft.ewi.dea.model.Project;
@@ -28,7 +29,7 @@ public class ProjectInvitationDaoImpl extends AbstractDaoBase<ProjectInvitation>
 
 	@Override
 	@Transactional
-	public ProjectInvitation findByProjectAndUser(final Project project, final User user) {
+	public ProjectInvitation findByProjectAndUser(final Project project, final User user) throws NoResultException {
 
 		LOG.trace("Find by project {} and user {}", project, user);
 
