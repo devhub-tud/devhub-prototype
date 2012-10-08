@@ -28,13 +28,8 @@ public class DatabaseTest {
 
 	@Before
 	public void setUp() {
-
 		injector = createInjector(new PersistenceModule("test-h2", ""));
-
 		structure = injector.getInstance(DatabaseStructure.class);
-		structure.create();
-		structure.dropAndCreate();
-
 		persistService = injector.getInstance(PersistService.class);
 		persistService.start();
 

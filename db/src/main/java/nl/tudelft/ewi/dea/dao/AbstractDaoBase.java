@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -142,11 +143,14 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 
 	@Transactional
 	protected final TypedQuery<T> createQuery(final String query) {
-
 		checkArgument(isNotEmpty(query), "query must be non-empty");
-
 		return em.createQuery(query, entityClass);
+	}
 
+	@Transactional
+	protected final TypedQuery<T> createQuery(CriteriaQuery<T> criteria) {
+		checkNotNull(criteria, "query must be non-empty");
+		return em.createQuery(criteria);
 	}
 
 }

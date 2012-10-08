@@ -29,21 +29,20 @@ class UserDaoImpl extends AbstractDaoBase<User> implements UserDao {
 
 	@Override
 	public List<User> findBySubString(final String subString) {
-
 		LOG.trace("Find by substring: {}", subString);
 
 		checkArgument(isNotEmpty(subString), "subString must be non-empty");
 		checkArgument(containsNone(subString, '%'), "subString must not contain '%'");
 
-		final String query = "SELECT u FROM User u WHERE u.displayName LIKE :displayName OR u.email LIKE :email OR u.netid LIKE :netid ORDER BY u.displayName";
+		final String query = "SELECT u FROM User u WHERE u.displayName LIKE :displayName OR u.email LIKE :email OR u.netId LIKE :netId ORDER BY u.displayName";
+		String search = '%' + subString + '%';
 
 		final TypedQuery<User> tq = createQuery(query);
-		tq.setParameter("displayName", '%' + subString + '%');
-		tq.setParameter("email", '%' + subString + '%');
-		tq.setParameter("netid", '%' + subString + '%');
+		tq.setParameter("displayName", search);
+		tq.setParameter("email", search);
+		tq.setParameter("netId", search);
 
 		return tq.getResultList();
-
 	}
 
 	@Override
