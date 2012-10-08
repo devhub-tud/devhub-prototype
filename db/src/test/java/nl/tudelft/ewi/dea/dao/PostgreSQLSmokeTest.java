@@ -4,11 +4,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assume.assumeThat;
 
 import java.net.InetAddress;
-import java.util.HashMap;
-import java.util.Map;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import nl.tudelft.ewi.dea.liquibase.DatabaseStructure;
@@ -40,23 +36,13 @@ public class PostgreSQLSmokeTest {
 		assumeThat(hostname, is(postgresqlHost));
 
 		LOG.debug("Creating database structure...");
-		new DatabaseStructure("test-postgresql", "");
+		DatabaseStructure structure = new DatabaseStructure("test-postgresql", "");
 
 		LOG.debug("Verifying database structure...");
 		Persistence.createEntityManagerFactory("test-postgresql").close();
 
 		LOG.debug("Dropping database contents...");
-		final Map<String, String> properties = new HashMap<>();
-		properties.put("hibernate.hbm2ddl.auto", "create-drop");
-		final EntityManagerFactory emf = Persistence.createEntityManagerFactory("test-postgresql", properties);
-		final EntityManager em = emf.createEntityManager();
-		em.getTransaction().begin();
-		em.createNativeQuery("DROP TABLE public.databasechangelog").executeUpdate();
-		em.createNativeQuery("DROP TABLE public.databasechangeloglock").executeUpdate();
-		em.getTransaction().commit();
-		em.close();
-		emf.close();
-
+		structure.dropStructure();
 	}
 
 }
