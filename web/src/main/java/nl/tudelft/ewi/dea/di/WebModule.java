@@ -51,7 +51,7 @@ public class WebModule extends ServletModule {
 		Names.bindProperties(binder(), configuration);
 
 		install(new SecurityModule(servletContext));
-		install(new PersistenceModule("test-h2", ""));
+		install(new PersistenceModule("production-h2", ""));
 		filter("/*").through(PersistFilter.class);
 
 		install(new MailModule(MailProperties.newWithAuth(
