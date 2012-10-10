@@ -113,11 +113,13 @@
 	<div class="step-2">
 		<div class="modal-body">
 			<div class="alerts"></div>
+			<h5 id="progress-description"></h5>
 			<div id="progress-bar" class="progress progress-striped active">
 				<div class="bar" style="width: 100%;"></div>
 			</div>
 		</div>
 		<div class="modal-footer">
+			<a href="#" id="close-btn" class="btn" data-dismiss="modal">Close</a>
 			<a href="#" id="done-btn" class="btn btn-primary">See project details</a>
 		</div>
 	</div>

@@ -11,6 +11,7 @@ import javax.inject.Singleton;
 import javax.servlet.ServletContext;
 
 import nl.tudelft.ewi.dea.DevHubException;
+import nl.tudelft.ewi.dea.jaxrs.projects.provisioner.Provisioner;
 import nl.tudelft.ewi.dea.mail.MailModule;
 import nl.tudelft.ewi.dea.mail.MailProperties;
 import nl.tudelft.ewi.dea.template.TemplateEngine;
@@ -65,6 +66,7 @@ public class WebModule extends ServletModule {
 		LOG.debug("Configuring servlets and URLs");
 		filter("/*").through(GuiceShiroFilter.class);
 
+		bind(Provisioner.class).in(Scopes.SINGLETON);
 		bind(JacksonJsonProvider.class).in(Scopes.SINGLETON);
 
 		final Map<String, String> params = Maps.newHashMap();

@@ -11,9 +11,13 @@ $(document).ready(function() {
 	var inviteContainer = $("#invites-container");
 	
 	var courseSelector = $("#course-id");
-	var provisionBtn = $("#provision-btn");
+	
+	var progressDescription = $("#progress-description");
 	var progressBar = $("#progress-bar");
-	var doneBtn = $("#done-btn");
+	
+	var provisionBtn = $("#provision-btn");
+	var doneBtn = $("#done-btn").hide();
+	var closeBtn = $("#close-btn").hide();
 	
 	var step1 = modal.find(".step-1");
 	var step2 = modal.find(".step-2").hide();
@@ -93,20 +97,39 @@ $(document).ready(function() {
 	});
 	
 	function startProvisioning(projectId) {
+		progressDescription.text("Provisioning project...")
+
 		step1.hide();
 		step2.show();
 		
-		$.ajax({
-			type: "post",
-			url: "/projects/provision/" + projectId,
-			success: function(data) {
-				progressBar.removeClass("active").removeClass("progress-striped").addClass("bar-success");
-			},
-			error: function(jqXHR, textStatus, errorThrown) {
-				progressBar.hide();
-				showAlert("alert-error", jqXHR.responseText);
+		var timer = setInterval(function() {
+			$.ajax({
+				type: "get",
+				url: "/projects/provisioning/" + projectId,
+				success: function(data) {
+					updateDialog(data, timer);
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					updateDialog(JSON.parse(jqXHR.responseText), timer);
+				}
+			});
+		}, 500);
+		
+		function updateDialog(data, timer) {
+			if (data.finished) {
+				progressDescription.text(data.message);
+				if (data.failures) {
+					progressBar.removeClass("active").removeClass("progress-striped").addClass("progress-danger");
+					closeBtn.show();
+				}
+				else {
+					progressBar.removeClass("active").removeClass("progress-striped").addClass("progress-success");
+					wireDoneButton(projectId);
+					doneBtn.show();
+				}
+				clearInterval(timer);
 			}
-		});
+		}
 	}
 	
 	function wireDoneButton(projectId) {
