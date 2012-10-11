@@ -45,7 +45,7 @@ public class ResetPasswordResource {
 	private final DevHubMail mail;
 
 	@Inject
-	public ResetPasswordResource(final Provider<Renderer> renderers, final UserDao userDao, final PasswordResetTokenDao passwordResetTokenDao, @Named("webapp.public-url") final String publicUrl, final DevHubMail mail) {
+	public ResetPasswordResource(final Provider<Renderer> renderers, final UserDao userDao, final PasswordResetTokenDao passwordResetTokenDao, @Named("webapp.web-url") final String publicUrl, final DevHubMail mail) {
 		this.renderers = renderers;
 
 		this.userDao = userDao;

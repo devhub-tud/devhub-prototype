@@ -42,7 +42,7 @@ public class RegisterResource {
 
 	@Inject
 	public RegisterResource(UserDao userDao, RegistrationTokenDao tokenDao, DevHubMail mailer,
-			@Named("webapp.public-url") String publicUrl) {
+			@Named("webapp.web-url") String publicUrl) {
 		this.userDao = userDao;
 		this.tokenDao = tokenDao;
 		this.mailer = mailer;

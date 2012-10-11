@@ -53,12 +53,16 @@ public class ProjectResource {
 	private final Provider<Renderer> renderers;
 
 	private final DevHubMail mail;
-
 	private final String publicUrl;
+	private final String gitHost;
+
+	private final String jenkinsHost;
 
 	@Inject
-	public ProjectResource(final Provider<Renderer> renderers, final SecurityProvider securityProvider, final ProjectDao projectDao, final UserDao userDao, final ProjectInvitationDao invitationDao, final ProjectMembershipDao membershipDao,
-			DevHubMail mail, @Named("webapp.public-url") String publicUrl) {
+	public ProjectResource(Provider<Renderer> renderers, SecurityProvider securityProvider, ProjectDao projectDao,
+			UserDao userDao, ProjectInvitationDao invitationDao, ProjectMembershipDao membershipDao, DevHubMail mail,
+			@Named("webapp.web-url") String publicUrl, @Named("webapp.git-host") String gitHost,
+			@Named("webapp.jenkins-host") String jenkinsHost) {
 		this.renderers = renderers;
 
 		this.securityProvider = securityProvider;
@@ -69,6 +73,8 @@ public class ProjectResource {
 		this.membershipDao = membershipDao;
 		this.mail = mail;
 		this.publicUrl = publicUrl;
+		this.gitHost = gitHost;
+		this.jenkinsHost = jenkinsHost;
 	}
 
 	@GET
@@ -76,11 +82,9 @@ public class ProjectResource {
 	@Produces(MediaType.TEXT_HTML)
 	@Transactional
 	public String serveProjectPage(@PathParam("id") final long id) {
-
 		LOG.trace("Serving page for project: {}", id);
 
 		final User currentUser = securityProvider.getUser();
-
 		final Project project = projectDao.findById(id);
 
 		if (!currentUser.isAdmin()) {
@@ -92,6 +96,8 @@ public class ProjectResource {
 
 		return renderers.get()
 				.setValue("project", project)
+				.setValue("git-path", "git@" + gitHost + ":" + project.getSafeName())
+				.setValue("jenkins-path", jenkinsHost + "job/" + project.getSafeName() + "/")
 				.setValue("members", members)
 				.setValue("invitations", invitations)
 				.setValue("scripts", Lists.newArrayList("invite-user.js"))

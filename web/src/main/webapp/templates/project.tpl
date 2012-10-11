@@ -21,11 +21,11 @@
 				</tr>
 				<tr>
 					<td>Git URL</td>
-					<td>TODO</td>
+					<td>${git-path}</td>
 				</tr>
 				<tr>
 					<td>Jenkins job URL</td>
-					<td>TODO</td>
+					<td><a href="${jenkins-path}">${jenkins-path}</a></td>
 				</tr>
 				<tr>
 					<td>Sonar URL</td>
