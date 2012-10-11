@@ -16,8 +16,8 @@ $(document).ready(function() {
 	var progressBar = $("#progress-bar");
 	
 	var provisionBtn = $("#provision-btn");
-	var doneBtn = $("#done-btn").hide();
-	var closeBtn = $("#close-btn").hide();
+	var doneBtn = $("#done-btn");
+	var closeBtn = $("#close-btn");
 	
 	var step1 = modal.find(".step-1");
 	var step2 = modal.find(".step-2").hide();
@@ -28,12 +28,18 @@ $(document).ready(function() {
 		formBusy = false;
 		courseSelector.val(-1);
 		inviteOthers.attr("checked", false);
+		progressBar.addClass("active").removeClass("progress-danger").addClass("progress-striped");
+		progressDescription.text("");
 		$(".alerts").empty();
 	});
 	
 	modal.on("show", function() {
 		step1.show();
 		step2.hide();
+		
+		doneBtn.hide();
+		closeBtn.hide();
+		
 		courseSelector.empty().append("<option value='-1'></option>");
 		
 		$.ajax({
@@ -101,7 +107,7 @@ $(document).ready(function() {
 
 		step1.hide();
 		step2.show();
-		
+
 		var timer = setInterval(function() {
 			$.ajax({
 				type: "get",
@@ -116,8 +122,8 @@ $(document).ready(function() {
 		}, 500);
 		
 		function updateDialog(data, timer) {
+			progressDescription.text(data.message);
 			if (data.finished) {
-				progressDescription.text(data.message);
 				if (data.failures) {
 					progressBar.removeClass("active").removeClass("progress-striped").addClass("progress-danger");
 					closeBtn.show();

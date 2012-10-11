@@ -22,6 +22,7 @@ import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.jaxrs.projects.CourseProjectRequest;
 import nl.tudelft.ewi.dea.model.Course;
 import nl.tudelft.ewi.dea.model.Project;
+import nl.tudelft.ewi.dea.model.ProjectInvitation;
 import nl.tudelft.ewi.dea.model.ProjectMembership;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.jenkins.auth.UserImpl;
@@ -43,11 +44,11 @@ public class Provisioner {
 
 	private final ScheduledThreadPoolExecutor executor;
 	private final Cache<Long, State> stateCache;
-	private final CourseDao courseDao;
+	private final Provider<CourseDao> courseDao;
 	private final Provider<ProjectDao> projectDao;
-	private final ProjectMembershipDao membershipDao;
-	private final ProjectInvitationDao invitationDao;
-	private final UserDao userDao;
+	private final Provider<ProjectMembershipDao> membershipDao;
+	private final Provider<ProjectInvitationDao> invitationDao;
+	private final Provider<UserDao> userDao;
 
 	private final JenkinsClient jenkinsClient;
 	private final ConfigManager gitManager;
@@ -55,8 +56,8 @@ public class Provisioner {
 	private final Provider<UnitOfWork> units;
 
 	@Inject
-	public Provisioner(Provider<UnitOfWork> units, CourseDao courseDao, Provider<ProjectDao> projectDao,
-			ProjectMembershipDao membershipDao, ProjectInvitationDao invitationDao, UserDao userDao,
+	public Provisioner(Provider<UnitOfWork> units, Provider<CourseDao> courseDao, Provider<ProjectDao> projectDao,
+			Provider<ProjectMembershipDao> membershipDao, Provider<ProjectInvitationDao> invitationDao, Provider<UserDao> userDao,
 			JenkinsClient jenkinsClient, ConfigManager gitManager) {
 
 		this.units = units;
@@ -103,7 +104,7 @@ public class Provisioner {
 
 	@Transactional
 	synchronized Project persistToDatabase(CourseProjectRequest courseProject, User owner) {
-		Course course = courseDao.findById(courseProject.getCourse());
+		Course course = courseDao.get().findById(courseProject.getCourse());
 		int projectNumber = projectDao.get().findByCourse(course).size() + 1;
 		String projectName = course.getName() + " - Group " + projectNumber;
 
@@ -111,7 +112,7 @@ public class Provisioner {
 		ProjectMembership membership = new ProjectMembership(owner, project);
 
 		projectDao.get().persist(project);
-		membershipDao.persist(membership);
+		membershipDao.get().persist(membership);
 
 		return project;
 	}
@@ -119,10 +120,9 @@ public class Provisioner {
 	private void inviteToProject(Project project, String email) {
 		User user = null;
 		try {
-			user = userDao.findByEmail(email);
+			user = userDao.get().findByEmail(email);
 			if (!alreadyInvitedOrMember(user, project)) {
-				invitationDao.persist(new ProjectMembership(user, project));
-				// TODO: Send e-mail to notify invited user of invitation.
+				invitationDao.get().persist(new ProjectInvitation(user, project));
 			}
 		} catch (NoResultException e) {
 			// TODO: Make user account and invite user...
@@ -132,12 +132,12 @@ public class Provisioner {
 
 	@Transactional
 	boolean alreadyInvitedOrMember(User user, Project project) {
-		if (membershipDao.hasEnrolled(project.getCourse().getId(), user)) {
+		if (membershipDao.get().hasEnrolled(project.getCourse().getId(), user)) {
 			return true;
 		}
 
 		try {
-			invitationDao.findByProjectAndUser(project, user);
+			invitationDao.get().findByProjectAndUser(project, user);
 			return true;
 		} catch (NoResultException e) {
 			return false;
@@ -146,7 +146,7 @@ public class Provisioner {
 
 	@Transactional
 	boolean alreadyMemberOfCourseProject(User currentUser, Long course) {
-		return membershipDao.hasEnrolled(course, currentUser);
+		return membershipDao.get().hasEnrolled(course, currentUser);
 	}
 
 	@Data
@@ -208,6 +208,8 @@ public class Provisioner {
 				stateCache.put(projectId, new State(true, true, "Could not configure build server project!"));
 				return;
 			}
+
+			// TODO: Send invited users e-mail with their invitation.
 
 			stateCache.put(projectId, new State(true, false, "Successfully provisioned project!"));
 			unit.end();
