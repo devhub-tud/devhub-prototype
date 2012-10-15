@@ -59,10 +59,13 @@ public class Provisioner {
 	private final DevHubMail mailer;
 	private final String publicUrl;
 
+	private final String gitHost;
+
 	@Inject
 	public Provisioner(Provider<UnitOfWork> units, Provider<CourseDao> courseDao, Provider<ProjectDao> projectDao,
 			Provider<ProjectMembershipDao> membershipDao, Provider<ProjectInvitationDao> invitationDao, Provider<UserDao> userDao,
-			DevHubMail mailer, JenkinsClient jenkinsClient, ConfigManager gitManager, @Named("webapp.web-url") String publicUrl) {
+			DevHubMail mailer, JenkinsClient jenkinsClient, ConfigManager gitManager,
+			@Named("webapp.web-url") String publicUrl, @Named("webapp.git-host") String gitHost) {
 
 		this.units = units;
 		this.courseDao = courseDao;
@@ -74,6 +77,7 @@ public class Provisioner {
 		this.jenkinsClient = jenkinsClient;
 		this.gitManager = gitManager;
 		this.publicUrl = publicUrl;
+		this.gitHost = gitHost;
 
 		this.stateCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).maximumSize(500).build();
 		this.executor = new ScheduledThreadPoolExecutor(0);
@@ -205,7 +209,7 @@ public class Provisioner {
 			try {
 				stateCache.put(projectId, new State(false, false, "Configuring build server project..."));
 				String creatorEmail = creator.getUser().getEmail();
-				provisionJenkins(project.getSafeName(), "git@dea.hartveld.com:" + project.getSafeName(), creatorEmail);
+				provisionJenkins(project.getSafeName(), "git@" + gitHost + ":" + project.getSafeName(), creatorEmail);
 			} catch (Throwable e) {
 				LOG.error(e.getMessage(), e);
 				rollBackJenkinsJobCreation(project.getName());
