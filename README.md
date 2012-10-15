@@ -12,19 +12,20 @@ Build the project with
 
     $ mvn clean package
 
-In the web application module you will find the working Jar.
+In the web application module you will find the working War. This was can be deployed in any servlet container.
 
 ## Run for development
 
-Now you can run your webapp by going to the dev-env-admin-web folder and commanding maven with:
+You can run the application from Eclipse by starting: `nl.tudelft.ewu.dea.DevHubServer.java`
 
-    $ mvn brew:compile jetty:run
+You can also run the application using Maven by first installing the everything using:
 
-This will start the application on port 8080. The coffee scripts will be compiled but not updated if you change them. If you plan to develop coffeescript, open a seperate command window and run. 
+	mvn install
 	
-	$ mvn brew:compile -Dbrew.watch=true
+And then browsing to the web module and running:
 	
-Because this is a blocking thread, it cannot be run together with jetty:run, hence the two windows.
+	mvn exec:java
+
 
 ## Test
 

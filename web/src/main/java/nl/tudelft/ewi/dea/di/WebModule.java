@@ -71,7 +71,7 @@ public class WebModule extends ServletModule {
 
 		final Map<String, String> params = Maps.newHashMap();
 		params.put("com.sun.jersey.config.property.packages", "nl.tudelft.ewi.dea.jaxrs");
-		params.put(ServletContainer.PROPERTY_WEB_PAGE_CONTENT_REGEX, "/.*\\.(html|js|gif|png|css)");
+		params.put(ServletContainer.PROPERTY_WEB_PAGE_CONTENT_REGEX, "/.*\\.(html|js|gif|png|css|ico)");
 		filter("/*").through(GuiceContainer.class, params);
 	}
 

@@ -69,6 +69,8 @@ public class MailModule extends AbstractModule {
 	VelocityEngine velocityEngine() {
 		VelocityEngine engine = new VelocityEngine();
 		engine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+		engine.setProperty(RuntimeConstants.OUTPUT_ENCODING, "UTF-8");
+		engine.setProperty(RuntimeConstants.INPUT_ENCODING, "UTF-8");
 		engine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
 		engine.init();
 		return engine;

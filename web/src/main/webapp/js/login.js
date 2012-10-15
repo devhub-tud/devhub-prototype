@@ -20,10 +20,13 @@ $(document).ready(function() {
 				window.location.replace("/dashboard");
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
+				console.log(jqXHR);
 				if (jqXHR.status === 405) {
 					showAlert("alert-error", "Wrong username or password");
 					$('#signin').find('input[name="password"]').val("");
-				} else {
+				} else if (jqXHR.status === 302) {
+					window.location.replace("/dashboard");
+				}  else {
 					showAlert("alert-error", "<strong>Uknown error</strong>");
 				}
 			}
