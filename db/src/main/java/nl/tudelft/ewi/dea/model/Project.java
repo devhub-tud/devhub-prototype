@@ -24,6 +24,8 @@ public class Project {
 
 	@ManyToOne(optional = false) private Course course;
 
+	@OneToMany(mappedBy = "project") private Set<ProjectInvitation> invitations = new HashSet<>();
+
 	@OneToMany(mappedBy = "project") private Set<ProjectMembership> members = new HashSet<>();
 
 	@SuppressWarnings("unused")
@@ -48,6 +50,10 @@ public class Project {
 
 	public Set<ProjectMembership> getMembers() {
 		return Collections.unmodifiableSet(members);
+	}
+
+	public Set<ProjectInvitation> getInvitations() {
+		return Collections.unmodifiableSet(invitations);
 	}
 
 	void setMembers(final Set<ProjectMembership> members) {

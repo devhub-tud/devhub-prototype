@@ -7,6 +7,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.NoResultException;
 
 import lombok.Data;
@@ -20,6 +21,7 @@ import nl.tudelft.ewi.dea.dao.ProjectInvitationDao;
 import nl.tudelft.ewi.dea.dao.ProjectMembershipDao;
 import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.jaxrs.projects.CourseProjectRequest;
+import nl.tudelft.ewi.dea.mail.DevHubMail;
 import nl.tudelft.ewi.dea.model.Course;
 import nl.tudelft.ewi.dea.model.Project;
 import nl.tudelft.ewi.dea.model.ProjectInvitation;
@@ -50,15 +52,17 @@ public class Provisioner {
 	private final Provider<ProjectInvitationDao> invitationDao;
 	private final Provider<UserDao> userDao;
 
+	private final Provider<UnitOfWork> units;
 	private final JenkinsClient jenkinsClient;
 	private final ConfigManager gitManager;
 
-	private final Provider<UnitOfWork> units;
+	private final DevHubMail mailer;
+	private final String publicUrl;
 
 	@Inject
 	public Provisioner(Provider<UnitOfWork> units, Provider<CourseDao> courseDao, Provider<ProjectDao> projectDao,
 			Provider<ProjectMembershipDao> membershipDao, Provider<ProjectInvitationDao> invitationDao, Provider<UserDao> userDao,
-			JenkinsClient jenkinsClient, ConfigManager gitManager) {
+			DevHubMail mailer, JenkinsClient jenkinsClient, ConfigManager gitManager, @Named("webapp.web-url") String publicUrl) {
 
 		this.units = units;
 		this.courseDao = courseDao;
@@ -66,8 +70,10 @@ public class Provisioner {
 		this.membershipDao = membershipDao;
 		this.invitationDao = invitationDao;
 		this.userDao = userDao;
+		this.mailer = mailer;
 		this.jenkinsClient = jenkinsClient;
 		this.gitManager = gitManager;
+		this.publicUrl = publicUrl;
 
 		this.stateCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).maximumSize(500).build();
 		this.executor = new ScheduledThreadPoolExecutor(0);
@@ -209,7 +215,15 @@ public class Provisioner {
 				return;
 			}
 
-			// TODO: Send invited users e-mail with their invitation.
+			for (ProjectInvitation invitation : project.getInvitations()) {
+				try {
+					String creatorName = creator.getUser().getDisplayName();
+					String inviteeEmail = invitation.getUser().getEmail();
+					mailer.sendProjectInvite(inviteeEmail, creatorName, project.getName(), publicUrl);
+				} catch (Throwable e) {
+					LOG.error(e.getMessage(), e);
+				}
+			}
 
 			stateCache.put(projectId, new State(true, false, "Successfully provisioned project!"));
 			unit.end();
