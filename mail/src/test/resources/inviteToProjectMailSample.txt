@@ -1,9 +1,8 @@
 Hi there!
 
-John has invited you to join his project SampleProject on DevHub. Go to DevHub to accept his invenvation.
+John has invited you to join his project "SampleProject" on DevHub.
 
-html://verify.this.com
+To accept or decline your invitation, log in at: html://verify.this.com
 
 Kind regards,
-
 The DevHub team
