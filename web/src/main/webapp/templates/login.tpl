@@ -4,6 +4,7 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Login</title>
 <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.1.0/css/bootstrap-combined.min.css" rel="stylesheet">
+<link rel="shortcut icon" href="/img/favicon.ico">
 <style>
 .hero-unit {
 	width: 666px;
