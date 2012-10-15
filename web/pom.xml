@@ -14,10 +14,6 @@
 	<artifactId>dev-env-admin-web</artifactId>
 	<packaging>war</packaging>
 
-	<properties>
-		<jetty.version>8.1.7.v20120910</jetty.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -53,7 +49,7 @@
 		<dependency>
 			<groupId>com.sun.jersey.contribs</groupId>
 			<artifactId>jersey-guice</artifactId>
-			<version>1.13</version>
+			<version>1.14</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
@@ -73,7 +69,7 @@
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-jaxrs</artifactId>
-			<version>1.9.9</version>
+			<version>1.9.10</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-beanutils</groupId>
@@ -106,9 +102,11 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
-				<version>${jetty.version}</version>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>nl.tudelft.ewi.dea.DevHubServer</mainClass>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -126,21 +124,6 @@
 					</webResources>
 				</configuration>
 			</plugin>
-			<!-- <plugin>
-				<groupId>com.voltvoodoo</groupId>
-				<artifactId>brew</artifactId>
-				<version>0.2.10</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<coffeeOutputDir>${basedir}/src/main/webapp/js</coffeeOutputDir>
-				</configuration>
-			</plugin> -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>tomcat-maven-plugin</artifactId>
@@ -157,7 +140,7 @@
 
 		<pluginManagement>
 			<plugins>
-				
+
 				<plugin>
 					<groupId>com.github.searls</groupId>
 					<artifactId>jasmine-maven-plugin</artifactId>
@@ -193,41 +176,6 @@
 						</execution>
 					</executions>
 				</plugin>
-
-
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											com.voltvoodoo
-										</groupId>
-										<artifactId>brew</artifactId>
-										<versionRange>
-											[0.2.1,)
-										</versionRange>
-										<goals>
-											<goal>optimize</goal>
-											<goal>compile</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-
-
 			</plugins>
 		</pluginManagement>
 	</build>
