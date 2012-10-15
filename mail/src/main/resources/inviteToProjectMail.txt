@@ -1,9 +1,8 @@
 Hi there!
 
-$userName has invited you to join his project $projectName on DevHub. Go to DevHub to accept his invenvation.
+$userName has invited you to join his project "$projectName" on DevHub.
 
-$url
+To accept or decline your invitation, log in at: $url
 
 Kind regards,
-
 The DevHub team
