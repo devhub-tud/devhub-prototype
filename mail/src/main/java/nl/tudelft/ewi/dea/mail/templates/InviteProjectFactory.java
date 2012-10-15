@@ -14,7 +14,7 @@ import com.google.common.collect.ImmutableMap;
 
 public class InviteProjectFactory extends AbstractMailFactory {
 
-	private static final String SUBJECT_TEXT = "Project inventation";
+	private static final String SUBJECT_TEXT = "Project invitation";
 	private final MailProperties props;
 
 	@Inject
