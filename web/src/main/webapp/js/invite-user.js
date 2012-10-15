@@ -11,21 +11,22 @@ $(document).ready(function() {
 		inviteUserModal.modal('show');
 	});
 	
+	inviteUserModal.on("hide", function() {
+		userSearch.val("");
+		loader.hide();
+	});
+	
 	inviteConfirmBtn.click(function(e) {
 		console.log(loader);
 		var mail = userSearch.val();
 		if (mail == undefined || mail === "") return;
 		loader.show();
-		var url = window.location.origin + window.location.pathname + "/invite/" + mail;
+		var url = window.location.pathname + "/invite/" + mail;
+		
 		$.ajax({
 			url: url, 
 			success: function(data) {
-				console.log("Awesome!");
-				console.log(data);
-				loader.hide();
-				inviteUserModal.model("hide");
-				userSearch.val("");
-				
+				window.location.replace(window.location.pathname);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				loader.hide();

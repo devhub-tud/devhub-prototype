@@ -112,6 +112,10 @@ select.input-wide {
 	margin-bottom: 3px;
 }
 
+table .attribute {
+	width: 30%;
+}
+
 @media (max-width: 320px) {
 	body, .btn, .label {
 		font-size: 9px !important;

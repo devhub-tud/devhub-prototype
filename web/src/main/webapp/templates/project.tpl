@@ -16,19 +16,19 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td>Project</td>
+					<td class="attribute">Project</td>
 					<td>${project.getName()}</td>
 				</tr>
 				<tr>
-					<td>Git URL</td>
+					<td class="attribute">Git URL</td>
 					<td>${git-path}</td>
 				</tr>
 				<tr>
-					<td>Jenkins job URL</td>
+					<td class="attribute">Jenkins job URL</td>
 					<td><a href="${jenkins-path}">${jenkins-path}</a></td>
 				</tr>
 				<tr>
-					<td>Sonar URL</td>
+					<td class="attribute">Sonar URL</td>
 					<td>TODO</td>
 				</tr>
 			</tbody>
@@ -43,7 +43,7 @@
 			<tbody>
 				#foreach($member in $members)
 				<tr>
-					<td>$member.user.displayName</td>
+					<td class="attribute">$member.user.displayName</td>
 					<td>$member.user.email</td>
 				</tr>
 				#end
@@ -60,7 +60,7 @@
 			<tbody>
 				#foreach($invitation in $invitations)
 				<tr>
-					<td>$invitation.user.displayName</td>
+					<td class="attribute">$invitation.user.displayName</td>
 					<td>$invitation.user.email</td>
 				</tr>
 				#end
