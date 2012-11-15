@@ -154,6 +154,7 @@
 		<module>db</module>
 		<module>mail</module>
 		<module>web</module>
+		<module>commons</module>
 	</modules>
 
 </project>

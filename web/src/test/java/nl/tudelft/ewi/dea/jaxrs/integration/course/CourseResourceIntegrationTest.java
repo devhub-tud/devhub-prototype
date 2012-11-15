@@ -7,7 +7,9 @@ import static org.mockito.Mockito.when;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Response;
 
+import nl.tudelft.ewi.dea.ServerConfig;
 import nl.tudelft.ewi.dea.di.ProvisioningModule;
+import nl.tudelft.ewi.dea.di.ServerStartupListener;
 import nl.tudelft.ewi.dea.di.WebModule;
 import nl.tudelft.ewi.dea.jaxrs.course.CourseResource;
 import nl.tudelft.jenkins.guice.JenkinsWsClientGuiceModule;
@@ -37,8 +39,8 @@ public class CourseResourceIntegrationTest {
 	public void setUp() {
 
 		when(servletContext.getRealPath("/templates/")).thenReturn("src/main/webapp/templates/");
-
-		injector = Guice.createInjector(new WebModule(servletContext), new ProvisioningModule(), new JenkinsWsClientGuiceModule());
+		ServerConfig serverConfig = new ServerStartupListener().readServerConfig();
+		injector = Guice.createInjector(new WebModule(servletContext, serverConfig), new ProvisioningModule(serverConfig), new JenkinsWsClientGuiceModule());
 
 		resource = injector.getInstance(CourseResource.class);
 

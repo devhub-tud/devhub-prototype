@@ -35,7 +35,7 @@ public class VerifyRegistrationMailFactory extends AbstractMailFactory {
 
 		String body = buildTemplate("verifyRegistrationMail.txt", entities);
 
-		SimpleMessage message = new SimpleMessage(mailAddress, SUBJECT_TEXT, body, mailProps.from);
+		SimpleMessage message = new SimpleMessage(mailAddress, SUBJECT_TEXT, body, mailProps.getFrom());
 
 		return message;
 	}

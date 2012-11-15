@@ -28,7 +28,7 @@ public class PasswordResetMailFactory extends AbstractMailFactory {
 
 		String body = buildTemplate("passwordResetMail.txt", ImmutableMap.of("link", (Object) verifyUrl));
 
-		SimpleMessage message = new SimpleMessage(mailAddress, SUBJECT_TEXT, body, mailProps.from);
+		SimpleMessage message = new SimpleMessage(mailAddress, SUBJECT_TEXT, body, mailProps.getFrom());
 
 		return message;
 	}

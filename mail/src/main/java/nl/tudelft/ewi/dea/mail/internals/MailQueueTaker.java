@@ -76,7 +76,7 @@ class MailQueueTaker implements Runnable {
 
 	void testConnection() {
 		try {
-			transport.connect(mailProps.host, mailProps.user, mailProps.password);
+			transport.connect(mailProps.getHost(), mailProps.getUser(), mailProps.getPassword());
 			transport.close();
 		} catch (MessagingException e) {
 			throw new MailException("Error while trying to connect to the SMTP service", e);
@@ -95,7 +95,7 @@ class MailQueueTaker implements Runnable {
 
 	private void tryToSendMessages(ImmutableList<SimpleMessage> messagesToSend) throws MessagingException {
 		LOG.debug("Connecting to SMTP server");
-		transport.connect(mailProps.host, mailProps.user, mailProps.password);
+		transport.connect(mailProps.getHost(), mailProps.getUser(), mailProps.getPassword());
 		LOG.debug("Connected, sending messages");
 		for (SimpleMessage message : messagesToSend) {
 			MimeMessage mimeMessage = message.asMimeMessage(session);

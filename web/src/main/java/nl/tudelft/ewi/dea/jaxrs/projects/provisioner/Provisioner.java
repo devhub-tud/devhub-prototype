@@ -7,7 +7,6 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.persistence.NoResultException;
 
 import lombok.Data;
@@ -15,6 +14,7 @@ import nl.minicom.gitolite.manager.ConfigManager;
 import nl.minicom.gitolite.manager.models.Config;
 import nl.minicom.gitolite.manager.models.Permission;
 import nl.minicom.gitolite.manager.models.Repository;
+import nl.tudelft.ewi.dea.ServerConfig;
 import nl.tudelft.ewi.dea.dao.CourseDao;
 import nl.tudelft.ewi.dea.dao.ProjectDao;
 import nl.tudelft.ewi.dea.dao.ProjectInvitationDao;
@@ -65,7 +65,7 @@ public class Provisioner {
 	public Provisioner(Provider<UnitOfWork> units, Provider<CourseDao> courseDao, Provider<ProjectDao> projectDao,
 			Provider<ProjectMembershipDao> membershipDao, Provider<ProjectInvitationDao> invitationDao, Provider<UserDao> userDao,
 			DevHubMail mailer, JenkinsClient jenkinsClient, ConfigManager gitManager,
-			@Named("webapp.web-url") String publicUrl, @Named("webapp.git-host") String gitHost) {
+			ServerConfig config) {
 
 		this.units = units;
 		this.courseDao = courseDao;
@@ -76,8 +76,8 @@ public class Provisioner {
 		this.mailer = mailer;
 		this.jenkinsClient = jenkinsClient;
 		this.gitManager = gitManager;
-		this.publicUrl = publicUrl;
-		this.gitHost = gitHost;
+		this.publicUrl = config.getWebUrl();
+		this.gitHost = config.getGitHost();
 
 		this.stateCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).maximumSize(500).build();
 		this.executor = new ScheduledThreadPoolExecutor(0);
