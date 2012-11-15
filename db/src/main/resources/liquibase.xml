@@ -185,5 +185,11 @@
 		<addForeignKeyConstraint constraintName="project_projectinvitation" referencedTableName="project" baseColumnNames="project_id" baseTableName="projectinvitation" referencedColumnNames="id" onDelete="CASCADE" />
 		<addForeignKeyConstraint constraintName="project_projectmembership" referencedTableName="project" baseColumnNames="project_id" baseTableName="projectmembership" referencedColumnNames="id" onDelete="CASCADE" />
 	</changeSet>
+	
+	<changeSet id="9" author="michaelj">
+		<addColumn tableName="project">
+			<column name="source_code_url" type="varchar(255)"></column>
+		</addColumn>
+	</changeSet>
 
 </databaseChangeLog>

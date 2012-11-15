@@ -40,7 +40,11 @@ public class CourseResourceIntegrationTest {
 
 		when(servletContext.getRealPath("/templates/")).thenReturn("src/main/webapp/templates/");
 		ServerConfig serverConfig = new ServerStartupListener().readServerConfig();
-		injector = Guice.createInjector(new WebModule(servletContext, serverConfig), new ProvisioningModule(serverConfig), new JenkinsWsClientGuiceModule());
+
+		injector = Guice.createInjector(
+				new WebModule(servletContext, serverConfig),
+				new ProvisioningModule(serverConfig.getServices()),
+				new JenkinsWsClientGuiceModule());
 
 		resource = injector.getInstance(CourseResource.class);
 

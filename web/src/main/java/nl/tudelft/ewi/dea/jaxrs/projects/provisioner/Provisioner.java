@@ -1,8 +1,7 @@
 package nl.tudelft.ewi.dea.jaxrs.projects.provisioner;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -10,10 +9,6 @@ import javax.inject.Inject;
 import javax.persistence.NoResultException;
 
 import lombok.Data;
-import nl.minicom.gitolite.manager.ConfigManager;
-import nl.minicom.gitolite.manager.models.Config;
-import nl.minicom.gitolite.manager.models.Permission;
-import nl.minicom.gitolite.manager.models.Repository;
 import nl.tudelft.ewi.dea.ServerConfig;
 import nl.tudelft.ewi.dea.dao.CourseDao;
 import nl.tudelft.ewi.dea.dao.ProjectDao;
@@ -27,9 +22,14 @@ import nl.tudelft.ewi.dea.model.Project;
 import nl.tudelft.ewi.dea.model.ProjectInvitation;
 import nl.tudelft.ewi.dea.model.ProjectMembership;
 import nl.tudelft.ewi.dea.model.User;
-import nl.tudelft.jenkins.auth.UserImpl;
-import nl.tudelft.jenkins.client.JenkinsClient;
-import nl.tudelft.jenkins.jobs.Job;
+import nl.tudelft.ewi.devhub.services.continuousintegration.ContinuousIntegrationService;
+import nl.tudelft.ewi.devhub.services.continuousintegration.models.BuildIdentifier;
+import nl.tudelft.ewi.devhub.services.continuousintegration.models.BuildProject;
+import nl.tudelft.ewi.devhub.services.models.ServiceResponse;
+import nl.tudelft.ewi.devhub.services.models.ServiceUser;
+import nl.tudelft.ewi.devhub.services.versioncontrol.VersionControlService;
+import nl.tudelft.ewi.devhub.services.versioncontrol.models.RepositoryIdentifier;
+import nl.tudelft.ewi.devhub.services.versioncontrol.models.RepositoryRepresentation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,19 +53,14 @@ public class Provisioner {
 	private final Provider<UserDao> userDao;
 
 	private final Provider<UnitOfWork> units;
-	private final JenkinsClient jenkinsClient;
-	private final ConfigManager gitManager;
 
 	private final DevHubMail mailer;
 	private final String publicUrl;
 
-	private final String gitHost;
-
 	@Inject
 	public Provisioner(Provider<UnitOfWork> units, Provider<CourseDao> courseDao, Provider<ProjectDao> projectDao,
 			Provider<ProjectMembershipDao> membershipDao, Provider<ProjectInvitationDao> invitationDao, Provider<UserDao> userDao,
-			DevHubMail mailer, JenkinsClient jenkinsClient, ConfigManager gitManager,
-			ServerConfig config) {
+			DevHubMail mailer, ServerConfig config) {
 
 		this.units = units;
 		this.courseDao = courseDao;
@@ -74,10 +69,7 @@ public class Provisioner {
 		this.invitationDao = invitationDao;
 		this.userDao = userDao;
 		this.mailer = mailer;
-		this.jenkinsClient = jenkinsClient;
-		this.gitManager = gitManager;
 		this.publicUrl = config.getWebUrl();
-		this.gitHost = config.getGitHost();
 
 		this.stateCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).maximumSize(500).build();
 		this.executor = new ScheduledThreadPoolExecutor(0);
@@ -85,7 +77,9 @@ public class Provisioner {
 	}
 
 	@Transactional
-	public long provision(CourseProjectRequest courseProject, User owner) {
+	public long provision(CourseProjectRequest courseProject, User owner,
+			VersionControlService versioningService, ContinuousIntegrationService buildService) {
+
 		if (alreadyMemberOfCourseProject(owner, courseProject.getCourse())) {
 			throw new ProvisioningException("You're already a member of a project for this course!");
 		}
@@ -108,7 +102,7 @@ public class Provisioner {
 			throw new ProvisioningException("Could not invite users!");
 		}
 
-		executor.submit(new ProvisionTask(project.getId()));
+		executor.submit(new ProvisionTask(versioningService, buildService, project.getId()));
 		return project.getId();
 	}
 
@@ -169,8 +163,12 @@ public class Provisioner {
 	private class ProvisionTask implements Runnable {
 
 		private final long projectId;
+		private final VersionControlService versioningService;
+		private final ContinuousIntegrationService buildService;
 
-		private ProvisionTask(long projectId) {
+		private ProvisionTask(VersionControlService versioningService, ContinuousIntegrationService buildService, long projectId) {
+			this.versioningService = versioningService;
+			this.buildService = buildService;
 			this.projectId = projectId;
 		}
 
@@ -180,12 +178,12 @@ public class Provisioner {
 			unit.begin();
 
 			Project project = null;
-			ProjectMembership creator = null;
+			User creator = null;
 
 			try {
 				stateCache.put(projectId, new State(false, false, "Preparing to provision project..."));
 				project = projectDao.get().findById(projectId);
-				creator = project.getMembers().iterator().next();
+				creator = project.getMembers().iterator().next().getUser();
 			} catch (Throwable e) {
 				LOG.error(e.getMessage(), e);
 				if (project != null) {
@@ -197,10 +195,12 @@ public class Provisioner {
 
 			try {
 				stateCache.put(projectId, new State(false, false, "Provisioning source code repository..."));
-				provisionGitRepository(project.getSafeName());
+				ServiceResponse response = createVersionControlRepository(project, creator);
+				stateCache.put(projectId, new State(false, !response.isSuccess(), response.getMessage()));
+
 			} catch (Throwable e) {
 				LOG.error(e.getMessage(), e);
-				rollBackGitRepositoryCreation(project.getSafeName());
+				removeVersionControlRepository(project, creator);
 				removeProjectFromDb(project);
 				stateCache.put(projectId, new State(true, true, "Could not provision source code repository!"));
 				return;
@@ -208,12 +208,12 @@ public class Provisioner {
 
 			try {
 				stateCache.put(projectId, new State(false, false, "Configuring build server project..."));
-				String creatorEmail = creator.getUser().getEmail();
-				provisionJenkins(project.getSafeName(), "git@" + gitHost + ":" + project.getSafeName(), creatorEmail);
+
+				createContinuousIntegrationJob(project, creator);
 			} catch (Throwable e) {
 				LOG.error(e.getMessage(), e);
-				rollBackJenkinsJobCreation(project.getName());
-				rollBackGitRepositoryCreation(project.getSafeName());
+				removeContinuousIntegrationJob(project, creator);
+				removeVersionControlRepository(project, creator);
 				removeProjectFromDb(project);
 				stateCache.put(projectId, new State(true, true, "Could not configure build server project!"));
 				return;
@@ -221,7 +221,7 @@ public class Provisioner {
 
 			for (ProjectInvitation invitation : project.getInvitations()) {
 				try {
-					String creatorName = creator.getUser().getDisplayName();
+					String creatorName = creator.getDisplayName();
 					String inviteeEmail = invitation.getUser().getEmail();
 					mailer.sendProjectInvite(inviteeEmail, creatorName, project.getName(), publicUrl);
 				} catch (Throwable e) {
@@ -232,29 +232,63 @@ public class Provisioner {
 			stateCache.put(projectId, new State(true, false, "Successfully provisioned project!"));
 			unit.end();
 		}
-	}
 
-	private void rollBackJenkinsJobCreation(String name) {
-		try {
-			// TODO: Is this how you should roll a jenkins job creation back?
-			Job job = jenkinsClient.retrieveJob(name);
-			if (job != null) {
-				jenkinsClient.deleteJob(job);
+		private ServiceResponse createVersionControlRepository(Project project, User creator) {
+			ServiceUser serviceUser = new ServiceUser(creator.getNetId(), creator.getEmail());
+			RepositoryIdentifier repositoryId = new RepositoryIdentifier(project.getSafeName(), serviceUser);
+			RepositoryRepresentation request = new RepositoryRepresentation(repositoryId, project.getSafeName());
+			for (ProjectMembership membership : project.getMembers()) {
+				User member = membership.getUser();
+				request.addMember(new ServiceUser(member.getNetId(), member.getEmail()));
 			}
-		} catch (Throwable e) {
-			LOG.error(e.getMessage(), e);
+
+			try {
+				Future<ServiceResponse> createRepository = versioningService.createRepository(request);
+				return createRepository.get();
+			} catch (ExecutionException | InterruptedException e) {
+				throw new ProvisioningException("Failed to provision new source code repository", e);
+			}
 		}
-	}
 
-	private void rollBackGitRepositoryCreation(String projectName) {
-		try {
-			Config config = gitManager.getConfig();
-			if (config.hasRepository(projectName)) {
-				config.removeRepository(config.getRepository(projectName));
-				gitManager.applyConfig();
+		private ServiceResponse removeVersionControlRepository(Project project, User creator) {
+			ServiceUser serviceUser = new ServiceUser(creator.getNetId(), creator.getEmail());
+			RepositoryIdentifier repositoryId = new RepositoryIdentifier(project.getSafeName(), serviceUser);
+
+			try {
+				Future<ServiceResponse> removeRepository = versioningService.removeRepository(repositoryId);
+				return removeRepository.get();
+			} catch (ExecutionException | InterruptedException e) {
+				return new ServiceResponse(false, "Uknown error occurred when removing source code repository!");
 			}
-		} catch (Throwable e) {
-			LOG.error(e.getMessage(), e);
+		}
+
+		private ServiceResponse createContinuousIntegrationJob(Project project, User creator) {
+			ServiceUser serviceUser = new ServiceUser(creator.getNetId(), creator.getEmail());
+			BuildIdentifier buildId = new BuildIdentifier(project.getSafeName(), serviceUser);
+			BuildProject request = new BuildProject(buildId, project.getSourceCodeUrl());
+			for (ProjectMembership membership : project.getMembers()) {
+				User member = membership.getUser();
+				request.addMember(new ServiceUser(member.getNetId(), member.getEmail()));
+			}
+
+			try {
+				Future<ServiceResponse> createBuildProject = buildService.createBuildProject(request);
+				return createBuildProject.get();
+			} catch (ExecutionException | InterruptedException e) {
+				return new ServiceResponse(false, "Uknown error occurred when creating continuous integration job!");
+			}
+		}
+
+		private ServiceResponse removeContinuousIntegrationJob(Project project, User creator) {
+			ServiceUser serviceUser = new ServiceUser(creator.getNetId(), creator.getEmail());
+			BuildIdentifier buildId = new BuildIdentifier(project.getSafeName(), serviceUser);
+
+			try {
+				Future<ServiceResponse> removeBuildProject = buildService.removeBuildProject(buildId);
+				return removeBuildProject.get();
+			} catch (ExecutionException | InterruptedException e) {
+				return new ServiceResponse(false, "Uknown error occurred when removing continuous integration job!");
+			}
 		}
 	}
 
@@ -265,25 +299,6 @@ public class Provisioner {
 		} catch (Throwable e) {
 			LOG.error(e.getMessage(), e);
 		}
-	}
-
-	private void provisionJenkins(String projectName, String gitUrl, String email) {
-		List<nl.tudelft.jenkins.auth.User> owners = new ArrayList<>();
-		owners.add(new UserImpl(email, email));
-		jenkinsClient.createJob(projectName, gitUrl, owners);
-	}
-
-	private void provisionGitRepository(String name) throws IOException {
-		Config config = gitManager.getConfig();
-		if (config.hasRepository(name)) {
-			throw new ProvisioningException("Repository alreay exists!");
-		}
-
-		final nl.minicom.gitolite.manager.models.User admin = config.ensureUserExists("git");
-		final Repository repo = config.createRepository(name);
-		repo.setPermission(admin, Permission.ALL);
-
-		gitManager.applyConfig();
 	}
 
 	public State getState(long projectId) {

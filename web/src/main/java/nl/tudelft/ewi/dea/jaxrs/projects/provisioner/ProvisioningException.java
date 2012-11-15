@@ -10,4 +10,8 @@ public class ProvisioningException extends DevHubException {
 		super(message);
 	}
 
+	public ProvisioningException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
 }
