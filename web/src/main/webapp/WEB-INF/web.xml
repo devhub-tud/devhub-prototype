@@ -4,15 +4,6 @@
 
 <web-app>
 	<display-name>DevHub</display-name>
-	
-	<context-param>
-		<param-name>version</param-name>
-		<param-value>${project.version}</param-value>
-	</context-param>
-	<context-param>
-		<param-name>build</param-name>
-		<param-value>${buildDate}</param-value>
-	</context-param>
 
 	<filter>
 		<filter-name>guiceFilter</filter-name>

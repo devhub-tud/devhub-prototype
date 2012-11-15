@@ -95,6 +95,13 @@
 	</dependencies>
 
 	<build>
+		<finalName>devhub</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -108,6 +115,11 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.2</version>
 				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>WEB-INF/classes/nl.tudelft.ewi.dea.DevHubServer</mainClass>
+						</manifest>
+					</archive>
 					<webResources>
 						<resource>
 							<directory>src/main/webapp</directory>
@@ -135,7 +147,6 @@
 
 		<pluginManagement>
 			<plugins>
-
 				<plugin>
 					<groupId>com.github.searls</groupId>
 					<artifactId>jasmine-maven-plugin</artifactId>
