@@ -1,5 +1,9 @@
 package nl.tudelft.ewi.dea.di;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -7,12 +11,15 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
 import nl.tudelft.ewi.dea.DevHubException;
+import nl.tudelft.ewi.dea.ServerConfig;
 import nl.tudelft.ewi.dea.template.TemplateEngine;
 import nl.tudelft.jenkins.guice.JenkinsWsClientGuiceModule;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
@@ -29,17 +36,33 @@ public class ServerStartupListener extends GuiceServletContextListener {
 
 	@Override
 	protected Injector getInjector() {
+		ServerConfig config = readServerConfig();
+		LOG.info("Starting with configuration: " + config);
 		try {
 			if (injector == null) {
 				injector = Guice.createInjector(
-						new WebModule(servletContext),
-						new ProvisioningModule(),
-						new JenkinsWsClientGuiceModule("http://dea.hartveld.com/jenkins")
+						new WebModule(servletContext, config),
+						new ProvisioningModule(config),
+						new JenkinsWsClientGuiceModule(config.getJenkinsUrl())
 						);
 			}
 			return injector;
 		} catch (Exception e) {
 			throw createStartupException(e);
+		}
+	}
+
+	@VisibleForTesting
+	public ServerConfig readServerConfig() {
+		ObjectMapper mapper = new ObjectMapper();
+		InputStream configAsJson = ServerStartupListener.class.getResourceAsStream("/serverconfig.json");
+		checkNotNull(configAsJson, "Config file not found!");
+		try {
+			ServerConfig config = mapper.readValue(configAsJson, ServerConfig.class);
+			config.verifyConfig();
+			return config;
+		} catch (IOException e) {
+			throw createStartupException(new IOException("Could not read the server config file " + e.getMessage(), e));
 		}
 	}
 

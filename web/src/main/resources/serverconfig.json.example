@@ -1,0 +1,19 @@
+{
+	"webUrl" : "http://localhost:8080",
+	"gitoliteUrl" : "git@example.com:gitolite-admin",
+	"gitHost" : "example.com",
+	"sshPassPhrase" : "yoursshpassphrase",
+	"jenkinsUrl" : "http://example.com/jenkins",
+	"sonarUrl" : "http://example.com/sonar",	
+
+	"mailConfig" : {
+		"host" : "localhost",
+		"from" : "no-reply@example.com",
+		"user" : "yourname",
+		"password" : "yourpassword",
+		"ssl" : true,
+		"port" : 587,
+		"auth" : true
+	}
+	
+}

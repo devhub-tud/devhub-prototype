@@ -33,7 +33,7 @@ public class VerifyRegistrationMailFactoryTest {
 		String expextedTemplate = Resources.toString(Resources.getResource("verifyRegistrationMailSample.txt"), Charsets.UTF_8);
 
 		assertThat(generatedMessage.body, is(expextedTemplate));
-		assertThat(generatedMessage.from, is(MAIL_PROPS.from));
+		assertThat(generatedMessage.from, is(MAIL_PROPS.getFrom()));
 		assertThat(generatedMessage.to.size(), is(1));
 		assertThat(generatedMessage.to, hasItem(mailAddress));
 	}

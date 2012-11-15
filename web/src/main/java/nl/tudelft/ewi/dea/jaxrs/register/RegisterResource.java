@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import nl.tudelft.ewi.dea.ServerConfig;
 import nl.tudelft.ewi.dea.dao.RegistrationTokenDao;
 import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.mail.DevHubMail;
@@ -42,11 +43,11 @@ public class RegisterResource {
 
 	@Inject
 	public RegisterResource(UserDao userDao, RegistrationTokenDao tokenDao, DevHubMail mailer,
-			@Named("webapp.web-url") String publicUrl) {
+			ServerConfig config) {
 		this.userDao = userDao;
 		this.tokenDao = tokenDao;
 		this.mailer = mailer;
-		this.publicUrl = publicUrl;
+		this.publicUrl = config.getWebUrl();
 	}
 
 	@GET

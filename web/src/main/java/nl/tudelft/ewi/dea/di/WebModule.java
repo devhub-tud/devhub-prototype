@@ -1,19 +1,15 @@
 package nl.tudelft.ewi.dea.di;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 
 import javax.inject.Singleton;
 import javax.servlet.ServletContext;
 
-import nl.tudelft.ewi.dea.DevHubException;
+import nl.tudelft.ewi.dea.ServerConfig;
 import nl.tudelft.ewi.dea.jaxrs.projects.provisioner.Provisioner;
 import nl.tudelft.ewi.dea.mail.MailModule;
-import nl.tudelft.ewi.dea.mail.MailProperties;
 import nl.tudelft.ewi.dea.template.TemplateEngine;
 
 import org.apache.shiro.guice.web.GuiceShiroFilter;
@@ -21,11 +17,9 @@ import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.inject.Provides;
 import com.google.inject.Scopes;
-import com.google.inject.name.Names;
 import com.google.inject.persist.PersistFilter;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
@@ -42,26 +36,20 @@ public class WebModule extends ServletModule {
 
 	private final ServletContext servletContext;
 
-	public WebModule(final ServletContext servletContext) {
+	private final ServerConfig serverConfig;
+
+	public WebModule(final ServletContext servletContext, ServerConfig serverConfig) {
 		this.servletContext = servletContext;
+		this.serverConfig = serverConfig;
 	}
 
 	@Override
 	protected void configureServlets() {
-		final Properties configuration = loadConfiguration();
-		Names.bindProperties(binder(), configuration);
-
 		install(new SecurityModule(servletContext));
 		install(new PersistenceModule("production-h2", ""));
 		filter("/*").through(PersistFilter.class);
 
-		install(new MailModule(MailProperties.newWithAuth(
-				configuration.getProperty("webapp.smtp.host"),
-				configuration.getProperty("webapp.smtp.user"),
-				configuration.getProperty("webapp.smtp.pass"),
-				configuration.getProperty("webapp.smtp.no-reply"),
-				"true".equals(configuration.getProperty("webapp.smtp.ssl")),
-				Integer.parseInt(configuration.getProperty("webapp.smtp.port")))));
+		install(new MailModule(serverConfig.getMailConfig()));
 
 		LOG.debug("Configuring servlets and URLs");
 		filter("/*").through(GuiceShiroFilter.class);
@@ -73,19 +61,6 @@ public class WebModule extends ServletModule {
 		params.put("com.sun.jersey.config.property.packages", "nl.tudelft.ewi.dea.jaxrs");
 		params.put(ServletContainer.PROPERTY_WEB_PAGE_CONTENT_REGEX, "/.*\\.(html|js|gif|png|css|ico)");
 		filter("/*").through(GuiceContainer.class, params);
-	}
-
-	private Properties loadConfiguration() {
-		try {
-			final Properties properties = new Properties();
-			InputStream configFile = WebModule.class.getResourceAsStream("/config.properties");
-			Preconditions.checkNotNull(configFile, "Config file not found");
-			properties.load(configFile);
-			return properties;
-		} catch (final IOException e) {
-			LOG.error(e.getMessage(), e);
-			throw new DevHubException(e.getMessage(), e);
-		}
 	}
 
 	@Provides

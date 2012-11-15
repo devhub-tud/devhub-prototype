@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import nl.tudelft.ewi.dea.ServerConfig;
 import nl.tudelft.ewi.dea.dao.ProjectDao;
 import nl.tudelft.ewi.dea.dao.ProjectInvitationDao;
 import nl.tudelft.ewi.dea.dao.ProjectMembershipDao;
@@ -61,8 +62,7 @@ public class ProjectResource {
 	@Inject
 	public ProjectResource(Provider<Renderer> renderers, SecurityProvider securityProvider, ProjectDao projectDao,
 			UserDao userDao, ProjectInvitationDao invitationDao, ProjectMembershipDao membershipDao, DevHubMail mail,
-			@Named("webapp.web-url") String publicUrl, @Named("webapp.git-host") String gitHost,
-			@Named("webapp.jenkins-host") String jenkinsHost) {
+			ServerConfig serverConfig) {
 		this.renderers = renderers;
 
 		this.securityProvider = securityProvider;
@@ -72,9 +72,9 @@ public class ProjectResource {
 		this.invitationDao = invitationDao;
 		this.membershipDao = membershipDao;
 		this.mail = mail;
-		this.publicUrl = publicUrl;
-		this.gitHost = gitHost;
-		this.jenkinsHost = jenkinsHost;
+		this.publicUrl = serverConfig.getWebUrl();
+		this.gitHost = serverConfig.getGitHost();
+		this.jenkinsHost = serverConfig.getJenkinsUrl();
 	}
 
 	@GET

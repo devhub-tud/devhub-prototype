@@ -1,0 +1,9 @@
+{
+		"host" : "localhost",
+		"from" : "from@example.com",
+		"user" : "from@example.com",
+		"password" : "password",
+		"ssl" : false,
+		"port" : 587,
+		"auth" : false
+}

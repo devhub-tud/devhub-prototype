@@ -13,19 +13,14 @@ public class ManualMailTest {
 
 	@Test
 	public void testSendingAnEmailTwice() throws InterruptedException {
-		String host = "smtp.gmail.com";
-		String user = "";
-		String password = "";
-		int port = 587;
-		boolean ssl = true;
-		MailProperties props = MailProperties.newWithAuth(host, user, password, user, ssl, port);
+		MailProperties props = CommonTestData.MAIL_PROPS;
 		Injector module = Guice.createInjector(new MailModule(props));
 		DevHubMail mail = module.getInstance(DevHubMail.class);
-		mail.sendVerifyRegistrationMail(user, "http://kers.nu");
+		mail.sendVerifyRegistrationMail(props.getFrom(), "http://kers.nu");
 
 		Thread.sleep(TimeUnit.SECONDS.toMillis(5));
 
-		mail.sendVerifyRegistrationMail(user, "http://kers.blaat.nu");
+		mail.sendVerifyRegistrationMail(props.getFrom(), "http://kers.blaat.nu");
 
 		Thread.sleep(TimeUnit.SECONDS.toMillis(5));
 	}

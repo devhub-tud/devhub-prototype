@@ -6,6 +6,9 @@ The project is sponsored by Arie van Deursen and was initially developed by Davi
 
 ![image](http://home.tudelft.nl/fileadmin/Default/Templates/images/logo.gif)
 
+## Configure
+Under *web/src/main/resources* you will find an example configuration `serverconfig.json.example`. Rename this to `serverconfig.json` and fill it with your data to configure the application.
+
 ## Build
 
 Build the project with

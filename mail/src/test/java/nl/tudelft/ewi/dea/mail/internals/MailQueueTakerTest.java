@@ -22,6 +22,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
 
+import nl.tudelft.ewi.dea.mail.CommonTestData;
 import nl.tudelft.ewi.dea.mail.MailException;
 import nl.tudelft.ewi.dea.mail.MailProperties;
 import nl.tudelft.ewi.dea.mail.SimpleMessage;
@@ -36,12 +37,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.collect.ImmutableList;
 
-
 @RunWith(MockitoJUnitRunner.class)
 public class MailQueueTakerTest {
 
 	@Spy private LinkedBlockingQueue<SimpleMessage> mailQueue;
-	@Mock private MailProperties mailProps;
+	private MailProperties mailProps = CommonTestData.MAIL_PROPS;
 	private final Session session = Session.getDefaultInstance(new Properties());
 	@Mock private Transport transport;
 	private MailQueueTaker mQueueTaker;
@@ -54,7 +54,7 @@ public class MailQueueTakerTest {
 	@Test
 	public void whenConnectionIsTestedTheTakerOpensAndClosesTheTransport() throws MessagingException {
 		mQueueTaker.testConnection();
-		InOrder order = inOrder(mailQueue, transport, mailProps);
+		InOrder order = inOrder(mailQueue, transport);
 		order.verify(transport).connect(anyString(), anyString(), anyString());
 		order.verify(transport).close();
 		order.verifyNoMoreInteractions();

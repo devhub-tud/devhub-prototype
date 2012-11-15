@@ -6,7 +6,9 @@ import nl.minicom.gitolite.manager.ConfigManager;
 import nl.minicom.gitolite.manager.git.PassphraseCredentialsProvider;
 import nl.minicom.gitolite.manager.models.Config;
 import nl.tudelft.ewi.dea.DevHubException;
+import nl.tudelft.ewi.dea.ServerConfig;
 
+import org.eclipse.jgit.transport.CredentialsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,11 +17,16 @@ import com.google.inject.AbstractModule;
 public class ProvisioningModule extends AbstractModule {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProvisioningModule.class);
+	private ServerConfig serverConfig;
+
+	public ProvisioningModule(ServerConfig serverConfig) {
+		this.serverConfig = serverConfig;
+	}
 
 	@Override
 	protected void configure() {
-
-		final ConfigManager manager = ConfigManager.create("git@dea.hartveld.com:gitolite-admin", new PassphraseCredentialsProvider("passphrase"));
+		CredentialsProvider passPhrase = new PassphraseCredentialsProvider(serverConfig.getSshPassPhrase());
+		final ConfigManager manager = ConfigManager.create(serverConfig.getGitoliteUrl(), passPhrase);
 
 		try {
 			final Config config = manager.getConfig();

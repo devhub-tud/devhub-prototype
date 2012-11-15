@@ -34,7 +34,7 @@ public class InviteProjectFactory extends AbstractMailFactory {
 						, "projectName", (Object) projectName
 						, "url", (Object) url));
 
-		SimpleMessage message = new SimpleMessage(email, SUBJECT_TEXT, body, props.from);
+		SimpleMessage message = new SimpleMessage(email, SUBJECT_TEXT, body, props.getFrom());
 
 		return message;
 

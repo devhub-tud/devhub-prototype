@@ -15,6 +15,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import nl.tudelft.ewi.dea.ServerConfig;
 import nl.tudelft.ewi.dea.dao.PasswordResetTokenDao;
 import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
@@ -45,12 +46,12 @@ public class ResetPasswordResource {
 	private final DevHubMail mail;
 
 	@Inject
-	public ResetPasswordResource(final Provider<Renderer> renderers, final UserDao userDao, final PasswordResetTokenDao passwordResetTokenDao, @Named("webapp.web-url") final String publicUrl, final DevHubMail mail) {
+	public ResetPasswordResource(final Provider<Renderer> renderers, final UserDao userDao, final PasswordResetTokenDao passwordResetTokenDao, ServerConfig serverConfig, final DevHubMail mail) {
 		this.renderers = renderers;
 
 		this.userDao = userDao;
 		this.passwordResetTokenDao = passwordResetTokenDao;
-		this.publicUrl = publicUrl;
+		this.publicUrl = serverConfig.getWebUrl();
 		this.mail = mail;
 	}
 
