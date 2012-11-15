@@ -94,12 +94,33 @@
 		</dependency>
 	</dependencies>
 
+	<profiles>
+		<profile>
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<env>local</env>
+			</properties>
+		</profile>
+		<profile>
+			<id>production</id>
+			<properties>
+				<env>production</env>
+			</properties>
+		</profile>
+	</profiles>
+
 	<build>
 		<finalName>devhub</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>env/${env}/</directory>
 			</resource>
 		</resources>
 		<plugins>

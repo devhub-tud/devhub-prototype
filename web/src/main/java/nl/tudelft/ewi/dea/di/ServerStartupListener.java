@@ -10,15 +10,16 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
+import nl.tudelft.ewi.dea.CommonModule;
 import nl.tudelft.ewi.dea.DevHubException;
 import nl.tudelft.ewi.dea.ServerConfig;
 import nl.tudelft.ewi.dea.template.TemplateEngine;
 import nl.tudelft.jenkins.guice.JenkinsWsClientGuiceModule;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -36,11 +37,12 @@ public class ServerStartupListener extends GuiceServletContextListener {
 
 	@Override
 	protected Injector getInjector() {
-		ServerConfig config = readServerConfig();
+		CommonModule commonModule = new CommonModule();
+		ServerConfig config = readServerConfig(commonModule.objectMapper());
 		LOG.info("Starting with configuration: " + config);
 		try {
 			if (injector == null) {
-				injector = Guice.createInjector(
+				injector = Guice.createInjector(commonModule,
 						new WebModule(servletContext, config),
 						new ProvisioningModule(config),
 						new JenkinsWsClientGuiceModule(config.getJenkinsUrl())
@@ -53,8 +55,7 @@ public class ServerStartupListener extends GuiceServletContextListener {
 	}
 
 	@VisibleForTesting
-	public ServerConfig readServerConfig() {
-		ObjectMapper mapper = new ObjectMapper();
+	public ServerConfig readServerConfig(ObjectMapper mapper) {
 		InputStream configAsJson = ServerStartupListener.class.getResourceAsStream("/serverconfig.json");
 		checkNotNull(configAsJson, "Config file not found!");
 		try {

@@ -14,6 +14,13 @@
 		"ssl" : true,
 		"port" : 587,
 		"auth" : true
+	},
+	
+	"dbConfig" : {
+		"dburl" : "jdbc:postgresql://localhost/devhub-test",
+		"user" : "theuser",
+		"password" : "",
+		"persistanceUnit" : "production-h2"
 	}
 	
 }

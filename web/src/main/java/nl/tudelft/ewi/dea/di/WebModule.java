@@ -10,6 +10,7 @@ import javax.inject.Singleton;
 import javax.servlet.ServletContext;
 
 import nl.tudelft.ewi.dea.BuildInfo;
+import nl.tudelft.ewi.dea.CommonModule;
 import nl.tudelft.ewi.dea.DevHubException;
 import nl.tudelft.ewi.dea.ServerConfig;
 import nl.tudelft.ewi.dea.jaxrs.projects.provisioner.Provisioner;
@@ -18,7 +19,6 @@ import nl.tudelft.ewi.dea.template.TemplateEngine;
 
 import org.apache.shiro.guice.web.GuiceShiroFilter;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +55,7 @@ public class WebModule extends ServletModule {
 		InputStream src = WebModule.class.getResourceAsStream("/buildinfo.json");
 		Preconditions.checkNotNull(src, "Could not find build info");
 		try {
-			return new ObjectMapper().readValue(src, BuildInfo.class);
+			return new CommonModule().objectMapper().readValue(src, BuildInfo.class);
 		} catch (IOException e) {
 			throw new DevHubException("Could not parse the buildinfo.json", e);
 		}
@@ -65,7 +65,7 @@ public class WebModule extends ServletModule {
 	protected void configureServlets() {
 		bind(BuildInfo.class).toInstance(buildInfo);
 		install(new SecurityModule(servletContext));
-		install(new PersistenceModule("production-h2", ""));
+		install(new PersistenceModule(serverConfig.getDbConfig(), ""));
 		filter("/*").through(PersistFilter.class);
 
 		install(new MailModule(serverConfig.getMailConfig()));

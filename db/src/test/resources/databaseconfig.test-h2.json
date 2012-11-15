@@ -1,0 +1,6 @@
+{
+	"dburl": "testUrl",
+	"user": "kers",
+	"password": "kers",
+	"persistanceUnit": "test-h2"
+}

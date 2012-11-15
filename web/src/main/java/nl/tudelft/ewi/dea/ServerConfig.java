@@ -6,6 +6,7 @@ import javax.inject.Singleton;
 
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Value;
+import nl.tudelft.ewi.dea.dao.DatabaseProperties;
 import nl.tudelft.ewi.dea.mail.MailProperties;
 
 @Value
@@ -20,6 +21,7 @@ public final class ServerConfig extends JsonConfigFile {
 	private final String sonarUrl = null;
 	private final String webUrl = null;
 	private final MailProperties mailConfig = null;
+	private final DatabaseProperties dbConfig = null;
 
 	@Override
 	public void verifyConfig() {
@@ -29,6 +31,7 @@ public final class ServerConfig extends JsonConfigFile {
 		notNullNorEmpty(sonarUrl, "Sonar url must be filled in");
 		checkNotNull(mailConfig, "Mail must be configured");
 		mailConfig.verifyConfig();
+		dbConfig.verifyConfig();
 	}
 
 }
