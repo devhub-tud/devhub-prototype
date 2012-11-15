@@ -7,7 +7,7 @@
 	<groupId>nl.tudelft.ewi</groupId>
 	<version>1.0-SNAPSHOT</version>
 	<name>DevHub - Parent project</name>
-	<artifactId>dev-env-admin</artifactId>
+	<artifactId>devhub</artifactId>
 	<packaging>pom</packaging>
 
 	<description>Management of the Development Environment for EWI @ TU-Delft.</description>
@@ -35,9 +35,9 @@
 	</developers>
 
 	<scm>
-		<connection>scm:git:ssh://git@bitbucket.org:alexnederlof/dev-env-admin.git</connection>
-		<developerConnection>scm:git:ssh://git@bitbucket.org:alexnederlof/dev-env-admin.git</developerConnection>
-		<url>https://bitbucket.org/alexnederlof/dev-env-admin</url>
+		<connection>scm:git:ssh://git@bitbucket.org:alexnederlof/devhub.git</connection>
+		<developerConnection>scm:git:ssh://git@bitbucket.org:alexnederlof/devhub.git</developerConnection>
+		<url>https://bitbucket.org/alexnederlof/devhub</url>
 	</scm>
 
 	<distributionManagement>
@@ -155,6 +155,7 @@
 		<module>mail</module>
 		<module>web</module>
 		<module>commons</module>
+		<module>service-providers</module>
 	</modules>
 
 </project>

@@ -6,7 +6,6 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import java.util.UUID;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;

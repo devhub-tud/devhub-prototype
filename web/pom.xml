@@ -4,20 +4,20 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<artifactId>dev-env-admin</artifactId>
+		<artifactId>devhub</artifactId>
 		<groupId>nl.tudelft.ewi</groupId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
 	<name>DevHub - Web interface</name>
 
-	<artifactId>dev-env-admin-web</artifactId>
+	<artifactId>devhub-web</artifactId>
 	<packaging>war</packaging>
 
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>dev-env-admin-db</artifactId>
+			<artifactId>devhub-db</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -78,7 +78,7 @@
 		</dependency>
 		<dependency>
 			<groupId>nl.tudelft.ewi</groupId>
-			<artifactId>dev-env-admin-mail</artifactId>
+			<artifactId>devhub-mail</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>

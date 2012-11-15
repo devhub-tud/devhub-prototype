@@ -5,10 +5,10 @@
 
 	<parent>
 		<groupId>nl.tudelft.ewi</groupId>
-		<artifactId>dev-env-admin</artifactId>
+		<artifactId>devhub</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>dev-env-admin-commons</artifactId>
+	<artifactId>devhub-commons</artifactId>
 	<name>DevHub - Commons module</name>
 </project>

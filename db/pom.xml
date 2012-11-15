@@ -5,11 +5,11 @@
 	
 	<parent>
 		<groupId>nl.tudelft.ewi</groupId>
-		<artifactId>dev-env-admin</artifactId>
+		<artifactId>devhub</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 	
-	<artifactId>dev-env-admin-db</artifactId>
+	<artifactId>devhub-db</artifactId>
 	<name>DevHub - Database module</name>
 
 
@@ -66,7 +66,7 @@
 		</dependency>
 		<dependency>
 			<groupId>nl.tudelft.ewi</groupId>
-			<artifactId>dev-env-admin-commons</artifactId>
+			<artifactId>devhub-commons</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
