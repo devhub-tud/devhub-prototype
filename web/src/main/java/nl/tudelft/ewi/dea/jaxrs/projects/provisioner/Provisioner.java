@@ -7,6 +7,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+import javax.naming.ServiceUnavailableException;
 import javax.persistence.NoResultException;
 
 import lombok.Data;
@@ -14,6 +15,7 @@ import nl.minicom.gitolite.manager.ConfigManager;
 import nl.minicom.gitolite.manager.models.Config;
 import nl.minicom.gitolite.manager.models.Permission;
 import nl.minicom.gitolite.manager.models.Repository;
+import nl.tudelft.ewi.dea.DevHubException;
 import nl.tudelft.ewi.dea.ServerConfig;
 import nl.tudelft.ewi.dea.dao.CourseDao;
 import nl.tudelft.ewi.dea.dao.ProjectDao;
@@ -274,16 +276,19 @@ public class Provisioner {
 	}
 
 	private void provisionGitRepository(String name) throws IOException {
-		Config config = gitManager.getConfig();
-		if (config.hasRepository(name)) {
-			throw new ProvisioningException("Repository alreay exists!");
+		try {
+			Config config = gitManager.getConfig();
+			if (config.hasRepository(name)) {
+				throw new ProvisioningException("Repository alreay exists!");
+			}
+
+			final nl.minicom.gitolite.manager.models.User admin = config.ensureUserExists("git");
+			final Repository repo = config.createRepository(name);
+			repo.setPermission(admin, Permission.ALL);
+			gitManager.applyConfig();
+		} catch (ServiceUnavailableException e) {
+			throw new DevHubException("Could not provision " + name + " because " + e.getMessage(), e);
 		}
-
-		final nl.minicom.gitolite.manager.models.User admin = config.ensureUserExists("git");
-		final Repository repo = config.createRepository(name);
-		repo.setPermission(admin, Permission.ALL);
-
-		gitManager.applyConfig();
 	}
 
 	public State getState(long projectId) {

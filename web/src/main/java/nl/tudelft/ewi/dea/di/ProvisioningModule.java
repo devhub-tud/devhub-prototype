@@ -2,6 +2,8 @@ package nl.tudelft.ewi.dea.di;
 
 import java.io.IOException;
 
+import javax.naming.ServiceUnavailableException;
+
 import nl.minicom.gitolite.manager.ConfigManager;
 import nl.minicom.gitolite.manager.git.PassphraseCredentialsProvider;
 import nl.minicom.gitolite.manager.models.Config;
@@ -36,6 +38,8 @@ public class ProvisioningModule extends AbstractModule {
 					+ "users: " + config.getUsers().size() + " }");
 		} catch (final IOException e) {
 			throw new DevHubException(e.getMessage(), e);
+		} catch (ServiceUnavailableException e) {
+			throw new DevHubException("Could not configure the provisioning module: " + e.getMessage(), e);
 		}
 
 		bind(ConfigManager.class).toInstance(manager);
