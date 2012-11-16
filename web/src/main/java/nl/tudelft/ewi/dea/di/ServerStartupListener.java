@@ -11,7 +11,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
 import nl.tudelft.ewi.dea.CommonModule;
-import nl.tudelft.ewi.dea.DevHubException;
+import nl.tudelft.ewi.dea.ConfigurationException;
 import nl.tudelft.ewi.dea.ServerConfig;
 import nl.tudelft.ewi.dea.template.TemplateEngine;
 import nl.tudelft.jenkins.guice.JenkinsWsClientGuiceModule;
@@ -34,6 +34,7 @@ public class ServerStartupListener extends GuiceServletContextListener {
 	private static final Logger LOG = LoggerFactory.getLogger(ServerStartupListener.class);
 	private Injector injector;
 	private ServletContext servletContext;
+	private boolean inErrorMode = false;
 
 	@Override
 	protected Injector getInjector() {
@@ -47,10 +48,14 @@ public class ServerStartupListener extends GuiceServletContextListener {
 						new ProvisioningModule(config),
 						new JenkinsWsClientGuiceModule(config.getJenkinsUrl())
 						);
+			} else {
+				throw new IllegalStateException("Injector was already created?");
 			}
 			return injector;
-		} catch (Exception e) {
-			throw createStartupException(e);
+		} catch (RuntimeException e) {
+			inErrorMode = true;
+			injector = switchToErrorMode(new Exception(e));
+			return injector;
 		}
 	}
 
@@ -63,15 +68,14 @@ public class ServerStartupListener extends GuiceServletContextListener {
 			config.verifyConfig();
 			return config;
 		} catch (IOException e) {
-			throw createStartupException(new IOException("Could not read the server config file " + e.getMessage(), e));
+			throw new ConfigurationException("Could not read the server config file " + e.getMessage(), e);
 		}
 	}
 
-	private RuntimeException createStartupException(Exception e) {
+	private Injector switchToErrorMode(Exception e) {
 		String msg = "FATAL: Unexpected error while starting the application: " + e.getMessage();
 		LOG.error(msg, e);
-		return new DevHubException(msg, e);
-
+		return Guice.createInjector(new ServerUnavailableWebModule());
 	}
 
 	@Override
@@ -83,7 +87,9 @@ public class ServerStartupListener extends GuiceServletContextListener {
 
 	private void startApplication() {
 		LOG.info("Application is now fully started");
-		injector.getInstance(TemplateEngine.class).watchForChanges();
+		if (!inErrorMode) {
+			injector.getInstance(TemplateEngine.class).watchForChanges();
+		}
 	}
 
 	@Override
