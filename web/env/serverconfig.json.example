@@ -1,10 +1,5 @@
 {
 	"webUrl" : "http://localhost:8080",
-	"gitoliteUrl" : "git@example.com:gitolite-admin",
-	"gitHost" : "example.com",
-	"sshPassPhrase" : "yoursshpassphrase",
-	"jenkinsUrl" : "http://example.com/jenkins",
-	"sonarUrl" : "http://example.com/sonar",	
 
 	"mailConfig" : {
 		"host" : "localhost",
@@ -21,6 +16,19 @@
 		"user" : "theuser",
 		"password" : "",
 		"persistanceUnit" : "production-h2"
-	}
+	},
 	
+	"services" : {
+		"versionControl" : {
+			"Gitolite" : {
+				"url" : "git@example.com:gitolite-admin"
+			}
+		},
+		"continuousIntegration" : {
+			"Jenkins" : {
+				"url" : "http://example.com/jenkins/",
+				"sonar" : "http://example.com/sonar/"
+			}
+		}
+	}
 }

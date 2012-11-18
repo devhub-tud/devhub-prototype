@@ -48,13 +48,13 @@ public class MailModule extends AbstractModule {
 
 	private Properties configure(MailProperties properties) {
 		Properties props = new Properties(System.getProperties());
-		props.put("mail.smtp.starttls.enable", properties.isSsl()); // added this
-																						// line
+		props.put("mail.smtp.starttls.enable", properties.getSsl()); // added this
+																							// line
 		props.put("mail.smtp.host", properties.getHost());
 		props.put("mail.smtp.user", properties.getUser());
 		props.put("mail.smtp.password", properties.getPassword());
 		props.put("mail.smtp.port", properties.getPort());
-		props.put("mail.smtp.auth", properties.isAuth());
+		props.put("mail.smtp.auth", properties.getAuth());
 		return props;
 	}
 

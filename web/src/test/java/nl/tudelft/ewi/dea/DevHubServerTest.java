@@ -20,7 +20,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Ignore("Doesnt work")
 public class DevHubServerTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DevHubServerTest.class);

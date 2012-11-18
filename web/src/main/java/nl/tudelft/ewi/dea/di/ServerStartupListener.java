@@ -14,7 +14,6 @@ import nl.tudelft.ewi.dea.CommonModule;
 import nl.tudelft.ewi.dea.ConfigurationException;
 import nl.tudelft.ewi.dea.ServerConfig;
 import nl.tudelft.ewi.dea.template.TemplateEngine;
-import nl.tudelft.jenkins.guice.JenkinsWsClientGuiceModule;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,9 +44,7 @@ public class ServerStartupListener extends GuiceServletContextListener {
 			if (injector == null) {
 				injector = Guice.createInjector(commonModule,
 						new WebModule(servletContext, config),
-						new ProvisioningModule(config),
-						new JenkinsWsClientGuiceModule(config.getJenkinsUrl())
-						);
+						new ProvisioningModule(config.getServices()));
 			} else {
 				throw new IllegalStateException("Injector was already created?");
 			}

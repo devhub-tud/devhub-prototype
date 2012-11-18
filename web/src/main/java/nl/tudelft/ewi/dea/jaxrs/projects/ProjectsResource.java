@@ -15,6 +15,9 @@ import nl.tudelft.ewi.dea.jaxrs.projects.provisioner.Provisioner;
 import nl.tudelft.ewi.dea.jaxrs.projects.provisioner.Provisioner.State;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.security.SecurityProvider;
+import nl.tudelft.ewi.devhub.services.ServiceProvider;
+import nl.tudelft.ewi.devhub.services.continuousintegration.ContinuousIntegrationService;
+import nl.tudelft.ewi.devhub.services.versioncontrol.VersionControlService;
 
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -26,10 +29,12 @@ public class ProjectsResource {
 
 	private final Provisioner provisioner;
 	private final SecurityProvider securityProvider;
+	private final ServiceProvider serviceProvider;
 
 	@Inject
-	public ProjectsResource(SecurityProvider securityProvider, Provisioner provisioner) {
+	public ProjectsResource(SecurityProvider securityProvider, ServiceProvider serviceProvider, Provisioner provisioner) {
 		this.securityProvider = securityProvider;
+		this.serviceProvider = serviceProvider;
 		this.provisioner = provisioner;
 	}
 
@@ -38,7 +43,9 @@ public class ProjectsResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response createNewProject(CourseProjectRequest request) {
 		User currentUser = securityProvider.getUser();
-		long projectId = provisioner.provision(request, currentUser);
+		VersionControlService versioningService = serviceProvider.getVersionControlService(request.getVersionControlService());
+		ContinuousIntegrationService buildService = serviceProvider.getContinuousIntegrationService(request.getContinuousIntegrationService());
+		long projectId = provisioner.provision(request, currentUser, versioningService, buildService);
 		return Response.ok().entity(projectId).build();
 	}
 

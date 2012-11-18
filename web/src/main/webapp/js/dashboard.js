@@ -90,7 +90,7 @@ $(document).ready(function() {
 			type: "post",
 			url: "/projects",
 			contentType: "application/json",
-			data: JSON.stringify({ "course": courseId, "invites": invites }),
+			data: JSON.stringify({ "course": courseId, "invites": invites, "versionControlService": "Gitolite", "continuousIntegrationService": "Jenkins" }),
 			success: function(projectId) {
 				formBusy = false;
 				startProvisioning(projectId);
