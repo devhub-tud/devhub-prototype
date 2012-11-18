@@ -39,8 +39,8 @@
 			<!-- Auto detect annotated model classes -->
 			<property name="hibernate.archive.autodetection" value="class" />
 
-			<property name="hibernate.format_sql" value="true" />
-			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="false" />
+			<property name="hibernate.show_sql" value="false" />
 		</properties>
 	</persistence-unit>
 
@@ -57,8 +57,8 @@
 			<!-- Auto detect annotated model classes -->
 			<property name="hibernate.archive.autodetection" value="class" />
 
-			<property name="hibernate.format_sql" value="true" />
-			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="false" />
+			<property name="hibernate.show_sql" value="false" />
 		</properties>
 	</persistence-unit>
 	<persistence-unit name="production-h2" transaction-type="RESOURCE_LOCAL">

@@ -13,7 +13,6 @@ import javax.servlet.ServletContextEvent;
 import nl.tudelft.ewi.dea.DevHubException;
 import nl.tudelft.ewi.dea.ServerConfig;
 import nl.tudelft.ewi.dea.template.TemplateEngine;
-import nl.tudelft.jenkins.guice.JenkinsWsClientGuiceModule;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -42,9 +41,7 @@ public class ServerStartupListener extends GuiceServletContextListener {
 			if (injector == null) {
 				injector = Guice.createInjector(
 						new WebModule(servletContext, config),
-						new ProvisioningModule(config),
-						new JenkinsWsClientGuiceModule(config.getJenkinsUrl())
-						);
+						new ProvisioningModule(config.getServices()));
 			}
 			return injector;
 		} catch (Exception e) {

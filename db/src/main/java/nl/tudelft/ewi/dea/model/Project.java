@@ -22,9 +22,11 @@ public class Project {
 
 	@Column(unique = true) private String name;
 
+	@Column(name = "source_code_url", nullable = false, unique = true) private String sourceCodeUrl;
+
 	@ManyToOne(optional = false) private Course course;
 
-	@OneToMany(mappedBy = "project") private Set<ProjectInvitation> invitations = new HashSet<>();
+	@OneToMany(mappedBy = "project") private final Set<ProjectInvitation> invitations = new HashSet<>();
 
 	@OneToMany(mappedBy = "project") private Set<ProjectMembership> members = new HashSet<>();
 
@@ -46,6 +48,14 @@ public class Project {
 
 	public Course getCourse() {
 		return course;
+	}
+
+	public String getSourceCodeUrl() {
+		return sourceCodeUrl;
+	}
+
+	public void setSourceCodeUrl(String newUrl) {
+		this.sourceCodeUrl = newUrl;
 	}
 
 	public Set<ProjectMembership> getMembers() {

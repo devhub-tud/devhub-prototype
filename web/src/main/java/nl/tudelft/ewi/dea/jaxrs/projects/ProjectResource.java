@@ -54,9 +54,6 @@ public class ProjectResource {
 
 	private final DevHubMail mail;
 	private final String publicUrl;
-	private final String gitHost;
-
-	private final String jenkinsHost;
 
 	@Inject
 	public ProjectResource(Provider<Renderer> renderers, SecurityProvider securityProvider, ProjectDao projectDao,
@@ -72,8 +69,6 @@ public class ProjectResource {
 		this.membershipDao = membershipDao;
 		this.mail = mail;
 		this.publicUrl = serverConfig.getWebUrl();
-		this.gitHost = serverConfig.getGitHost();
-		this.jenkinsHost = serverConfig.getJenkinsUrl();
 	}
 
 	@GET
@@ -95,8 +90,9 @@ public class ProjectResource {
 
 		return renderers.get()
 				.setValue("project", project)
-				.setValue("git-path", "git@" + gitHost + ":" + project.getSafeName())
-				.setValue("jenkins-path", jenkinsHost + "job/" + project.getSafeName() + "/")
+				.setValue("git-path", project.getSourceCodeUrl())
+				// .setValue("jenkins-path", jenkinsHost + "job/" +
+				// project.getSafeName() + "/")
 				.setValue("members", members)
 				.setValue("invitations", invitations)
 				.setValue("scripts", Lists.newArrayList("invite-user.js"))
