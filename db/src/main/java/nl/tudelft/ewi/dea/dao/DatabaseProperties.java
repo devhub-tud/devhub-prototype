@@ -2,15 +2,12 @@ package nl.tudelft.ewi.dea.dao;
 
 import java.util.Properties;
 
-import javax.annotation.concurrent.Immutable;
-
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Value;
 import nl.tudelft.ewi.dea.ConfigurationException;
 import nl.tudelft.ewi.dea.JsonConfigFile;
 
 @Value
-@Immutable
 @EqualsAndHashCode(callSuper = false)
 public class DatabaseProperties extends JsonConfigFile {
 
@@ -21,8 +18,8 @@ public class DatabaseProperties extends JsonConfigFile {
 
 	@Override
 	public void verifyConfig() throws ConfigurationException {
-		notNullNorEmpty(dburl, "Database URL must be specified");
-		notNullNorEmpty(user, "Database Username must be specified");
+		checkNotNull(dburl, "Database URL must be specified");
+		checkNotNull(user, "Database Username must be specified");
 		checkArgument(password != null, "Database Password must be specified");
 	}
 
@@ -36,5 +33,17 @@ public class DatabaseProperties extends JsonConfigFile {
 
 	public String getPersistanceUnit() {
 		return persistanceUnit;
+	}
+
+	public String getDburl() {
+		return dburl;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public String getPassword() {
+		return password;
 	}
 }

@@ -34,8 +34,11 @@ public class DatabaseStructure {
 	private final String persistenceUnit;
 	private final String context;
 
+	private final DatabaseProperties dbProps;
+
 	@Inject
 	public DatabaseStructure(DatabaseProperties dbProps, @Nullable @Named("liquibaseContext") String context) {
+		this.dbProps = dbProps;
 		this.persistenceUnit = dbProps.getPersistanceUnit();
 		this.context = context;
 
@@ -74,12 +77,9 @@ public class DatabaseStructure {
 		Map<String, Object> properties = readPersistenceXmlProperties(persistenceUnit);
 
 		String driver = getValue(properties, "hibernate.connection.driver_class");
-		String url = getValue(properties, "javax.persistence.jdbc.url");
-		String user = getValue(properties, "javax.persistence.jdbc.user");
-		String pass = getValue(properties, "javax.persistence.jdbc.password");
 
 		Class.forName(driver);
-		return DriverManager.getConnection(url, user, pass);
+		return DriverManager.getConnection(dbProps.getDburl(), dbProps.getUser(), dbProps.getPassword());
 	}
 
 	private Strategy getStrategy() {

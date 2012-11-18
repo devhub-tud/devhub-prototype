@@ -22,6 +22,10 @@ public abstract class JsonConfigFile {
 		checkArgument(Strings.emptyToNull(value) != null, errorMessage);
 	}
 
+	protected void checkNotNull(Object value, String errorMessage) throws ConfigurationException {
+		checkArgument(value != null, errorMessage);
+	}
+
 	protected void checkArgument(boolean argument, String errorMessage) throws ConfigurationException {
 		if (!argument) {
 			throw new ConfigurationException(errorMessage);
