@@ -7,9 +7,10 @@ $(document).ready(function() {
 		var password = $('#signin').find('input[name="password"]').val();
 		var remember = $('#signin').find('input[name="rememberMe"]').attr('checked') ? true: false;
 		
-		//if (!isTuAddress(email)) {
-		//	return;
-		//}
+		if (!isTuAddress(email, false)) {
+			showNotTudelftAddress();
+			return;
+		}
 		
 		$.ajax({
 			type: "post",
@@ -39,7 +40,8 @@ $(document).ready(function() {
 		var emailField = $('#signup').find('input[name="email"]');
 		var email = emailField.val();
 		
-		if (!isTuAddress(email)) {
+		if (!isTuAddress(email, false)) {
+			showNotTudelftAddress();
 			return;
 		}
 		
@@ -71,8 +73,8 @@ $(document).ready(function() {
 	$('#signin').find('input[name="email"]').blur(onAddressChange);
 	
 	function onAddressChange(event) {
-		if (!isTuAddress(event.srcElement.value)) {
-			showAlert("alert-error", "<strong>That's not a TU-Delft address.</strong>");
+		if (!isTuAddress(event.srcElement.value, true)) {
+			showNotTudelftAddress();
 		} else {
 			$('.alerts').empty();
 		}
@@ -80,8 +82,9 @@ $(document).ready(function() {
 	
 	const teacherMail = "@tudelft.nl";
 	const studentMail = "@student.tudelft.nl";
-	function isTuAddress(address) {
-		return address.substr(0 - teacherMail.length) === teacherMail
+	function isTuAddress(address, emptyAllowed) {
+		return (emptyAllowed && address === "" )
+			|| address.substr(0 - teacherMail.length) === teacherMail
 			|| address.substr(0 - studentMail.length) === studentMail;
 	}
 	
@@ -92,6 +95,10 @@ $(document).ready(function() {
 		else {
 			button.attr("disabled", "disabled");
 		}
+	}
+	
+	function showNotTudelftAddress() {
+		showAlert("alert-error", "<strong>That's not a TU-Delft address.</strong>");
 	}
 	
 	function showAlert(type, message) {
