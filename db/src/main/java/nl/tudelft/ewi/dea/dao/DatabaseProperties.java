@@ -46,4 +46,10 @@ public class DatabaseProperties extends JsonConfigFile {
 	public String getPassword() {
 		return password;
 	}
+
+	@Override
+	public String toString() {
+		return "DatabaseProperties [dburl=" + dburl + ", user=" + user + ", password=" + password + ", persistanceUnit=" + persistanceUnit + "]";
+	}
+
 }
