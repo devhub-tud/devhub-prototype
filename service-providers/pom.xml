@@ -30,4 +30,5 @@
 			</exclusions>
 		</dependency>
 	</dependencies>
+	<name>DevHub - Service providers</name>
 </project>
