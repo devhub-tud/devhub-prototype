@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
@@ -42,8 +43,10 @@
 				<constraints nullable="false" unique="true" />
 			</column>
 			<column name="token" type="varchar(255)">
-				<!-- This should really be uuid, but JPA/Hibernate doesn't understand it. -->
-				<!-- And if it is bytea (which hibernate generates for postgresql), it doesn't work with h2 -->
+				<!-- This should really be uuid, but JPA/Hibernate doesn't understand 
+					it. -->
+				<!-- And if it is bytea (which hibernate generates for postgresql), it 
+					doesn't work with h2 -->
 				<!-- See also changeSet 5. -->
 				<constraints nullable="true" unique="true" />
 			</column>
@@ -91,7 +94,8 @@
 			<column name="netid">test-admin</column>
 			<column name="studentnumber">0</column>
 			<column name="salt">cafc393e</column>
-			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c</column>
+			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c
+			</column>
 			<column name="role">ADMIN</column>
 		</insert>
 	</changeSet>
@@ -104,7 +108,8 @@
 			<column name="netid">jdoe</column>
 			<column name="studentnumber">0</column>
 			<column name="salt">cafc393e</column>
-			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c</column>
+			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c
+			</column>
 			<column name="role">ADMIN</column>
 		</insert>
 		<insert tableName="users">
@@ -114,7 +119,8 @@
 			<column name="netid">jx</column>
 			<column name="studentnumber">12345</column>
 			<column name="salt">cafc393e</column>
-			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c</column>
+			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c
+			</column>
 			<column name="role">ADMIN</column>
 		</insert>
 		<insert tableName="course">
@@ -156,15 +162,18 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="token" type="varchar(255)">
-				<!-- See comment for column token in createTable registrationToken in changeSet 1. -->
+				<!-- See comment for column token in createTable registrationToken in 
+					changeSet 1. -->
 				<constraints nullable="true" unique="true" />
 			</column>
 		</createTable>
 	</changeSet>
 
-	<!-- Renaming column 'role' to 'access_role' since, 'role' is a reserved keyword in most DBs. -->
+	<!-- Renaming column 'role' to 'access_role' since, 'role' is a reserved 
+		keyword in most DBs. -->
 	<changeSet id="6" author="michaelj">
-		<renameColumn tableName="users" oldColumnName="role" newColumnName="access_role" />
+		<renameColumn tableName="users" oldColumnName="role"
+			newColumnName="access_role" />
 	</changeSet>
 
 	<changeSet id="7" author="david">
@@ -182,14 +191,31 @@
 	</changeSet>
 
 	<changeSet id="8" author="michaelj">
-		<addForeignKeyConstraint constraintName="project_projectinvitation" referencedTableName="project" baseColumnNames="project_id" baseTableName="projectinvitation" referencedColumnNames="id" onDelete="CASCADE" />
-		<addForeignKeyConstraint constraintName="project_projectmembership" referencedTableName="project" baseColumnNames="project_id" baseTableName="projectmembership" referencedColumnNames="id" onDelete="CASCADE" />
+		<addForeignKeyConstraint constraintName="project_projectinvitation"
+			referencedTableName="project" baseColumnNames="project_id"
+			baseTableName="projectinvitation" referencedColumnNames="id"
+			onDelete="CASCADE" />
+		<addForeignKeyConstraint constraintName="project_projectmembership"
+			referencedTableName="project" baseColumnNames="project_id"
+			baseTableName="projectmembership" referencedColumnNames="id"
+			onDelete="CASCADE" />
 	</changeSet>
-	
+
 	<changeSet id="9" author="michaelj">
 		<addColumn tableName="project">
 			<column name="source_code_url" type="varchar(255)"></column>
 		</addColumn>
+	</changeSet>
+
+	<changeSet id="10" author="alexnederlof">
+		<addColumn tableName="projectinvitation">
+			<column name="email" type="varchar(255)"></column>
+		</addColumn>
+	</changeSet>
+
+	<changeSet id="11" author="alexnederlof">
+		<addUniqueConstraint tableName="projectinvitation"
+			columnNames="email,project_id" constraintName="project_email_unique" />
 	</changeSet>
 
 </databaseChangeLog>

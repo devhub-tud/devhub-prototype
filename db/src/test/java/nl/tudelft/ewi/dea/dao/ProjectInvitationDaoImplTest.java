@@ -23,6 +23,9 @@ public class ProjectInvitationDaoImplTest extends DatabaseTest {
 
 	private ProjectInvitationDao invitationDao;
 
+	private final String name = "X";
+	private final String mail = "x@example.com";
+
 	@Override
 	@Before
 	public void setUp() {
@@ -34,13 +37,10 @@ public class ProjectInvitationDaoImplTest extends DatabaseTest {
 	@Test
 	public void testThatFindByProjectReturnsNothingWhenOnlyOtherProjectHasInvite() throws Exception {
 
-		// Given
-
-		final String name = "X";
 		final User owner = new User(name, name, name, 0, name, name, UserRole.USER);
 		final Course course = new Course("Course", owner);
 		final Project other = new Project("Other", course);
-		final ProjectInvitation invitation = new ProjectInvitation(owner, other);
+		final ProjectInvitation invitation = new ProjectInvitation(owner, other, mail);
 
 		final Project project = new Project("Project", course);
 
@@ -56,18 +56,14 @@ public class ProjectInvitationDaoImplTest extends DatabaseTest {
 
 	@Test
 	public void testThatFindByProjectReturnsAllInvitationsBelongingToTheProject() throws Exception {
-
-		// Given
-
-		final String name = "X";
 		final User owner = new User(name, name, name, 0, name, name, UserRole.USER);
 		final Course course = new Course("Course", owner);
 		final Project other = new Project("Other", course);
-		final ProjectInvitation invitation0 = new ProjectInvitation(owner, other);
+		final ProjectInvitation invitation0 = new ProjectInvitation(owner, other, mail);
 
 		final Project project = new Project("Project", course);
-		final ProjectInvitation invitation1 = new ProjectInvitation(owner, project);
-		final ProjectInvitation invitation2 = new ProjectInvitation(owner, project);
+		final ProjectInvitation invitation1 = new ProjectInvitation(owner, project, mail);
+		final ProjectInvitation invitation2 = new ProjectInvitation(owner, project, mail);
 
 		invitationDao.persist(owner, course, other, project, invitation0, invitation1, invitation2);
 
@@ -88,7 +84,7 @@ public class ProjectInvitationDaoImplTest extends DatabaseTest {
 		final User owner = new User(name, name, name, 0, name, name, UserRole.USER);
 		final Course course = new Course("Course", owner);
 		final Project project = new Project("Project", course);
-		final ProjectInvitation invitation = new ProjectInvitation(owner, project);
+		final ProjectInvitation invitation = new ProjectInvitation(owner, project, mail);
 
 		final String u = "U";
 		final User user = new User(u, u, u, 0, u, u, UserRole.USER);
@@ -117,11 +113,11 @@ public class ProjectInvitationDaoImplTest extends DatabaseTest {
 		final User owner = new User(name, name, name, 0, name, name, UserRole.USER);
 		final Course course = new Course("Course", owner);
 		final Project project = new Project("Project", course);
-		final ProjectInvitation invitation0 = new ProjectInvitation(owner, project);
+		final ProjectInvitation invitation0 = new ProjectInvitation(owner, project, mail);
 
 		final String u = "U";
 		final User user = new User(u, u, u, 0, u, u, UserRole.USER);
-		final ProjectInvitation invitation1 = new ProjectInvitation(user, project);
+		final ProjectInvitation invitation1 = new ProjectInvitation(user, project, mail);
 
 		invitationDao.persist(owner, user, course, project, invitation0, invitation1);
 
@@ -144,7 +140,7 @@ public class ProjectInvitationDaoImplTest extends DatabaseTest {
 		final User other = new User(name, name, name, 0, name, name, UserRole.USER);
 		final Course course = new Course("Course", other);
 		final Project project = new Project("Project", course);
-		final ProjectInvitation invitation0 = new ProjectInvitation(other, project);
+		final ProjectInvitation invitation0 = new ProjectInvitation(other, project, mail);
 
 		final String u = "U";
 		final User user = new User(u, u, u, 0, u, u, UserRole.USER);
@@ -168,11 +164,11 @@ public class ProjectInvitationDaoImplTest extends DatabaseTest {
 		final User other = new User(name, name, name, 0, name, name, UserRole.USER);
 		final Course course = new Course("Course", other);
 		final Project project = new Project("Project", course);
-		final ProjectInvitation invitation0 = new ProjectInvitation(other, project);
+		final ProjectInvitation invitation0 = new ProjectInvitation(other, project, mail);
 
 		final String u = "U";
 		final User user = new User(u, u, u, 0, u, u, UserRole.USER);
-		final ProjectInvitation invitation1 = new ProjectInvitation(user, project);
+		final ProjectInvitation invitation1 = new ProjectInvitation(user, project, mail);
 
 		invitationDao.persist(other, user, course, project, invitation0, invitation1);
 

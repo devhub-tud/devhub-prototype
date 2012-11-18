@@ -1,5 +1,6 @@
 package nl.tudelft.ewi.dea.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,15 +15,17 @@ public class ProjectInvitation {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) long id;
 
-	@ManyToOne(optional = false) private User user;
 	@ManyToOne(optional = false) private Project project;
+	@ManyToOne private User user;
+	@Column(nullable = false) private String email;
 
 	@SuppressWarnings("unused")
 	private ProjectInvitation() {}
 
-	public ProjectInvitation(final User user, final Project project) {
+	public ProjectInvitation(final User user, final Project project, String email) {
 		this.user = user;
 		this.project = project;
+		this.email = email;
 	}
 
 	public long getId() {
@@ -37,6 +40,10 @@ public class ProjectInvitation {
 		return project;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
 	@Override
 	public String toString() {
 		final ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
@@ -46,6 +53,7 @@ public class ProjectInvitation {
 		builder.append("user.displayName", getUser().getDisplayName());
 		builder.append("project.id", getProject().getId());
 		builder.append("project.name", getProject().getName());
+		builder.append("email", email);
 
 		return builder.toString();
 	}
