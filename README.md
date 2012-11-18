@@ -9,12 +9,10 @@ The project is sponsored by Arie van Deursen and was initially developed by Davi
 ## Configure
 Under *web/env* you can put your configuration. You must create a config folder structure like this:
 
-	web/src/local/META-INF/persistence.xml
 	web/src/local/serverconfig.json
-	web/src/production/META-INF/persistence.xml
 	web/src/production/serverconfig.json
 
-You can find and example `persistence.xml` in `db/src/test/resources` and an example `serverconfig.json` in `web/env/serverconfig.json.example`.
+You can find and example `serverconfig.json` in `web/env/serverconfig.json.example`.
 
 ## Build
 Build the project with

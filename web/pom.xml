@@ -134,11 +134,6 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.2</version>
 				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>WEB-INF/classes/nl.tudelft.ewi.dea.DevHubServer</mainClass>
-						</manifest>
-					</archive>
 					<webResources>
 						<resource>
 							<directory>src/main/webapp</directory>
