@@ -1,0 +1,8 @@
+{
+	"date" : "${buildDate}",
+	"version" : "${project.version}",
+	"branch" : "${git.branch}",
+	"describe" : "${git.commit.id.describe}",
+	"commitId" : "${git.commit.id.abbrev}",
+	"buildBy" : "${git.build.user.name}"
+}

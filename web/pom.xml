@@ -83,7 +83,43 @@
 		</dependency>
 	</dependencies>
 
+	<profiles>
+		<profile>
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<env>local</env>
+			</properties>
+		</profile>
+		<profile>
+			<id>production</id>
+			<properties>
+				<env>production</env>
+			</properties>
+		</profile>
+	</profiles>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>sonatype-snapshots</id>
+			<name>Sonatype Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</pluginRepository>
+	</pluginRepositories>
+
 	<build>
+		<finalName>devhub</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>env/${env}/</directory>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -98,6 +134,11 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.2</version>
 				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>WEB-INF/classes/nl.tudelft.ewi.dea.DevHubServer</mainClass>
+						</manifest>
+					</archive>
 					<webResources>
 						<resource>
 							<directory>src/main/webapp</directory>
@@ -121,11 +162,34 @@
 					<failOnError>false</failOnError>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<version>2.1.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- true is default here, it prints some more information during the 
+						build -->
+					<verbose>true</verbose>
+					<dotGitDirectory>${project.basedir}/../.git</dotGitDirectory>
+					<gitDescribe>
+						<always>true</always>
+						<abbrev>7</abbrev>
+						<dirty>-dirty</dirty>
+					</gitDescribe>
+				</configuration>
+
+			</plugin>
 		</plugins>
 
 		<pluginManagement>
 			<plugins>
-
 				<plugin>
 					<groupId>com.github.searls</groupId>
 					<artifactId>jasmine-maven-plugin</artifactId>
@@ -160,6 +224,38 @@
 							<phase>package</phase>
 						</execution>
 					</executions>
+				</plugin>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											pl.project13.maven
+										</groupId>
+										<artifactId>
+											git-commit-id-plugin
+										</artifactId>
+										<versionRange>
+											[2.1.2,)
+										</versionRange>
+										<goals>
+											<goal>revision</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>

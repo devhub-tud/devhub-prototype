@@ -65,6 +65,7 @@ footer {
 			</div>
 		</div>
 	</div>
+	<footer>${buildInfo.getVersion()} @ ${buildInfo.getDate()}</footer>
 	<script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
 	<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.0/js/bootstrap.min.js"></script>
 	<script src="/js/login.js"></script>

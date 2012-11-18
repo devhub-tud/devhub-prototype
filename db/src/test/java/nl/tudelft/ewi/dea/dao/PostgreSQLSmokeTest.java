@@ -3,6 +3,8 @@ package nl.tudelft.ewi.dea.dao;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assume.assumeThat;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +13,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import nl.tudelft.ewi.dea.CommonModule;
+import nl.tudelft.ewi.dea.ConfigurationException;
 import nl.tudelft.ewi.dea.liquibase.DatabaseStructure;
 
 import org.junit.Test;
@@ -40,7 +44,14 @@ public class PostgreSQLSmokeTest {
 		assumeThat(hostname, is(postgresqlHost));
 
 		LOG.debug("Creating database structure...");
-		new DatabaseStructure("test-postgresql", "");
+		InputStream src = DatabaseTest.class.getResourceAsStream("/databaseconfig.test-postgres.json");
+		DatabaseProperties props;
+		try {
+			props = new CommonModule().objectMapper().readValue(src, DatabaseProperties.class);
+		} catch (IOException e) {
+			throw new ConfigurationException("Could not read test config", e);
+		}
+		new DatabaseStructure(props, "");
 
 		LOG.debug("Verifying database structure...");
 		Persistence.createEntityManagerFactory("test-postgresql").close();

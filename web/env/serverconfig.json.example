@@ -1,0 +1,34 @@
+{
+	"webUrl" : "http://localhost:8080",
+
+	"mailConfig" : {
+		"host" : "localhost",
+		"from" : "no-reply@example.com",
+		"user" : "yourname",
+		"password" : "yourpassword",
+		"ssl" : true,
+		"port" : 587,
+		"auth" : true
+	},
+	
+	"dbConfig" : {
+		"dburl" : "jdbc:postgresql://localhost/devhub-test",
+		"user" : "theuser",
+		"password" : "",
+		"persistanceUnit" : "production-h2"
+	},
+	
+	"services" : {
+		"versionControl" : {
+			"Gitolite" : {
+				"url" : "git@example.com:gitolite-admin"
+			}
+		},
+		"continuousIntegration" : {
+			"Jenkins" : {
+				"url" : "http://example.com/jenkins/",
+				"sonar" : "http://example.com/sonar/"
+			}
+		}
+	}
+}

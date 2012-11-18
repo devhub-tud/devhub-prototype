@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Response;
 
+import nl.tudelft.ewi.dea.CommonModule;
 import nl.tudelft.ewi.dea.ServerConfig;
 import nl.tudelft.ewi.dea.di.ProvisioningModule;
 import nl.tudelft.ewi.dea.di.ServerStartupListener;
@@ -22,12 +23,15 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.persist.PersistService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CourseResourceIntegrationTest {
+
+	private final ObjectMapper mapper = new CommonModule().objectMapper();
 
 	private Injector injector;
 
@@ -39,7 +43,7 @@ public class CourseResourceIntegrationTest {
 	public void setUp() {
 
 		when(servletContext.getRealPath("/templates/")).thenReturn("src/main/webapp/templates/");
-		ServerConfig serverConfig = new ServerStartupListener().readServerConfig();
+		ServerConfig serverConfig = new ServerStartupListener().readServerConfig(mapper);
 
 		injector = Guice.createInjector(
 				new WebModule(servletContext, serverConfig),

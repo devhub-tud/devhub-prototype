@@ -6,9 +6,11 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+import javax.naming.ServiceUnavailableException;
 import javax.persistence.NoResultException;
 
 import lombok.Data;
+import nl.tudelft.ewi.dea.DevHubException;
 import nl.tudelft.ewi.dea.ServerConfig;
 import nl.tudelft.ewi.dea.dao.CourseDao;
 import nl.tudelft.ewi.dea.dao.ProjectDao;

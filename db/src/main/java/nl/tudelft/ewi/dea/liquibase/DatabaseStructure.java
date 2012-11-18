@@ -16,6 +16,7 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import nl.tudelft.ewi.dea.DevHubException;
+import nl.tudelft.ewi.dea.dao.DatabaseProperties;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -34,8 +35,8 @@ public class DatabaseStructure {
 	private final String context;
 
 	@Inject
-	public DatabaseStructure(@Named("persistenceUnit") String persistenceUnit, @Nullable @Named("liquibaseContext") String context) {
-		this.persistenceUnit = persistenceUnit;
+	public DatabaseStructure(DatabaseProperties dbProps, @Nullable @Named("liquibaseContext") String context) {
+		this.persistenceUnit = dbProps.getPersistanceUnit();
 		this.context = context;
 
 		prepareStructure();

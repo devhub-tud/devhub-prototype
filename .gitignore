@@ -11,3 +11,5 @@ run.cmd
 debug.cmd
 serverconfig.json
 *.db
+web/env/**.xml
+web/env/**.json

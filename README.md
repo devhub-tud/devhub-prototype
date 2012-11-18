@@ -7,10 +7,16 @@ The project is sponsored by Arie van Deursen and was initially developed by Davi
 ![image](http://home.tudelft.nl/fileadmin/Default/Templates/images/logo.gif)
 
 ## Configure
-Under *web/src/main/resources* you will find an example configuration `serverconfig.json.example`. Rename this to `serverconfig.json` and fill it with your data to configure the application.
+Under *web/env* you can put your configuration. You must create a config folder structure like this:
+
+	web/src/local/META-INF/persistence.xml
+	web/src/local/serverconfig.json
+	web/src/production/META-INF/persistence.xml
+	web/src/production/serverconfig.json
+
+You can find and example `persistence.xml` in `db/src/test/resources` and an example `serverconfig.json` in `web/env/serverconfig.json.example`.
 
 ## Build
-
 Build the project with
 
     $ mvn clean package
@@ -18,7 +24,6 @@ Build the project with
 In the web application module you will find the working War. This was can be deployed in any servlet container.
 
 ## Run for development
-
 You can run the application from Eclipse by starting: `nl.tudelft.ewu.dea.DevHubServer.java`
 
 You can also run the application using Maven by first installing the everything using:
@@ -28,10 +33,12 @@ You can also run the application using Maven by first installing the everything 
 And then browsing to the web module and running:
 	
 	mvn exec:java
+	
+## Deployement
+You can deploy the application into any servlet container compatible with Servlet API 2.5 or later. You can also rund it using the [Jetty-runner](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22jetty-runner%22). You can find an example start-stop script in `web/scripts/`.
 
 
 ## Test
-
 All tests are run by Maven except for the Jasmine Javascript tests. They are started by running
 
 	$ mvn jasmine:bdd

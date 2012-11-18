@@ -3,8 +3,13 @@ package nl.tudelft.ewi.dea.dao;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.inject.Guice.createInjector;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import javax.persistence.EntityManager;
 
+import nl.tudelft.ewi.dea.CommonModule;
+import nl.tudelft.ewi.dea.ConfigurationException;
 import nl.tudelft.ewi.dea.di.PersistenceModule;
 import nl.tudelft.ewi.dea.liquibase.DatabaseStructure;
 
@@ -13,6 +18,7 @@ import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Injector;
 import com.google.inject.persist.PersistService;
 
@@ -28,7 +34,14 @@ public class DatabaseTest {
 
 	@Before
 	public void setUp() {
-		injector = createInjector(new PersistenceModule("test-h2", ""));
+		InputStream src = DatabaseTest.class.getResourceAsStream("/databaseconfig.test-h2.json");
+		DatabaseProperties props;
+		try {
+			props = new CommonModule().objectMapper().readValue(src, DatabaseProperties.class);
+		} catch (IOException e) {
+			throw new ConfigurationException("Could not read test config", e);
+		}
+		injector = createInjector(new PersistenceModule(props, ""));
 		structure = injector.getInstance(DatabaseStructure.class);
 		persistService = injector.getInstance(PersistService.class);
 		persistService.start();

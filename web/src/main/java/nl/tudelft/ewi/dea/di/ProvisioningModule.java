@@ -3,6 +3,8 @@ package nl.tudelft.ewi.dea.di;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.naming.ServiceUnavailableException;
+
 import nl.tudelft.ewi.devhub.services.ServiceModule;
 
 import com.google.inject.AbstractModule;
