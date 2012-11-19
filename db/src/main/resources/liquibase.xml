@@ -191,5 +191,22 @@
 			<column name="source_code_url" type="varchar(255)"></column>
 		</addColumn>
 	</changeSet>
+	
+	<changeSet id="10" author="michaelj">
+		<createTable tableName="ssh_keys">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="user_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="key_name" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="key_contents" type="text">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
 
 </databaseChangeLog>

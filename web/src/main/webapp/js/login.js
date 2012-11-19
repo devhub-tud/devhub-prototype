@@ -48,7 +48,7 @@ $(document).ready(function() {
 		
 		$.ajax({
 			type: "post",
-			url: "/register",
+			url: "/api/register",
 			data: JSON.stringify({ "email": email }),
 			dataType: "text",
 			contentType: "application/json",

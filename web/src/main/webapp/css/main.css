@@ -24,7 +24,7 @@ body {
 	left: -75px !important;
 }
 
-.navbar .user-menu .bordered {
+.bordered {
 	border: 1px solid #bbb;
 }
 
@@ -114,6 +114,115 @@ select.input-wide {
 
 table .attribute {
 	width: 30%;
+}
+
+.menu {
+	display: inline-block;
+	vertical-align: top;
+	border: 1px solid red;
+}
+
+.canvas {
+	display: inline-block;
+	vertical-align: top;
+	border: 1px solid red;
+}
+
+.right {
+	float: right;
+	margin-left: 20px;
+}
+
+.left {
+	margin-left: 20px;
+	float: left;
+}
+
+.well h3, .well h2, .well h1 {
+	margin-top: 0px;
+}
+
+.well {
+	margin-top: 32px;
+}
+
+.values td {
+	color: #777;
+}
+
+.values td:first-child {
+	font-weight: bold;
+	color: #444;
+	width: 200px;
+}
+
+.values td:first-child label {
+	font-weight: bold;
+}
+
+label.checkbox {
+	margin-bottom: 0px !important;
+}
+
+h1 .btn {
+	margin-top: 8px;
+}
+
+.page-header {
+	margin: 20px 0px 5px 0px !important;
+}
+
+.button-bar {
+	margin: 10px 0px;
+	height: 30px;
+}
+
+.item {
+	border: 1px solid #ccc;
+	-webkit-border-radius 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	padding: 12px;
+	margin: 0px 0px 5px 0px;
+	
+	background: #fcfcfc;
+	background: -moz-linear-gradient(top, #fcfcfc 0%, #f3f3f3 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#f3f3f3));
+	background: -webkit-linear-gradient(top, #fcfcfc 0%,#f3f3f3 100%);
+	background: -o-linear-gradient(top, #fcfcfc 0%,#f3f3f3 100%);
+	background: -ms-linear-gradient(top, #fcfcfc 0%,#f3f3f3 100%);
+	background: linear-gradient(to bottom, #fcfcfc 0%,#f3f3f3 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#f3f3f3',GradientType=0 );
+}
+
+.item:hover {
+	background: #f3f3f3;
+	background: -moz-linear-gradient(top, #f3f3f3 0%, #ececec 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f3f3f3), color-stop(100%,#ececec));
+	background: -webkit-linear-gradient(top, #f3f3f3 0%,#ececec 100%);
+	background: -o-linear-gradient(top, #f3f3f3 0%,#ececec 100%);
+	background: -ms-linear-gradient(top, #f3f3f3 0%,#ececec 100%);
+	background: linear-gradient(to bottom, #f3f3f3 0%,#ececec 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f3f3f3', endColorstr='#ececec',GradientType=0 );
+}
+
+.item .title {
+	display: block;
+	font-size: 19px;
+	font-weight: bold;
+}
+
+.item .subtitle {
+	display: block;
+	font-size: 13px;
+	font-weight: bold;
+	margin-top: 3px;
+	color: #333;
+}
+
+A.item {
+	text-decoration: none;
+	display: block;
 }
 
 @media (max-width: 320px) {

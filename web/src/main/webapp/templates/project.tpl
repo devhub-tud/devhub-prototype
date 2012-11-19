@@ -3,22 +3,24 @@
 
 <div class="container">
 	<div class="content">
-
-		<div class="page-head">
-			<h3>${project.getName()}</h3>
-			<a id="invite-user" class="btn btn-primary">Invite user</a>
+		<div class="row" style="margin-bottom: 48px;">
+			<div class="span2" style="width: 136px !important;">
+				<img src="/img/qr.png" />
+			</div>
+			<div class="left">
+				<div class="page-header">
+					<h2>${project.getName()}</h2>
+				</div>
+				<span class="muted">Project description goes here...</span>
+			</div>
 		</div>
-		<table class="table table-striped table-bordered table-hover">
+		<table class="values table table-striped table-bordered table-hover">
 			<thead>
 				<tr>
 					<th>Project information</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
-					<td class="attribute">Project</td>
-					<td>${project.getName()}</td>
-				</tr>
 				<tr>
 					<td class="attribute">Git URL</td>
 					<td>${git-path}</td>
@@ -34,6 +36,9 @@
 			</tbody>
 		</table>
 
+		<div class="button-bar">
+			<a id="invite-user" class="btn btn-primary right">Invite user</a>
+		</div>
 		<table class="table table-striped table-bordered table-hover">
 			<thead>
 				<tr>

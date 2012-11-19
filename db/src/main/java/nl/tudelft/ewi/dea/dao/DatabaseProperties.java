@@ -31,19 +31,4 @@ public class DatabaseProperties extends JsonConfigFile {
 		return props;
 	}
 
-	public String getPersistanceUnit() {
-		return persistanceUnit;
-	}
-
-	public String getDburl() {
-		return dburl;
-	}
-
-	public String getUser() {
-		return user;
-	}
-
-	public String getPassword() {
-		return password;
-	}
 }

@@ -44,7 +44,7 @@ $(document).ready(function() {
 		
 		$.ajax({
 			type: "get",
-			url: "/courses",
+			url: "/api/courses",
 			dataType: "json",
 			contentType: "application/json",
 			data: JSON.stringify({ "enrolled": false, "substring": "" }),
@@ -88,7 +88,7 @@ $(document).ready(function() {
 		
 		$.ajax({
 			type: "post",
-			url: "/projects",
+			url: "/api/projects",
 			contentType: "application/json",
 			data: JSON.stringify({ "course": courseId, "invites": invites, "versionControlService": "Gitolite", "continuousIntegrationService": "Jenkins" }),
 			success: function(projectId) {
@@ -111,7 +111,7 @@ $(document).ready(function() {
 		var timer = setInterval(function() {
 			$.ajax({
 				type: "get",
-				url: "/projects/provisioning/" + projectId,
+				url: "/api/projects/provisioning/" + projectId,
 				success: function(data) {
 					updateDialog(data, timer);
 				},

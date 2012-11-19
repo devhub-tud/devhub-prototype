@@ -28,6 +28,7 @@ $(document).ready(function() {
 		$.ajax({
 			type: "post",
 			contentType: "application/json",
+			url: "/api/account/" + id + "/reset-password/" + token,
 			data: JSON.stringify({ "id": id, "token": token, "email": email, "displayName": displayName, "password": password }),
 			success: function(data) {
 				window.location.replace("/account/" + data);

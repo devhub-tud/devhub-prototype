@@ -1,7 +1,5 @@
 package nl.tudelft.ewi.dea;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.Map;
 import java.util.Properties;
 
@@ -11,6 +9,8 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Value;
 import nl.tudelft.ewi.dea.dao.DatabaseProperties;
 import nl.tudelft.ewi.dea.mail.MailProperties;
+
+import com.google.common.base.Preconditions;
 
 @Value
 @Singleton
@@ -24,7 +24,7 @@ public final class ServerConfig extends JsonConfigFile {
 
 	@Override
 	public void verifyConfig() {
-		checkNotNull(mailConfig, "Mail must be configured");
+		Preconditions.checkNotNull(mailConfig, "Mail must be configured");
 		mailConfig.verifyConfig();
 		dbConfig.verifyConfig();
 	}

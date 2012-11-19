@@ -2,9 +2,8 @@ package nl.tudelft.ewi.dea.security;
 
 import java.util.Set;
 
-import junit.framework.Assert;
-
 import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.junit.Assert;
 import org.junit.Test;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
@@ -17,13 +16,15 @@ import org.slf4j.LoggerFactory;
  * Guice and Guice-servlets.
  * 
  * For instance when a Servlet or Resource is marked as @SessionScoped or
+ * 
  * @RequestScoped, that class is proxied by Guice. But Guice fails to relay
- * annotation information (when using reflection) from the original class. So
- * Shiro will never know that the Servlet or Resource is annotated with
+ *                 annotation information (when using reflection) from the
+ *                 original class. So Shiro will never know that the Servlet or
+ *                 Resource is annotated with
  * @RequiresRoles.
  * 
- * One workaround would be to make the @RequiresRoles annotation use the @Inherited
- * annotation.
+ *                 One workaround would be to make the @RequiresRoles annotation
+ *                 use the @Inherited annotation.
  * 
  * @author michael
  */

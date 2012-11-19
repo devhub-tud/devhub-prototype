@@ -22,7 +22,7 @@
 #if(${user.isAdmin()})
 							<li><a href="/admin">Admin panel</a></li>
 #end
-							<li><a href="/account/${user.getId()}">Show profile</a></li>
+							<li><a href="/account">Show account details</a></li>
 							<li class="divider"></li>
 							<li><a href="/logout">Logout</a></li>
 						</ul>

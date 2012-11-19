@@ -48,7 +48,7 @@ footer {
 						<input class="btn btn-primary" name="submit" type="submit" value="Sign in" />
 					</div>
 				</form>
-				<a href="/reset-password">Forgot your password?</a>
+				<a href="/forgot-password">Forgot your password?</a>
 			</div>
 			<div class="pull-right" style="width: 284px;">
 				<p>Sign up with your TU Delft email</p>

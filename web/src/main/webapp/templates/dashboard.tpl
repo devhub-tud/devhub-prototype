@@ -32,24 +32,26 @@
 #end
 
 #if(!$projects.isEmpty())
-		<div class="page-head">
-			<h3>Your projects</h3>
-			<a id="open-new-project-modal-btn" class="btn btn-primary">Start a new project</a>
+		<div class="row" style="margin-bottom: 48px;">
+			<div class="span2" style="width: 136px !important;">
+				<img src="${user.getGravatarUrl(128)}" class="img-polaroid" />
+			</div>
+			<div class="left">
+				<div class="page-header">
+					<h2><span class="muted">Welcome, </span>$user.getDisplayName()</h2>
+				</div>
+				<!-- <h4 class="muted">$user.getRole().getDisplayName()</h4> -->
+			</div>
 		</div>
-		<table class="table table-striped table-bordered table-hover" id="$projects.size()">
-			<thead>
-				<tr>
-					<th>Project name</th>
-				</tr>
-			</thead>
-			<tbody>
+		<div>
+			<h3>Your projects <button id="open-new-project-modal-btn" class="btn btn-primary right">Start a new project</button></h3>
 	#foreach($project in $projects)
-				<tr>
-					<td><a href="/project/${project.id}">$project.getName()</a></td>
-				</tr>
+			<a class="item" href="/project/${project.id}">
+				<span class="title">$project.getName()</span>
+				<span class="subtitle">$project.getMembers().size() Member(s) - $project.getInvitations().size() Pending invites</span>
+			</a>
 	#end
-			</tbody>
-		</table>
+		</div>
 #else
 		<div class="well" style="margin-top: 96px;">
 			<h1>Welcome to DevHub!</h1>

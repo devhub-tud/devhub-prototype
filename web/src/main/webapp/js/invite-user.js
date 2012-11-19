@@ -21,7 +21,7 @@ $(document).ready(function() {
 		var mail = userSearch.val();
 		if (mail == undefined || mail === "") return;
 		loader.show();
-		var url = window.location.pathname + "/invite/" + mail;
+		var url = "/api" + window.location.pathname + "/invite/" + mail;
 		
 		$.ajax({
 			url: url, 
