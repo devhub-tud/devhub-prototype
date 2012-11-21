@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -24,7 +23,6 @@ import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 @Entity
@@ -46,7 +44,6 @@ public class User {
 	@Enumerated(EnumType.STRING) @Column(name = "access_role", nullable = false) private UserRole role;
 
 	@OneToMany(mappedBy = "user") private final Set<ProjectMembership> memberships = Sets.newHashSet();
-	@OneToMany(mappedBy = "user") private final List<SshKey> sshKeys = Lists.newArrayList();
 
 	/**
 	 * Constructor required by Hibernate.
@@ -133,10 +130,6 @@ public class User {
 
 	public Set<ProjectMembership> getProjectMemberships() {
 		return memberships;
-	}
-
-	public List<SshKey> getSshKeys() {
-		return sshKeys;
 	}
 
 	public ProjectMembership addProjectMembership(Project p) {

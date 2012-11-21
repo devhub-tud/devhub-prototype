@@ -4,17 +4,25 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import nl.tudelft.ewi.dea.dao.PasswordResetTokenDao;
+import nl.tudelft.ewi.dea.dao.SshKeyDao;
 import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.model.PasswordResetToken;
+import nl.tudelft.ewi.dea.model.SshKey;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.model.UserRole;
 import nl.tudelft.ewi.dea.security.SecurityProvider;
@@ -25,26 +33,31 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 
+import com.google.common.collect.Lists;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
 @Path("api/account")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class AccountResource {
 
 	private final UserDao userDao;
 	private final PasswordResetTokenDao passwordResetTokenDao;
 	private final UserFactory userFactory;
 	private final SecurityProvider securityProvider;
+	private final SshKeyDao keyDao;
 
 	@Inject
 	public AccountResource(UserDao userDao, PasswordResetTokenDao passwordResetTokenDao,
-			UserFactory userFactory, SecurityProvider subjectProvider) {
+			UserFactory userFactory, SecurityProvider subjectProvider, SshKeyDao keyDao) {
 
 		this.userDao = userDao;
 		this.passwordResetTokenDao = passwordResetTokenDao;
 		this.userFactory = userFactory;
 		this.securityProvider = subjectProvider;
+		this.keyDao = keyDao;
 	}
 
 	@POST
@@ -53,6 +66,7 @@ public class AccountResource {
 	public Response promoteUserToTeacher(@PathParam("id") long id) {
 		User u = userDao.findById(id);
 		u.promoteToAdmin();
+		userDao.merge(u);
 
 		return Response.ok().build();
 	}
@@ -63,6 +77,7 @@ public class AccountResource {
 	public Response demoteTeacherToUser(@PathParam("id") long id) {
 		User u = userDao.findById(id);
 		u.demoteToUser();
+		userDao.merge(u);
 
 		return Response.ok().build();
 	}
@@ -108,8 +123,10 @@ public class AccountResource {
 	@Path("{id}/reset-password")
 	@Transactional
 	public Response resetPassword(@PathParam("id") long id, NewPasswordRequest request) {
-		User actingUser = securityProvider.getUser();
-		verifyUserIsAdminOrOwnAccount(id, actingUser);
+		User user = securityProvider.getUser();
+		if (!user.isAdmin() && id != user.getId()) {
+			throw new AuthorizationException("You can only view your own profile");
+		}
 
 		// We have to get the user from the DAO to make sure we get the
 		// persistence instance, not the cached instance.
@@ -119,10 +136,32 @@ public class AccountResource {
 		return Response.ok(Long.toString(id)).build();
 	}
 
-	private void verifyUserIsAdminOrOwnAccount(long id, User user) {
-		if (!user.isAdmin() && id != user.getId()) {
-			throw new AuthorizationException("You can only view your own profile");
-		}
+	@POST
+	@Path("ssh-keys")
+	@Transactional
+	public Response addSshKey(SshKeyObject sshKey) {
+		keyDao.persist(new SshKey(securityProvider.getUser(), sshKey.getName(), sshKey.getKey()));
+		return Response.ok().build();
 	}
 
+	@DELETE
+	@Path("ssh-keys")
+	@Transactional
+	public Response removeSshKey(SshKeyDeleteObject sshKeys) {
+		User user = securityProvider.getUser();
+		List<SshKey> keys = keyDao.list(user);
+		List<SshKey> remove = Lists.newArrayList();
+
+		for (long keyId : sshKeys.getKeyIds()) {
+			for (SshKey key : keys) {
+				if (key.getId() == keyId) {
+					remove.add(key);
+					break;
+				}
+			}
+		}
+
+		keyDao.remove(remove.toArray());
+		return Response.ok().build();
+	}
 }

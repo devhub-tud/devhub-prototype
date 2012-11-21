@@ -3,16 +3,11 @@
 
 <div class="container">
 	<div class="content">
-		<div class="row" style="margin-bottom: 48px;">
-			<div class="span2" style="width: 136px !important;">
-				<img src="/img/qr.png" />
+		<div style="margin-bottom: 48px;">
+			<div class="page-header">
+				<h2>${project.getName()}</h2>
 			</div>
-			<div class="left">
-				<div class="page-header">
-					<h2>${project.getName()}</h2>
-				</div>
-				<span class="muted">Project description goes here...</span>
-			</div>
+			<span class="muted">Project description goes here...</span>
 		</div>
 		<table class="values table table-striped table-bordered table-hover">
 			<thead>

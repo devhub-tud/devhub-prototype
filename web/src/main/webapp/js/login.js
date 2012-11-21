@@ -7,10 +7,6 @@ $(document).ready(function() {
 		var password = $('#signin').find('input[name="password"]').val();
 		var remember = $('#signin').find('input[name="rememberMe"]').attr('checked') ? true: false;
 		
-		//if (!isTuAddress(email)) {
-		//	return;
-		//}
-		
 		$.ajax({
 			type: "post",
 			url: "/login",
@@ -20,7 +16,6 @@ $(document).ready(function() {
 				window.location.replace("/dashboard");
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				console.log(jqXHR);
 				if (jqXHR.status === 405) {
 					showAlert("alert-error", "Wrong username or password");
 					$('#signin').find('input[name="password"]').val("");

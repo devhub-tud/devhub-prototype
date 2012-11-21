@@ -48,7 +48,7 @@
 	#foreach($project in $projects)
 			<a class="item" href="/project/${project.id}">
 				<span class="title">$project.getName()</span>
-				<span class="subtitle">$project.getMembers().size() Member(s) - $project.getInvitations().size() Pending invites</span>
+				<span class="subtitle muted">Project description goes here...</span>
 			</a>
 	#end
 		</div>

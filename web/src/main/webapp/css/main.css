@@ -39,7 +39,7 @@ body {
 }
 
 .alert {
-	padding: 8px 28px;
+	padding: 8px 28px 8px 12px;
 }
 
 .alert-info td {
@@ -82,20 +82,52 @@ table .btn-panel {
 	width: 300px;
 }
 
-.input-wide {
-	width: 330px;
+.form-horizontal .input-wide {
+	width: 345px;
 }
 
-input.input-wide {
-	width: 340px;
+.form-horizontal input.input-wide {
+	width: 355px;
 }
 
-select.input-wide {
-	width: 353px;
+.form-horizontal select.input-wide {
+	width: 368px;
 }
 
-.form-horizontal .condensed {
+.form-horizontal textarea.input-wide {
+	width: 355px;
+}
+
+.form-vertical .input-wide {
+	width: 505px;
+}
+
+.form-vertical input.input-wide {
+	width: 515px;
+}
+
+.form-vertical select.input-wide {
+	width: 528px;
+}
+
+.form-vertical textarea.input-wide {
+	width: 515px;
+}
+
+form label {
+	font-weight: bold;
+}
+
+form .controls label {
+	font-weight: normal;
+}
+
+form .condensed {
 	margin-bottom: 10px !important;
+}
+
+form.condensed {
+	margin-bottom: 0px;
 }
 
 .results-box {
@@ -179,11 +211,11 @@ h1 .btn {
 
 .item {
 	border: 1px solid #ccc;
-	-webkit-border-radius 4px;
+	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
 	padding: 12px;
-	margin: 0px 0px 5px 0px;
+	margin: 0px 0px 9px 0px;
 	
 	background: #fcfcfc;
 	background: -moz-linear-gradient(top, #fcfcfc 0%, #f3f3f3 100%);
@@ -208,6 +240,7 @@ h1 .btn {
 
 .item .title {
 	display: block;
+	padding-bottom: 5px;
 	font-size: 19px;
 	font-weight: bold;
 }
@@ -215,9 +248,11 @@ h1 .btn {
 .item .subtitle {
 	display: block;
 	font-size: 13px;
-	font-weight: bold;
 	margin-top: 3px;
-	color: #333;
+}
+
+.item:hover .subtitle {
+	color: #222;
 }
 
 A.item {

@@ -31,7 +31,7 @@ $(document).ready(function() {
 			contentType: "application/json",
 			data: JSON.stringify({ "email": email, "password": password, "displayName": name, "netId": netId, "studentNumber": studentNumber }),
 			success: function(data) {
-				window.location.replace("/account/" + data);
+				window.location.replace("/account/");
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				showAlert("alert-error", jqXHR.responseText);
@@ -42,7 +42,7 @@ $(document).ready(function() {
 	
 	function getTokenFromUrl() {
 		var href = window.location.href;
-		var index = href.lastIndexOf("/");
+		var index = href.lastIndexOf("/") + 1;
 		return href.substring(index);
 	}
 	
