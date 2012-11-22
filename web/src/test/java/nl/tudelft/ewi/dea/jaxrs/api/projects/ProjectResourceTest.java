@@ -51,12 +51,12 @@ public class ProjectResourceTest {
 	@Mock private RegistrationTokenDao tokenDao;
 
 	private ProjectResource projectResource;
+	private InviteManager inviteManager;
 
 	@Before
 	public void setup() {
-		projectResource = new ProjectResource(securityProvider,
-				projectDao, userDao, invitationDao, membershipDao,
-				mail, TestResources.SERVER_CONFIG, tokenDao);
+		inviteManager = new InviteManager(projectDao, invitationDao, tokenDao, userDao, mail, TestResources.SERVER_CONFIG);
+		projectResource = new ProjectResource(securityProvider, projectDao, invitationDao, membershipDao, inviteManager);
 		when(invitedUser.getEmail()).thenReturn(EMAIL);
 		when(invitedUser.getDisplayName()).thenReturn("username");
 		when(project.getName()).thenReturn("projectname");

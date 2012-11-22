@@ -62,10 +62,14 @@ public class ProjectInvitation {
 		final ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
 
 		builder.append("id", getId());
-		builder.append("user.id", getUser().getId());
-		builder.append("user.displayName", getUser().getDisplayName());
-		builder.append("project.id", getProject().getId());
-		builder.append("project.name", getProject().getName());
+		if (user == null) {
+			builder.append("user = null");
+		} else {
+			builder.append("user.id", getUser().getId());
+			builder.append("user.displayName", getUser().getDisplayName());
+		}
+		builder.append("project.id", project.getId());
+		builder.append("project.name", project.getName());
 		builder.append("email", email);
 
 		return builder.toString();
