@@ -26,6 +26,7 @@ import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
 @Path("project")
+@Produces(MediaType.TEXT_HTML)
 public class ProjectPage {
 
 	private final ProjectDao projectDao;
@@ -45,7 +46,6 @@ public class ProjectPage {
 
 	@GET
 	@Path("{id}")
-	@Produces(MediaType.TEXT_HTML)
 	@Transactional
 	public String serveProjectPage(@PathParam("id") long id) {
 		User currentUser = securityProvider.getUser();

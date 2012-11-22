@@ -13,6 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import nl.tudelft.ewi.dea.dao.ProjectDao;
 import nl.tudelft.ewi.dea.dao.RegistrationTokenDao;
 import nl.tudelft.ewi.dea.dao.SshKeyDao;
 import nl.tudelft.ewi.dea.jaxrs.html.utils.Renderer;
@@ -26,10 +27,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 
 @Path("account")
 @RequestScoped
+@Produces(MediaType.TEXT_HTML)
 public class AccountPage {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AccountPage.class);
@@ -41,7 +44,7 @@ public class AccountPage {
 
 	@Inject
 	public AccountPage(Renderer renderer, SecurityProvider securityProvider,
-			RegistrationTokenDao tokenDao, SshKeyDao keyDao) {
+			RegistrationTokenDao tokenDao, ProjectDao projectDao, SshKeyDao keyDao) {
 
 		this.renderer = renderer;
 		this.securityProvider = securityProvider;
@@ -50,14 +53,13 @@ public class AccountPage {
 	}
 
 	@GET
-	@Produces(MediaType.TEXT_HTML)
 	public Response redirectToAccountDetails() throws URISyntaxException {
 		return Response.seeOther(new URI("/account/details")).build();
 	}
 
 	@GET
 	@Path("activate/{token}")
-	@Produces(MediaType.TEXT_HTML)
+	@Transactional
 	public String serveActivationPage(@PathParam("token") final String token) {
 		Preconditions.checkArgument(StringUtils.isNotEmpty(token), "token must be a non-empty string");
 
@@ -76,14 +78,14 @@ public class AccountPage {
 
 	@GET
 	@Path("details")
-	@Produces(MediaType.TEXT_HTML)
+	@Transactional
 	public String serveAccountDetailsPage() {
 		return renderer.render("account.tpl", "account-details.tpl");
 	}
 
 	@GET
 	@Path("ssh-keys")
-	@Produces(MediaType.TEXT_HTML)
+	@Transactional
 	public String serveAccountSshKeyManagementPage() {
 		User user = securityProvider.getUser();
 		List<SshKey> keys = keyDao.list(user);
@@ -96,7 +98,7 @@ public class AccountPage {
 
 	@GET
 	@Path("change-password")
-	@Produces(MediaType.TEXT_HTML)
+	@Transactional
 	public String serveAccountChangePasswordPage() {
 		return renderer
 				.addJS("account-change-password.js")

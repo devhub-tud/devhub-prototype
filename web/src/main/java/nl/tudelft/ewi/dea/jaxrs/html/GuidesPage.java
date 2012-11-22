@@ -11,10 +11,12 @@ import javax.ws.rs.core.MediaType;
 import nl.tudelft.ewi.dea.ServerConfig;
 import nl.tudelft.ewi.dea.jaxrs.html.utils.Renderer;
 
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
 @Path("guides")
+@Produces(MediaType.TEXT_HTML)
 public class GuidesPage {
 
 	private final Renderer renderer;
@@ -27,7 +29,7 @@ public class GuidesPage {
 	}
 
 	@GET
-	@Produces(MediaType.TEXT_HTML)
+	@Transactional
 	public String serveGuidesPage() {
 		Properties gitoliteSettings = config.getServices().get("versionControl").get("Gitolite");
 		String gitHost = gitoliteSettings.getProperty("host");

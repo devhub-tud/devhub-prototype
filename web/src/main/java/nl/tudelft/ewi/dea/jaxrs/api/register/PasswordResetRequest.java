@@ -1,4 +1,4 @@
-package nl.tudelft.ewi.dea.jaxrs.api.account;
+package nl.tudelft.ewi.dea.jaxrs.api.register;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

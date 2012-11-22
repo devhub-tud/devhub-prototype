@@ -21,7 +21,8 @@
 	"services" : {
 		"versionControl" : {
 			"Gitolite" : {
-				"host" : "git@example.com",
+				"user" : "git",
+				"host" : "example.com",
 				"admin-repo" : "gitolite-admin"
 			}
 		},

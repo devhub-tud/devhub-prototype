@@ -18,11 +18,12 @@ import nl.tudelft.ewi.dea.model.Project;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.security.SecurityProvider;
 
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
 @Path("course")
-@Produces(MediaType.APPLICATION_JSON)
+@Produces(MediaType.TEXT_HTML)
 public class CoursePage {
 
 	private final Renderer renderer;
@@ -44,7 +45,7 @@ public class CoursePage {
 
 	@GET
 	@Path("{id}")
-	@Produces(MediaType.TEXT_HTML)
+	@Transactional
 	public String findCourse(@PathParam("id") final long id) {
 		final User currentUser = securityProvider.getUser();
 		userDao.merge(currentUser);

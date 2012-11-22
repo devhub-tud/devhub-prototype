@@ -17,10 +17,12 @@ import nl.tudelft.ewi.dea.model.ProjectInvitation;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.security.SecurityProvider;
 
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
 @Path("dashboard")
+@Produces(MediaType.TEXT_HTML)
 public class DashboardPage {
 
 	private final UserDao userDao;
@@ -41,7 +43,7 @@ public class DashboardPage {
 	}
 
 	@GET
-	@Produces(MediaType.TEXT_HTML)
+	@Transactional
 	public String servePage() {
 		User me = securityProvider.getUser();
 		userDao.merge(me);

@@ -13,6 +13,7 @@ import org.apache.velocity.VelocityContext;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
@@ -23,15 +24,21 @@ public class Renderer {
 
 	private final TemplateEngine engine;
 	private final VelocityContext context;
-
 	private final List<String> scripts = Lists.newArrayList();
+	private final SecurityProvider securityProvider;
 
 	@Inject
 	public Renderer(TemplateEngine engine, SecurityProvider securityProvider) {
 		this.engine = engine;
+		this.securityProvider = securityProvider;
 		this.context = new VelocityContext();
 
 		context.put("SCRIPTS", scripts);
+		addDefaultParameters();
+	}
+
+	@Transactional
+	void addDefaultParameters() {
 		if (securityProvider.getSubject().isAuthenticated()) {
 			setValue("user", securityProvider.getUser());
 		}

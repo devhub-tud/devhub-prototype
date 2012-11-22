@@ -9,10 +9,12 @@ import javax.ws.rs.core.MediaType;
 import nl.tudelft.ewi.dea.BuildInfo;
 import nl.tudelft.ewi.dea.jaxrs.html.utils.Renderer;
 
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
 @Path("login")
+@Produces(MediaType.TEXT_HTML)
 public class LoginPage {
 
 	private final Renderer renderer;
@@ -25,7 +27,7 @@ public class LoginPage {
 	}
 
 	@GET
-	@Produces(MediaType.TEXT_HTML)
+	@Transactional
 	public String servePage() {
 		return renderer
 				.setValue("buildInfo", buildInfo)

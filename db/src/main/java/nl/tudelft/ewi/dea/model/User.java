@@ -28,7 +28,7 @@ import com.google.common.collect.Sets;
 @Entity
 @NotThreadSafe
 @Table(name = "Users")
-@EqualsAndHashCode
+@EqualsAndHashCode(of = {"id"})
 public class User {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
@@ -116,7 +116,6 @@ public class User {
 		builder.append("netid", getNetId());
 		builder.append("studentNumber", getStudentNumber());
 		builder.append("role", getRole());
-		builder.append("memberships", getProjectMemberships());
 		return builder.toString();
 	}
 

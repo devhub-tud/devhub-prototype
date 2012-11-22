@@ -11,7 +11,7 @@ $(document).ready(function() {
 
 			$.ajax({
 				type: "post",
-				url: "/api/reset-password/" + email,
+				url: "/api/forgot-password/" + email,
 				success: function(data) {
 					showAlert("alert-success", "An e-mail has been sent to <strong>" + email 
 							+ "</strong>.<br/>This e-mail contains futher instructions on how to recover access to your account.");
