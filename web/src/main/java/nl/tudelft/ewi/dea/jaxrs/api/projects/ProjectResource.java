@@ -3,6 +3,7 @@ package nl.tudelft.ewi.dea.jaxrs.api.projects;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -74,12 +75,16 @@ public class ProjectResource {
 		ProjectInvitation invitation = new ProjectInvitation(otherUser, project);
 		invitationDao.persist(invitation);
 
-		String fromName = securityProvider.getUser().getDisplayName();
+		String fromName = otherUser.getDisplayName();
+		if (fromName == null || fromName.isEmpty()) {
+			fromName = otherUser.getEmail();
+		}
+
 		mail.sendProjectInvite(otherUser.getEmail(), fromName, project.getName(), publicUrl);
 		return Response.ok().build();
 	}
 
-	@GET
+	@POST
 	@Path("{id}/invitation")
 	@Transactional
 	public Response answerInvitation(@PathParam("id") long id, @QueryParam("accept") boolean accept) {

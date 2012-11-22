@@ -54,7 +54,9 @@ public class DashboardPage {
 		return renderer
 				.setValue("invitations", invitations)
 				.setValue("projects", projects)
+				.addJS("common.js")
 				.addJS("dashboard.js")
+				.addJS("invites.js")
 				.render("dashboard.tpl");
 	}
 }
