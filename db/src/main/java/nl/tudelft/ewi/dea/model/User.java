@@ -18,7 +18,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import liquibase.util.MD5Util;
-import lombok.EqualsAndHashCode;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -28,7 +27,6 @@ import com.google.common.collect.Sets;
 @Entity
 @NotThreadSafe
 @Table(name = "Users")
-@EqualsAndHashCode(of = {"id"})
 public class User {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;

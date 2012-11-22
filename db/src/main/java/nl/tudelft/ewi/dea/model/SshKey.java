@@ -8,13 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import com.google.common.base.Preconditions;
 
-@Data
-@NoArgsConstructor
 @Entity
 @Table(name = "ssh_keys")
 public class SshKey {
@@ -23,6 +18,11 @@ public class SshKey {
 	@Column(name = "key_name", nullable = false) private String keyName;
 	@Column(name = "key_contents", nullable = false) private String keyContents;
 	@ManyToOne(optional = false) private User user;
+
+	@SuppressWarnings("unused")
+	private SshKey() {
+		// Do nothing.
+	}
 
 	public SshKey(User user, String name, String contents) {
 		this.user = user;
@@ -43,6 +43,22 @@ public class SshKey {
 	public void setContents(String keyContents) {
 		Preconditions.checkNotNull(keyContents);
 		this.keyContents = keyContents;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public String getKeyName() {
+		return keyName;
+	}
+
+	public String getKeyContents() {
+		return keyContents;
+	}
+
+	public User getUser() {
+		return user;
 	}
 
 }

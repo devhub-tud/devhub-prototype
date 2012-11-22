@@ -2,19 +2,30 @@ package nl.tudelft.ewi.dea.dao;
 
 import java.util.Properties;
 
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Value;
 import nl.tudelft.ewi.dea.ConfigurationException;
 import nl.tudelft.ewi.dea.JsonConfigFile;
 
-@Value
-@EqualsAndHashCode(callSuper = false)
 public class DatabaseProperties extends JsonConfigFile {
 
-	private final String dburl = null;
-	private final String user = null;
-	private final String password = null;
-	private final String persistanceUnit = null;
+	private final String dburl;
+	private final String user;
+	private final String password;
+	private final String persistanceUnit;
+
+	@SuppressWarnings("unused")
+	private DatabaseProperties() {
+		this.dburl = null;
+		this.user = null;
+		this.password = null;
+		this.persistanceUnit = null;
+	}
+
+	public DatabaseProperties(String dbUrl, String user, String password, String persistenceUnit) {
+		this.dburl = dbUrl;
+		this.user = user;
+		this.password = password;
+		this.persistanceUnit = persistenceUnit;
+	}
 
 	@Override
 	public void verifyConfig() throws ConfigurationException {
@@ -29,6 +40,22 @@ public class DatabaseProperties extends JsonConfigFile {
 		props.setProperty("javax.persistence.jdbc.user", user);
 		props.setProperty("javax.persistence.jdbc.password", password);
 		return props;
+	}
+
+	public String getDburl() {
+		return dburl;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public String getPersistanceUnit() {
+		return persistanceUnit;
 	}
 
 }
