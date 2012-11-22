@@ -54,4 +54,11 @@ class DevHubMailImpl implements DevHubMail {
 		SimpleMessage mail = inviteProjectFac.get().sendProjectInvite(email, displayName, projectName, url);
 		sender.deliver(mail);
 	}
+
+	@Override
+	public void sendDevHubInvite(String email, String fromDisplayName, String projectName, String publicUrl) {
+		LOG.debug("Sending DevHub invite to addres {}", email);
+		SimpleMessage mail = inviteProjectFac.get().sendDevHubInvite(email, fromDisplayName, projectName, publicUrl);
+		sender.deliver(mail);
+	}
 }

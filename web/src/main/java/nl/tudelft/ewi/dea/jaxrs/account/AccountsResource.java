@@ -21,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import nl.tudelft.ewi.dea.dao.ProjectInvitationDao;
 import nl.tudelft.ewi.dea.dao.RegistrationTokenDao;
 import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
@@ -48,13 +49,16 @@ public class AccountsResource {
 	private final RegistrationTokenDao registrationTokenDao;
 
 	private final UserFactory userFactory;
+	private final ProjectInvitationDao inviteDao;
 
 	@Inject
-	public AccountsResource(final Provider<Renderer> renderers, final UserDao userDao, final RegistrationTokenDao registrationTokenDao, final UserFactory userFactory) {
+	public AccountsResource(final Provider<Renderer> renderers, final UserDao userDao, final RegistrationTokenDao registrationTokenDao, final UserFactory userFactory
+			, ProjectInvitationDao inviteDao) {
 		this.renderers = renderers;
 		this.userDao = userDao;
 		this.registrationTokenDao = registrationTokenDao;
 		this.userFactory = userFactory;
+		this.inviteDao = inviteDao;
 	}
 
 	@GET
@@ -155,6 +159,9 @@ public class AccountsResource {
 		final long accountId = u.getId();
 
 		LOG.debug("Created account with id: " + accountId);
+
+		inviteDao.updateInvitesForNewUser(u);
+
 		return Response.ok(Long.toString(accountId)).build();
 
 	}

@@ -2,6 +2,7 @@ package nl.tudelft.ewi.dea.jaxrs.projects;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
@@ -18,12 +19,14 @@ import nl.tudelft.ewi.dea.ServerConfig;
 import nl.tudelft.ewi.dea.dao.ProjectDao;
 import nl.tudelft.ewi.dea.dao.ProjectInvitationDao;
 import nl.tudelft.ewi.dea.dao.ProjectMembershipDao;
+import nl.tudelft.ewi.dea.dao.RegistrationTokenDao;
 import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
 import nl.tudelft.ewi.dea.mail.DevHubMail;
 import nl.tudelft.ewi.dea.model.Project;
 import nl.tudelft.ewi.dea.model.ProjectInvitation;
 import nl.tudelft.ewi.dea.model.ProjectMembership;
+import nl.tudelft.ewi.dea.model.RegistrationToken;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.security.SecurityProvider;
 
@@ -55,10 +58,12 @@ public class ProjectResource {
 	private final DevHubMail mail;
 	private final String publicUrl;
 
+	private final RegistrationTokenDao tokenDao;
+
 	@Inject
 	public ProjectResource(Provider<Renderer> renderers, SecurityProvider securityProvider, ProjectDao projectDao,
 			UserDao userDao, ProjectInvitationDao invitationDao, ProjectMembershipDao membershipDao, DevHubMail mail,
-			ServerConfig serverConfig) {
+			ServerConfig serverConfig, RegistrationTokenDao tokenDao) {
 		this.renderers = renderers;
 
 		this.securityProvider = securityProvider;
@@ -68,6 +73,7 @@ public class ProjectResource {
 		this.invitationDao = invitationDao;
 		this.membershipDao = membershipDao;
 		this.mail = mail;
+		this.tokenDao = tokenDao;
 		this.publicUrl = serverConfig.getWebUrl();
 	}
 
@@ -107,49 +113,60 @@ public class ProjectResource {
 
 		LOG.trace("Inviting user {} for project {}", email, projectId);
 
-		final Project project = projectDao.findById(projectId);
-		final User otherUser;
-		try {
-			otherUser = userDao.findByEmail(email);
-		} catch (NoResultException e) {
-			return Response.status(Status.CONFLICT).entity("unknown-user").build();
+		if (securityProvider.getUser().getEmail().equals(email)) {
+			return Response.status(Status.CONFLICT)
+					.entity("You cannot invite yourself")
+					.build();
 		}
-
-		if (userIsAlreadyInvited(project, otherUser)) {
+		final Project project = projectDao.findById(projectId);
+		if (userIsAlreadyInvited(project, email)) {
 			return Response.status(Status.CONFLICT)
 					.entity("User is already invited")
 					.build();
 		}
-
-		final ProjectInvitation invitation = new ProjectInvitation(otherUser, project);
-		invitationDao.persist(invitation);
-
-		String fromName = otherUser.getDisplayName();
-		if (fromName == null || fromName.isEmpty()) {
-			fromName = otherUser.getEmail();
+		ProjectInvitation invitation;
+		try {
+			invitation = inviteKnownUser(email, project);
+		} catch (NoResultException e) {
+			invitation = inviteUnkownuser(email, project);
 		}
-		mail.sendProjectInvite(otherUser.getEmail(), fromName, project.getName(), publicUrl);
-
+		invitationDao.persist(invitation);
 		return Response.ok().build();
 
 	}
 
-	private boolean userIsAlreadyInvited(final Project project, final User user) {
+	private ProjectInvitation inviteUnkownuser(final String email, final Project project) {
+		ProjectInvitation invitation;
+		LOG.trace("Invited user is unknown to DevHub, {}", email);
+		invitation = new ProjectInvitation(email, project);
+		String token = UUID.randomUUID().toString();
+		tokenDao.persist(new RegistrationToken(email, token));
+		String verifyUrl = publicUrl + "accounts/activate/" + token;
+		String myName = securityProvider.getUser().getDisplayName();
+		mail.sendDevHubInvite(email, myName, project.getName(), verifyUrl);
+		return invitation;
+	}
 
-		LOG.trace("Testing whether user {} is already invited for project {} ...", user, project);
+	private ProjectInvitation inviteKnownUser(final String email, final Project project) {
+		final User otherUser;
+		otherUser = userDao.findByEmail(email);
+		LOG.trace("Invited user is known to DevHub, {}", email);
+		ProjectInvitation invitation = new ProjectInvitation(otherUser, project);
+		String myName = securityProvider.getUser().getDisplayName();
+		mail.sendProjectInvite(email, myName, project.getName(), publicUrl);
+		return invitation;
+	}
 
-		boolean userIsAlreadyInvited = true;
-
+	private boolean userIsAlreadyInvited(final Project project, final String email) {
+		LOG.trace("Testing whether user {} is already invited for project {} ...", email, project);
 		try {
-			invitationDao.findByProjectAndUser(project, user);
+			invitationDao.findByProjectAndEMail(project, email);
 			LOG.trace("Invitation found - user is already invited");
+			return true;
 		} catch (final NoResultException e) {
 			LOG.trace("Invitation not found - user is not yet invited");
-			userIsAlreadyInvited = false;
+			return false;
 		}
-
-		return userIsAlreadyInvited;
-
 	}
 
 	@GET
@@ -162,7 +179,7 @@ public class ProjectResource {
 		final User currentUser = securityProvider.getUser();
 		final Project project = projectDao.findById(id);
 
-		final ProjectInvitation invitation = invitationDao.findByProjectAndUser(project, currentUser);
+		final ProjectInvitation invitation = invitationDao.findByProjectAndEMail(project, currentUser.getEmail());
 
 		if (accept) {
 			final ProjectMembership membership = new ProjectMembership(currentUser, project);

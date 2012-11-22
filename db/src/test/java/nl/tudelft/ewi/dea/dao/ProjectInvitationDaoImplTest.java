@@ -4,11 +4,15 @@ import static org.hamcrest.Matchers.emptyCollectionOf;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
+import javassist.NotFoundException;
+
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 
 import nl.tudelft.ewi.dea.model.Course;
 import nl.tudelft.ewi.dea.model.Project;
@@ -16,6 +20,7 @@ import nl.tudelft.ewi.dea.model.ProjectInvitation;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.model.UserRole;
 
+import org.hamcrest.core.IsNull;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,77 +29,81 @@ public class ProjectInvitationDaoImplTest extends DatabaseTest {
 	private ProjectInvitationDao invitationDao;
 
 	private final String name = "X";
+	private final String otherName = "Y";
+	private final String otherMail = "y@example.com";
 	private final String mail = "x@example.com";
 
-	@Override
+	private User user;
+	private User otherUser;
+
+	private Project project;
+
+	private Course course;
+
 	@Before
+	@Override
 	public void setUp() {
 		super.setUp();
-
+		user = new User(name, mail, name, 0, name, name, UserRole.USER);
+		otherUser = new User(otherName, otherMail, otherName, 1, otherName, otherName, UserRole.USER);
+		course = new Course("Course", user);
+		project = new Project("Other", course);
 		invitationDao = getInstance(ProjectInvitationDao.class);
 	}
 
 	@Test
 	public void testThatFindByProjectReturnsNothingWhenOnlyOtherProjectHasInvite() throws Exception {
+		final ProjectInvitation invitation = new ProjectInvitation(user, project);
+		final Project otherProject = new Project("Project", course);
 
-		final User owner = new User(name, name, name, 0, name, name, UserRole.USER);
-		final Course course = new Course("Course", owner);
-		final Project other = new Project("Other", course);
-		final ProjectInvitation invitation = new ProjectInvitation(owner, other, mail);
-
-		final Project project = new Project("Project", course);
-
-		invitationDao.persist(owner, course, other, project, invitation);
+		invitationDao.persist(user, course, project, otherProject, invitation);
 
 		// When
-		final List<ProjectInvitation> projects = invitationDao.findByProject(project);
+		final List<ProjectInvitation> projects = invitationDao.findByProject(otherProject);
 
 		// Then
 		assertThat(projects, is(emptyCollectionOf(ProjectInvitation.class)));
-
 	}
 
 	@Test
 	public void testThatFindByProjectReturnsAllInvitationsBelongingToTheProject() throws Exception {
-		final User owner = new User(name, name, name, 0, name, name, UserRole.USER);
-		final Course course = new Course("Course", owner);
-		final Project other = new Project("Other", course);
-		final ProjectInvitation invitation0 = new ProjectInvitation(owner, other, mail);
+		final ProjectInvitation invitation0 = new ProjectInvitation(user, project);
+		final Project otherProject = new Project("Project", course);
+		final ProjectInvitation invitation1 = new ProjectInvitation(user, otherProject);
+		final ProjectInvitation invitation2 = new ProjectInvitation(otherUser, otherProject);
 
-		final Project project = new Project("Project", course);
-		final ProjectInvitation invitation1 = new ProjectInvitation(owner, project, mail);
-		final ProjectInvitation invitation2 = new ProjectInvitation(owner, project, mail);
-
-		invitationDao.persist(owner, course, other, project, invitation0, invitation1, invitation2);
+		invitationDao.persist(user, otherUser, course, project, otherProject, invitation0, invitation1, invitation2);
 
 		// When
-		final List<ProjectInvitation> projects = invitationDao.findByProject(project);
+		final List<ProjectInvitation> projects = invitationDao.findByProject(otherProject);
 
 		// Then
 		assertThat(projects, hasSize(2));
 
 	}
 
+	@Test(expected = PersistenceException.class)
+	public void whenAUserIsInvitedMultipleTimesForAProjectAViolationIsThrown() throws Exception {
+		final User otherOwner = new User(otherName, otherMail, otherName, 1, otherName, otherName, UserRole.USER);
+		final ProjectInvitation invitation0 = new ProjectInvitation(user, project);
+
+		final Project otherProject = new Project("Project", course);
+		final ProjectInvitation invitation1 = new ProjectInvitation(user, otherProject);
+		final ProjectInvitation invitation2 = new ProjectInvitation(user, otherProject);
+
+		invitationDao.persist(user, otherOwner, course, project, otherProject, invitation0, invitation1, invitation2);
+	}
+
 	@Test
 	public void testThatFindByProjectAndUserReturnsNoInvitationWhenNotInvited() throws Exception {
+		final ProjectInvitation invitation = new ProjectInvitation(user, project);
 
-		// Given
-
-		final String name = "X";
-		final User owner = new User(name, name, name, 0, name, name, UserRole.USER);
-		final Course course = new Course("Course", owner);
-		final Project project = new Project("Project", course);
-		final ProjectInvitation invitation = new ProjectInvitation(owner, project, mail);
-
-		final String u = "U";
-		final User user = new User(u, u, u, 0, u, u, UserRole.USER);
-
-		invitationDao.persist(owner, user, course, project, invitation);
+		invitationDao.persist(user, otherUser, course, project, invitation);
 
 		// When
 		boolean exceptionWasThrown = false;
 		try {
-			invitationDao.findByProjectAndUser(project, user);
+			invitationDao.findByProjectAndEMail(project, otherUser.getEmail());
 		} catch (final NoResultException e) {
 			exceptionWasThrown = true;
 		}
@@ -105,24 +114,15 @@ public class ProjectInvitationDaoImplTest extends DatabaseTest {
 	}
 
 	@Test
-	public void testThatFindByProjectAndUserReturnsInvitationWhenInvited() throws Exception {
+	public void testThatFindByProjectAndMailReturnsInvitationWhenInvited() throws Exception {
+		final ProjectInvitation invitation0 = new ProjectInvitation(otherUser, project);
 
-		// Given
+		final ProjectInvitation invitation1 = new ProjectInvitation(user, project);
 
-		final String name = "X";
-		final User owner = new User(name, name, name, 0, name, name, UserRole.USER);
-		final Course course = new Course("Course", owner);
-		final Project project = new Project("Project", course);
-		final ProjectInvitation invitation0 = new ProjectInvitation(owner, project, mail);
-
-		final String u = "U";
-		final User user = new User(u, u, u, 0, u, u, UserRole.USER);
-		final ProjectInvitation invitation1 = new ProjectInvitation(user, project, mail);
-
-		invitationDao.persist(owner, user, course, project, invitation0, invitation1);
+		invitationDao.persist(otherUser, user, course, project, invitation0, invitation1);
 
 		// When
-		final ProjectInvitation retrievedInvitation = invitationDao.findByProjectAndUser(project, user);
+		final ProjectInvitation retrievedInvitation = invitationDao.findByProjectAndEMail(project, user.getEmail());
 
 		// Then
 		assertThat(retrievedInvitation, is(notNullValue()));
@@ -133,51 +133,58 @@ public class ProjectInvitationDaoImplTest extends DatabaseTest {
 
 	@Test
 	public void testThatFindByUserReturnsNoInvitationWhenNotInvited() throws Exception {
+		final ProjectInvitation invitation0 = new ProjectInvitation(otherUser, project);
 
-		// Given
-
-		final String name = "X";
-		final User other = new User(name, name, name, 0, name, name, UserRole.USER);
-		final Course course = new Course("Course", other);
-		final Project project = new Project("Project", course);
-		final ProjectInvitation invitation0 = new ProjectInvitation(other, project, mail);
-
-		final String u = "U";
-		final User user = new User(u, u, u, 0, u, u, UserRole.USER);
-
-		invitationDao.persist(other, user, course, project, invitation0);
+		invitationDao.persist(otherUser, user, course, project, invitation0);
 
 		// When
 		final List<ProjectInvitation> invitations = invitationDao.findByUser(user);
 
 		// Then
 		assertThat(invitations.isEmpty(), is(true));
-
 	}
 
 	@Test
 	public void testThatFindByUserReturnsInvitationWhenInvited() throws Exception {
+		final ProjectInvitation invitation0 = new ProjectInvitation(otherUser, project);
+		final ProjectInvitation invitation1 = new ProjectInvitation(user, project);
 
-		// Given
-
-		final String name = "X";
-		final User other = new User(name, name, name, 0, name, name, UserRole.USER);
-		final Course course = new Course("Course", other);
-		final Project project = new Project("Project", course);
-		final ProjectInvitation invitation0 = new ProjectInvitation(other, project, mail);
-
-		final String u = "U";
-		final User user = new User(u, u, u, 0, u, u, UserRole.USER);
-		final ProjectInvitation invitation1 = new ProjectInvitation(user, project, mail);
-
-		invitationDao.persist(other, user, course, project, invitation0, invitation1);
+		invitationDao.persist(otherUser, user, course, project, invitation0, invitation1);
 
 		// When
 		final List<ProjectInvitation> invitations = invitationDao.findByUser(user);
 
 		// Then
 		assertThat(invitations, hasSize(1));
-
 	}
 
+	@Test
+	public void testPersistingInviteWithNullUserIsAllowed() {
+		ProjectInvitation invite = new ProjectInvitation(otherMail, project);
+		invitationDao.persist(user, course, project, invite);
+		ProjectInvitation inviteFound = invitationDao.findByProjectAndEMail(project, otherMail);
+		assertThat(inviteFound.getUser(), is(nullValue()));
+	}
+
+	@Test(expected = PersistenceException.class)
+	public void duplicateInvitesbasedOnMailNotAllowed() {
+		ProjectInvitation invite = new ProjectInvitation(otherMail, project);
+		ProjectInvitation invite2 = new ProjectInvitation(otherMail, project);
+		invitationDao.persist(user, course, project, invite, invite2);
+	}
+
+	@Test
+	public void whenNewUserAddedUpdateTableIsDoneCorrectly() {
+		final ProjectInvitation invitation = new ProjectInvitation(mail, project);
+		invitationDao.persist(otherUser, user, course, project, invitation);
+		long persistedId = invitation.getId();
+		invitationDao.updateInvitesForNewUser(user);
+
+		assertThat(invitationDao.findByUser(user).size(), is(1));
+		try {
+			invitationDao.findById(persistedId);
+		} catch (NoResultException e) {
+			// That's what we want!
+		}
+	}
 }

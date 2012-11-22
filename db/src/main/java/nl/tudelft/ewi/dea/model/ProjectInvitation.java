@@ -22,8 +22,17 @@ public class ProjectInvitation {
 	@SuppressWarnings("unused")
 	private ProjectInvitation() {}
 
-	public ProjectInvitation(final User user, final Project project, String email) {
+	public ProjectInvitation(final User user, final Project project) {
 		this.user = user;
+		this.project = project;
+		this.email = user.getEmail();
+	}
+
+	/**
+	 * New {@link ProjectInvitation} with user = <code>null</code>.
+	 */
+	public ProjectInvitation(final String email, final Project project) {
+		this.user = null;
 		this.project = project;
 		this.email = email;
 	}
@@ -42,6 +51,10 @@ public class ProjectInvitation {
 
 	public String getEmail() {
 		return email;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	@Override

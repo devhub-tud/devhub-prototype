@@ -143,7 +143,7 @@ public class Provisioner {
 		}
 
 		try {
-			invitationDao.get().findByProjectAndUser(project, user);
+			invitationDao.get().findByProjectAndEMail(project, user.getEmail());
 			return true;
 		} catch (NoResultException e) {
 			return false;

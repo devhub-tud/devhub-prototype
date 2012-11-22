@@ -25,18 +25,24 @@ public class InviteProjectFactory extends AbstractMailFactory {
 
 	public SimpleMessage sendProjectInvite(String email, String displayName, String projectName,
 			String url) {
+		return generateInviteMail(email, displayName, projectName, url, "inviteToProjectMail.txt");
+
+	}
+
+	private SimpleMessage generateInviteMail(String email, String displayName, String projectName, String url, String template) {
 		checkArgument(!isNullOrEmpty(email));
 		checkArgument(!isNullOrEmpty(projectName));
 
-		String body = buildTemplate("inviteToProjectMail.txt",
+		String body = buildTemplate(template,
 				ImmutableMap.of("email", (Object) email
 						, "userName", (Object) displayName
 						, "projectName", (Object) projectName
 						, "url", (Object) url));
 
-		SimpleMessage message = new SimpleMessage(email, SUBJECT_TEXT, body, props.getFrom());
+		return new SimpleMessage(email, SUBJECT_TEXT, body, props.getFrom());
+	}
 
-		return message;
-
+	public SimpleMessage sendDevHubInvite(String email, String fromDisplayName, String projectName, String publicUrl) {
+		return generateInviteMail(email, fromDisplayName, projectName, publicUrl, "inviteToDevHubMail.txt");
 	}
 }

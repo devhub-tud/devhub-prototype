@@ -216,6 +216,8 @@
 	<changeSet id="11" author="alexnederlof">
 		<addUniqueConstraint tableName="projectinvitation"
 			columnNames="email,project_id" constraintName="project_email_unique" />
+		
+		<dropNotNullConstraint tableName="projectinvitation"
+			columnName="user_id" columnDataType="bigint" />
 	</changeSet>
-
 </databaseChangeLog>

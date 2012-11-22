@@ -13,10 +13,18 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(ProjectInvitationDaoImpl.class)
 public interface ProjectInvitationDao extends Dao<ProjectInvitation> {
 
-	ProjectInvitation findByProjectAndUser(final Project project, final User user) throws NoResultException;
+	ProjectInvitation findByProjectAndEMail(Project project, String user) throws NoResultException;
 
-	List<ProjectInvitation> findByProject(final Project project);
+	List<ProjectInvitation> findByProject(Project project);
 
-	List<ProjectInvitation> findByUser(final User user);
+	List<ProjectInvitation> findByUser(User user);
+
+	/**
+	 * If the user was invited before it was known to devhub, the id is set to
+	 * <code>null</code>. This function replaces null with the actual user.
+	 * 
+	 * @param u The user that is now known to the system.
+	 */
+	void updateInvitesForNewUser(User u);
 
 }
