@@ -1,4 +1,5 @@
-#parse("header.tpl") #parse("menu.tpl")
+#parse("header.tpl") 
+#parse("menu.tpl")
 
 <div class="container">
 	<div class="content">
@@ -6,7 +7,7 @@
 #set ( $hasInvites = false)
 #if($invitations && !$invitations.isEmpty())
 	#set ( $hasInvites = true)
-		<div id="invitations" class="alert alert-info">
+		<div id="invitations" class="invitations alert alert-info">
 
 	#if($invitations.size() == 1)
 			<h3>You have 1 new invitation awaiting...</h3>
@@ -31,36 +32,38 @@
 		</div>
 #end
 
-#if(!$projects.isEmpty())
-		<div class="page-head">
-			<h3>Your projects</h3>
-			<a id="open-new-project-modal-btn" class="btn btn-primary">Start a new project</a>
+		<div class="row" style="margin-bottom: 48px;">
+			<div class="span12">
+				<img style="float: left;" src="${user.getGravatarUrl(128)}" class="img-polaroid" />
+				<div class="left">
+					<div class="page-header">
+						<h2><span class="muted">Welcome, </span><br/>$user.getDisplayName()</h2>
+					</div>
+				</div>
+			</div>
 		</div>
-		<table class="table table-striped table-bordered table-hover" id="$projects.size()">
-			<thead>
-				<tr>
-					<th>Project name</th>
-				</tr>
-			</thead>
-			<tbody>
+		
+#if(!$projects.isEmpty())
+		<div>
+			<h3>Your projects <button id="open-new-project-modal-btn" class="btn btn-primary right">Start a new project</button></h3>
 	#foreach($project in $projects)
-				<tr>
-					<td><a href="/project/${project.id}">$project.getName()</a></td>
-				</tr>
+			<a class="item" href="/project/${project.id}">
+				<span class="title">$project.getName()</span>
+				<span class="subtitle muted">Project description goes here...</span>
+			</a>
 	#end
-			</tbody>
-		</table>
+		</div>
 #else
-		<div class="well" style="margin-top: 96px;">
+		<div class="well">
 			<h1>Welcome to DevHub!</h1>
 			<p>	
 	#if ($hasInvites) 
-				<strong>Hey there stranger!</strong> By the looks of it, you don't seem to be participating in any projects yet. 
+				By the looks of it, you don't seem to be participating in any projects yet. 
 				To get started you can either accept a pending project invitation at the top of the page, or set up 
 				your own project by clicking on the blue button on the right. Before you know it you'll be 
 				collaborating with your team mates.
 	#else
-				<strong>Hey there stranger!</strong> By the looks of it, you don't seem to be participating in any projects yet. 
+				By the looks of it, you don't seem to be participating in any projects yet. 
 				To get started you must set up your own project by clicking on the blue button on the right. 
 				Before you know it you'll be collaborating with your team mates.
 	#end	

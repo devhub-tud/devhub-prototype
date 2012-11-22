@@ -61,7 +61,7 @@ $(document).ready(function() {
 	function checkCourseName(courseName, callback) {
 		$.ajax({
 				type: "get",
-				url: "/courses/checkName?name=" + courseName,
+				url: "/api/courses/checkName?name=" + courseName,
 				success: function(data) {
 					callback.call(this, "ok");
 				},
@@ -91,7 +91,7 @@ $(document).ready(function() {
 				type: "post",
 				dataType: "text",
 				contentType: "application/json",
-				url: "/courses/create", 
+				url: "/api/courses/create", 
 				data: JSON.stringify({ "name": courseName }), 
 				success: function() {
 					close();

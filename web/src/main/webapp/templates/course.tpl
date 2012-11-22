@@ -5,7 +5,7 @@
 	<div class="content">
 		<h3>${course.name}</h3>
 		<p>Managed by: ${course.owner.displayName} - ${course.owner.email}</p>
-		#if(${currentUser.isAdmin()})
+		#if(${user.isAdmin()})
 		<table class="table table-striped table-bordered table-hover">
 			<thead>
 				<tr>

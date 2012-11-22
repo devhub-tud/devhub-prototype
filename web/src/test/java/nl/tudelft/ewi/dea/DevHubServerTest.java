@@ -1,16 +1,17 @@
 package nl.tudelft.ewi.dea;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.eclipse.jetty.server.Server;
 import org.junit.After;
 import org.junit.Assert;
@@ -20,7 +21,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Ignore("Igoring until gitolite works again")
+@Ignore("Fix this test case after merging changes to architecture - problems with missing bindings")
 public class DevHubServerTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DevHubServerTest.class);
@@ -43,14 +44,17 @@ public class DevHubServerTest {
 	}
 
 	@Test
-	public void f() throws Exception {
+	public void testThatTheServerCanBeRunAndRootIsGettable() throws Exception {
 
 		HttpClient client = new DefaultHttpClient();
 		HttpGet get = new HttpGet("http://localhost:" + PORT + "/");
 
+		LOG.info("Executing GET for url: {}", get.getURI());
 		HttpResponse response = client.execute(get);
-		LOG.info("Response status  : {}", response.getStatusLine());
-		LOG.info("Response contents: {}", EntityUtils.toString(response.getEntity()));
+
+		if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+			fail("GET response not 200, but: " + response.getStatusLine());
+		}
 
 		client.getConnectionManager().shutdown();
 

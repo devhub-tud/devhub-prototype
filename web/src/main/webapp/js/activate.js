@@ -21,14 +21,17 @@ $(document).ready(function() {
 		var studentNumber = studentNumberField.val();
 		var name = nameField.val();
 		var password = password1Field.val();
+		var token = getTokenFromUrl();
+		
 		setButtonState(completeBtn, false);
 		
 		$.ajax({
 			type: "post",
+			url: "/api/accounts/activate/" + token,
 			contentType: "application/json",
 			data: JSON.stringify({ "email": email, "password": password, "displayName": name, "netId": netId, "studentNumber": studentNumber }),
 			success: function(data) {
-				window.location.replace("/account/" + data);
+				window.location.replace("/account/");
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				showAlert("alert-error", jqXHR.responseText);
@@ -36,6 +39,12 @@ $(document).ready(function() {
 			}
 		});
 	});
+	
+	function getTokenFromUrl() {
+		var href = window.location.href;
+		var index = href.lastIndexOf("/") + 1;
+		return href.substring(index);
+	}
 	
 	function checkFormValidity() {
 		var netIdValid = checkNetIdField();

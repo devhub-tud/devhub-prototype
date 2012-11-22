@@ -18,7 +18,6 @@ import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Injector;
 import com.google.inject.persist.PersistService;
 

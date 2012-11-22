@@ -80,7 +80,7 @@ $(document).ready(function() {
 		}
 		
 		$.ajax({
-				url: "/projects/checkName", 
+				url: "/api/projects/checkName", 
 				data: { "name": projectName }, 
 				success: function(data) {
 					callback.call(this, "ok");
@@ -107,7 +107,7 @@ $(document).ready(function() {
 				type: "post",
 				dataType: "text",
 				contentType: "application/json",
-				url: "/projects/create", 
+				url: "/api/projects/create", 
 				data: JSON.stringify({ "name": projectName }), 
 				success: function() {
 					step2.hide();

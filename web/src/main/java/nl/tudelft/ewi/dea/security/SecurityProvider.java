@@ -13,6 +13,7 @@ import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 
 /**
@@ -45,6 +46,7 @@ public class SecurityProvider {
 	 * @return The user from the current {@link HttpSession}. Note that this user
 	 *         could be detached from it's persisted state.
 	 */
+	@Transactional
 	public User getUser() {
 		// Yes, this isn't truly threadsafe
 		// but chances of this happening concurrent are pretty slim

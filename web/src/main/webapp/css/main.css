@@ -1,5 +1,20 @@
-body {
-	margin-bottom: 20px;
+
+
+.processing {
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	background: rgba(0, 0, 0, 0.73);
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	
+	width: 64px;
+	height: 64px;
+	padding: 18px;
+	
+	margin: -50px 0 0 -50px;
+	z-index: 1100;
 }
 
 .navbar .brand {
@@ -24,12 +39,12 @@ body {
 	left: -75px !important;
 }
 
-.navbar .user-menu .bordered {
+.bordered {
 	border: 1px solid #bbb;
 }
 
 .rounded {
-	-webkit-border-radius 3px;
+	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
 }
@@ -39,7 +54,11 @@ body {
 }
 
 .alert {
-	padding: 8px 28px;
+	padding: 8px 12px;
+}
+
+.alert .close {
+	margin: 0 20px;
 }
 
 .alert-info td {
@@ -51,6 +70,19 @@ body {
 	color: #164a70;
 }
 
+.invitations {
+	margin-bottom: 64px;
+}
+
+.invitations h3 {
+	line-height: 0px;
+	padding: 6px 0px 12px 0px;
+}
+
+.invitations table {
+	margin-bottom: 3px;
+}
+
 .navbar-fixed-top {
 	position: inherit !important;
 }
@@ -59,43 +91,52 @@ table .btn-panel {
 	float: right;
 }
 
-.page-head {
-	height: 60px;
+.form-horizontal .input-wide {
+	width: 345px;
 }
 
-.page-head h1, .page-head h2, .page-head h3, .page-head h4, .page-head h5, .page-head h6 {
-	display: inline;
+.form-horizontal input.input-wide {
+	width: 355px;
 }
 
-.page-head .btn-group {
-	width: 300px;
-	display: inline;
-	float: right;
+.form-horizontal select.input-wide {
+	width: 368px;
 }
 
-.page-head .btn {
-	margin-top: 5px;
-	float: right;
+.form-horizontal textarea.input-wide {
+	width: 355px;
 }
 
-.page-head .dropdown-menu {
-	width: 300px;
+.form-vertical .input-wide {
+	width: 505px;
 }
 
-.input-wide {
-	width: 330px;
+.form-vertical input.input-wide {
+	width: 515px;
 }
 
-input.input-wide {
-	width: 340px;
+.form-vertical select.input-wide {
+	width: 528px;
 }
 
-select.input-wide {
-	width: 353px;
+.form-vertical textarea.input-wide {
+	width: 515px;
 }
 
-.form-horizontal .condensed {
+form label {
+	font-weight: bold;
+}
+
+form .controls label {
+	font-weight: normal;
+}
+
+form .condensed {
 	margin-bottom: 10px !important;
+}
+
+form.condensed {
+	margin-bottom: 0px;
 }
 
 .results-box {
@@ -114,6 +155,136 @@ select.input-wide {
 
 table .attribute {
 	width: 30%;
+}
+
+.menu {
+	display: inline-block;
+	vertical-align: top;
+	border: 1px solid red;
+}
+
+.canvas {
+	display: inline-block;
+	vertical-align: top;
+	border: 1px solid red;
+}
+
+.right {
+	float: right;
+	margin-left: 20px;
+}
+
+.left {
+	margin-left: 20px;
+	float: left;
+}
+
+.well h3, .well h2, .well h1 {
+	margin-top: 0px;
+}
+
+.well {
+	margin-top: 32px;
+}
+
+.values td {
+	color: #777;
+}
+
+.values td:first-child {
+	font-weight: bold;
+	color: #444;
+	width: 200px;
+}
+
+.values td:first-child label {
+	font-weight: bold;
+}
+
+label.checkbox {
+	margin-bottom: 0px !important;
+}
+
+h1 .btn {
+	margin-top: 8px;
+}
+
+.page-header {
+	margin: 20px 0px 5px 0px !important;
+}
+
+pre button {
+	margin: -2px;
+}
+
+.button-bar {
+	margin: 10px 0px;
+	height: 30px;
+}
+
+.step {
+	margin-top: 16px;
+	margin-bottom: 32px;
+}
+
+.item {
+	border: 1px solid #ccc;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	padding: 12px;
+	margin: 0px 0px 9px 0px;
+	
+	background: #fcfcfc;
+	background: -moz-linear-gradient(top, #fcfcfc 0%, #f3f3f3 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#f3f3f3));
+	background: -webkit-linear-gradient(top, #fcfcfc 0%,#f3f3f3 100%);
+	background: -o-linear-gradient(top, #fcfcfc 0%,#f3f3f3 100%);
+	background: -ms-linear-gradient(top, #fcfcfc 0%,#f3f3f3 100%);
+	background: linear-gradient(to bottom, #fcfcfc 0%,#f3f3f3 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#f3f3f3',GradientType=0 );
+}
+
+.item:hover {
+	background: #f3f3f3;
+	background: -moz-linear-gradient(top, #f3f3f3 0%, #ececec 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f3f3f3), color-stop(100%,#ececec));
+	background: -webkit-linear-gradient(top, #f3f3f3 0%,#ececec 100%);
+	background: -o-linear-gradient(top, #f3f3f3 0%,#ececec 100%);
+	background: -ms-linear-gradient(top, #f3f3f3 0%,#ececec 100%);
+	background: linear-gradient(to bottom, #f3f3f3 0%,#ececec 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f3f3f3', endColorstr='#ececec',GradientType=0 );
+}
+
+.item .title {
+	display: block;
+	padding-bottom: 5px;
+	font-size: 19px;
+	font-weight: bold;
+}
+
+.item .subtitle {
+	display: block;
+	font-size: 13px;
+	margin-top: 3px;
+}
+
+.item:hover .subtitle {
+	color: #222;
+}
+
+.footer {
+	position: absolute;
+	bottom: 0px;
+	background-color: #eee; 
+	border-top: 1px solid #ccc;
+	height: 100px;
+	width: 100%;
+}
+
+A.item {
+	text-decoration: none;
+	display: block;
 }
 
 @media (max-width: 320px) {

@@ -16,8 +16,6 @@ $(document).ready(function() {
 	$('#reset').submit(function(e) {
 		e.preventDefault();
 		
-		console.log("Hello");
-		
 		var id = idField.val();
 		var token = tokenField.val();
 		var email = emailField.val();
@@ -28,9 +26,10 @@ $(document).ready(function() {
 		$.ajax({
 			type: "post",
 			contentType: "application/json",
+			url: "/api/forgot-password/" + id + "/" + token,
 			data: JSON.stringify({ "id": id, "token": token, "email": email, "displayName": displayName, "password": password }),
 			success: function(data) {
-				window.location.replace("/account/" + data);
+				window.location.replace("/account");
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				showAlert("alert-error", jqXHR.responseText);

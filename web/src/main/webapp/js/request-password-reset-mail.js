@@ -3,7 +3,6 @@ $(document).ready(function() {
 	$('#recover').submit(function(e) {
 		e.preventDefault();
 		
-		
 		var email = $('#recover').find('input[name="email"]').val();
 		
 		if (email) {
@@ -12,7 +11,7 @@ $(document).ready(function() {
 
 			$.ajax({
 				type: "post",
-				url: "/reset-password/" + email,
+				url: "/api/forgot-password/" + email,
 				success: function(data) {
 					showAlert("alert-success", "An e-mail has been sent to <strong>" + email 
 							+ "</strong>.<br/>This e-mail contains futher instructions on how to recover access to your account.");
@@ -30,7 +29,6 @@ $(document).ready(function() {
 		} else {
 			showAlert("alert-info", "Email must be set");
 		}
-
 	});
 
 	

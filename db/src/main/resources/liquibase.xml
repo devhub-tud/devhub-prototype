@@ -206,14 +206,42 @@
 			<column name="source_code_url" type="varchar(255)"></column>
 		</addColumn>
 	</changeSet>
+	
+	<changeSet id="10" author="michaelj">
+		<createTable tableName="ssh_keys">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="user_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="key_name" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="key_contents" type="text">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
 
-	<changeSet id="10" author="alexnederlof">
+	<changeSet id="11" author="michaelj">
+		<createIndex tableName="ssh_keys" indexName="user_keyname" unique="true">
+			<column name="user_id"></column>
+			<column name="key_name"></column>
+		</createIndex>
+	</changeSet>
+
+	<changeSet id="12" author="michaelj">
+		<addForeignKeyConstraint constraintName="sshkey_user" referencedTableName="users" baseColumnNames="user_id" baseTableName="ssh_keys" referencedColumnNames="id" onDelete="CASCADE" />
+	</changeSet>
+
+	<changeSet id="13" author="alexnederlof">
 		<addColumn tableName="projectinvitation">
 			<column name="email" type="varchar(255)"></column>
 		</addColumn>
 	</changeSet>
 
-	<changeSet id="11" author="alexnederlof">
+	<changeSet id="14" author="alexnederlof">
 		<addUniqueConstraint tableName="projectinvitation"
 			columnNames="email,project_id" constraintName="project_email_unique" />
 		
