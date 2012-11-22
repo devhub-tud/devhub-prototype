@@ -54,7 +54,7 @@ public class PostgreSQLSmokeTest {
 		new DatabaseStructure(props, "");
 
 		LOG.debug("Verifying database structure...");
-		Persistence.createEntityManagerFactory("test-postgresql").close();
+		Persistence.createEntityManagerFactory("test-postgresql", props.asJpaProperties()).close();
 
 		LOG.debug("Dropping database contents...");
 		final Map<String, String> properties = new HashMap<>();
