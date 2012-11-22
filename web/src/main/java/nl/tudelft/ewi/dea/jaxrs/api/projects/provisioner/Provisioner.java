@@ -70,10 +70,10 @@ public class Provisioner {
 		this.invitationDao = invitationDao;
 		this.userDao = userDao;
 		this.mailer = mailer;
-		this.publicUrl = config.getWebUrl();
+		publicUrl = config.getWebUrl();
 
-		this.stateCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).maximumSize(500).build();
-		this.executor = new ScheduledThreadPoolExecutor(0);
+		stateCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).maximumSize(500).build();
+		executor = new ScheduledThreadPoolExecutor(0);
 		executor.setMaximumPoolSize(1);
 	}
 
