@@ -46,6 +46,11 @@
 			<name>Internal snapshots</name>
 			<url>http://dea.hartveld.com/nexus/content/repositories/snapshots</url>
 		</snapshotRepository>
+		<repository>
+			<id>devhub-snapshots</id>
+			<name>Internal releases</name>
+			<url>http://dea.hartveld.com/nexus/content/repositories/releases</url>
+		</repository>
 	</distributionManagement>
 
 	<repositories>
@@ -56,6 +61,10 @@
 		<repository>
 			<id>snapshots</id>
 			<url>http://dea.hartveld.com/nexus/content/repositories/snapshots/</url>
+		</repository>
+		<repository>
+			<id>releases</id>
+			<url>http://dea.hartveld.com/nexus/content/repositories/releases/</url>
 		</repository>
 	</repositories>
 
