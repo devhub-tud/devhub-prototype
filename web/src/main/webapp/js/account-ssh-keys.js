@@ -28,23 +28,25 @@ $(document).ready(function() {
 	
 	addKeyBtn.click(function(e) {
 		e.preventDefault();
+		var name = nameField.val();
+		var key = keyField.val();
 		
 		stopTimers(timers);
 		setButtonState(addKeyBtn, false);
 		
 		modal.modal('hide');
-		$("body").append("<div class='preloader'><div class='processing'><img src='/img/processing.gif'></div><div class='modal-backdrop fade in' style='opacity: 0.2;'></div></div>")
+		displayProcessor();
 		
 		$.ajax({
 			type: "post",
 			contentType: "application/json",
 			url: "/api/account/ssh-keys",
-			data: JSON.stringify({ "name": nameField.val(), "key": keyField.val() }),
+			data: JSON.stringify({ "name": name, "key": key }),
 			success: function(data) {
 				window.location.replace("/account/ssh-keys");
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				$(".preloader").remove();
+				removeProcessor();
 				if (jqXHR.status == 409) {
 					showAlert("alert-error", jqXHR.responseText);
 				} else {
@@ -56,14 +58,14 @@ $(document).ready(function() {
 	});
 	
 	deleteKeyBtn.click(function() {
+		displayProcessor();
+
 		var keys = [];
 		$(":checked").each(function() {
 			keys.push($(this).val());
 		});
 		
 		var value = JSON.stringify({ "keyIds": keys });
-		
-		
 		
 		$.ajax({
 			type: "delete",
@@ -72,10 +74,9 @@ $(document).ready(function() {
 			data: value,
 			success: function(data) {
 				window.location.replace("/account/ssh-keys");
-				$(".processing").remove();
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				$(".processing").remove();
+				removeProcessor();
 				if (jqXHR.status == 409) {
 					showAlert("alert-error", jqXHR.responseText);
 				} else {
@@ -92,6 +93,14 @@ $(document).ready(function() {
 			verify(keyField, "^[ssh\-](.){64,}$"),
 			synchronize(addKeyBtn, [ nameField, keyField ])
 		);
+	}
+	
+	function displayProcessor() {
+		$("body").append("<div class='preloader'><div class='processing'><img src='/img/processing.gif'></div><div class='modal-backdrop fade in' style='opacity: 0.2;'></div></div>")
+	}
+	
+	function removeProcessor() {
+		$(".preloader").remove();
 	}
 	
 });
