@@ -225,6 +225,17 @@
 		<addForeignKeyConstraint constraintName="sshkey_user" referencedTableName="users" baseColumnNames="user_id" baseTableName="ssh_keys"
 			referencedColumnNames="id" onDelete="CASCADE"/>
 	</changeSet>
+	
+	<changeSet id="15" author="alexnederlof">
+		<createTable tableName="unsent_mails">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="mail" type="text">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
 
 	<changeSet id="13" author="alexnederlof">
 		<addColumn tableName="projectinvitation">
