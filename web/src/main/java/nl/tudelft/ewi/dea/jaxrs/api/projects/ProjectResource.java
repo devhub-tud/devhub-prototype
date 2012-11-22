@@ -5,6 +5,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -126,7 +127,7 @@ public class ProjectResource {
 		}
 	}
 
-	@GET
+	@POST
 	@Path("{id}/invitation")
 	@Transactional
 	public Response answerInvitation(@PathParam("id") final long id, @QueryParam("accept") final boolean accept) {

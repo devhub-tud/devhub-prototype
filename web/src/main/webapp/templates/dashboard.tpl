@@ -19,10 +19,11 @@
 				<tbody>
 	#foreach($invitation in $invitations)
 					<tr>
-						<td>${invitation.getProject().getName()}
+						<td projectId="${invitation.getProject().getId()}">
+							<span class="project-name">${invitation.getProject().getName()}</span>
 							<div class="btn-panel">
-								<a class="btn btn-mini btn-success">Join project</a>
-								<a class="btn btn-mini btn-danger">Ignore</a>
+								<button class="join btn btn-mini btn-success">Join project</button>
+								<button class="reject btn btn-mini btn-danger">Ignore</button>
 							</div>
 						</td>
 					</tr>
@@ -46,12 +47,14 @@
 #if(!$projects.isEmpty())
 		<div>
 			<h3>Your projects <button id="open-new-project-modal-btn" class="btn btn-primary right">Start a new project</button></h3>
+			<div class="projects">
 	#foreach($project in $projects)
-			<a class="item" href="/project/${project.id}">
-				<span class="title">$project.getName()</span>
-				<span class="subtitle muted">Project description goes here...</span>
-			</a>
+				<a class="item" href="/project/${project.id}">
+					<span class="title">$project.getName()</span>
+					<span class="subtitle muted">Project description goes here...</span>
+				</a>
 	#end
+			</div>
 		</div>
 #else
 		<div class="well">

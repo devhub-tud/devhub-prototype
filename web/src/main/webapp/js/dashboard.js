@@ -233,10 +233,4 @@ $(document).ready(function() {
 			|| address.substr(0 - studentMail.length) === studentMail;
 	}
 	
-	function showAlert(type, message) {
-		var alerts = $('.alerts');
-		var alert = "<div class=\"alert " + type + "\"><a class=\"close\" data-dismiss=\"alert\" href=\"#\">&times;</a>" + message + "</div>";
-		alerts.empty().append(alert).show('normal');
-	}
-	
 });
