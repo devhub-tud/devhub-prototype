@@ -12,6 +12,7 @@ import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
 @Path("api")
+@Produces(MediaType.APPLICATION_JSON)
 public class RootResource {
 
 	private final BuildInfo version;
@@ -23,7 +24,6 @@ public class RootResource {
 
 	@GET
 	@Path("version")
-	@Produces(MediaType.APPLICATION_JSON)
 	public BuildInfo version() {
 		return version;
 	}

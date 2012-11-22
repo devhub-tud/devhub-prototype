@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -21,10 +22,12 @@ import nl.tudelft.ewi.dea.model.User;
 
 import org.apache.shiro.SecurityUtils;
 
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
 @Path("api/courses")
+@Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class CoursesResources {
 
@@ -38,7 +41,7 @@ public class CoursesResources {
 	}
 
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@Transactional
 	public Response find(@QueryParam("enrolled") Boolean enrolled, @QueryParam("substring") String subString) {
 		List<CourseDto> courses = CourseDto.convert(courseDao.find(enrolled, subString));
 		GenericEntity<List<CourseDto>> entity = new GenericEntity<List<CourseDto>>(courses) {};
@@ -48,6 +51,7 @@ public class CoursesResources {
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	@Path("checkName")
+	@Transactional
 	public Response checkCourseName(@QueryParam("name") String name) {
 		try {
 			courseDao.findByName(name);
@@ -59,6 +63,7 @@ public class CoursesResources {
 
 	@POST
 	@Path("create")
+	@Transactional
 	public Course create(CourseCreationRequest request) {
 		String email = (String) SecurityUtils.getSubject().getPrincipal();
 		User owner = userDao.findByEmail(email);

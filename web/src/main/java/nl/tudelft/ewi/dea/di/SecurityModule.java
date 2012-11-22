@@ -66,6 +66,7 @@ public class SecurityModule extends AbstractModule {
 			addFilterChain("/css/**", ANON);
 			addFilterChain("/img/**", ANON);
 
+			addFilterChain("/guides", ANON);
 			addFilterChain("/register", ANON);
 			addFilterChain("/register/**", ANON);
 			addFilterChain("/account/activate/*", ANON);
@@ -75,6 +76,7 @@ public class SecurityModule extends AbstractModule {
 			addFilterChain("/logout", LOGOUT);
 			addFilterChain("/login", AUTHC);
 
+			addFilterChain("/api/version", ANON);
 			addFilterChain("/api/register", ANON);
 			addFilterChain("/api/register/**", ANON);
 			addFilterChain("/api/accounts/activate/*", ANON);

@@ -1,6 +1,6 @@
 			<section id="key-management">
 				<div class="page-header">
-					<h1>SSH key management <a class="btn right" id="add-key">Add new SSH key</a></h1>
+					<h1>SSH key management <a class="btn right" id="add-key">Add new key</a></h1>
 				</div>
 #if ($ssh-keys.isEmpty())
 				<div class="alert alert-danger"><strong>You haven't added any SSH keys yet!</strong></div>
@@ -8,7 +8,11 @@
 				<table class="values table table-striped table-bordered">
 					<tbody>
 	#foreach($key in $ssh-keys)
-						<tr><td><label class="checkbox"><input name="keyId[]" value="$key.getId()" type="checkbox"> $key.getKeyName()</label></td></tr>
+						<tr><td>
+							<label class="checkbox">
+								<input name="keyId[]" value="$key.getId()" type="checkbox"> $key.getKeyName()
+							</label>
+						</td></tr>
 	#end
 					</tbody>
 				</table>
@@ -24,7 +28,7 @@
 					</div>
 					<div class="modal-body">
 						<form id="add-new-ssh-key-form" class="form-vertical">
-							<div class="alert alert-info"><a href=""><strong>Need some help with SSH keys?</strong> Follow this guide...</a></div>
+							<div class="alert alert-info"><a href="/guides#key-management" target="_blank"><strong>Need some help with SSH keys?</strong> Follow this guide...</a></div>
 							<div class="alerts"></div>
 							<div class="control-group condensed">
 								<label class="control-label" for="ssh-key-name">Name</label>

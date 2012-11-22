@@ -88,6 +88,5 @@
 				<a href="#" id="close-promote-user-to-teacher-modal" class="btn">Close</a>
 			</div>
 		</div>
-		<
 
 #parse("footer.tpl")

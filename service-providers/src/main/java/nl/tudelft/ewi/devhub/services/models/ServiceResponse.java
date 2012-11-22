@@ -1,8 +1,8 @@
 package nl.tudelft.ewi.devhub.services.models;
 
-import lombok.experimental.Value;
+import lombok.Data;
 
-@Value
+@Data
 public class ServiceResponse {
 
 	private final boolean success;

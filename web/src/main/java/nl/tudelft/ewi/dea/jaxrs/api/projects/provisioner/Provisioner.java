@@ -28,6 +28,7 @@ import nl.tudelft.ewi.devhub.services.continuousintegration.models.BuildProject;
 import nl.tudelft.ewi.devhub.services.models.ServiceResponse;
 import nl.tudelft.ewi.devhub.services.models.ServiceUser;
 import nl.tudelft.ewi.devhub.services.versioncontrol.VersionControlService;
+import nl.tudelft.ewi.devhub.services.versioncontrol.models.CreatedRepositoryResponse;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.RepositoryIdentifier;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.RepositoryRepresentation;
 
@@ -243,8 +244,14 @@ public class Provisioner {
 			}
 
 			try {
-				Future<ServiceResponse> createRepository = versioningService.createRepository(request);
-				return createRepository.get();
+				Future<CreatedRepositoryResponse> createRepository = versioningService.createRepository(request);
+				CreatedRepositoryResponse serviceResponse = createRepository.get();
+				if (serviceResponse.isSuccess()) {
+					project.setSourceCodeUrl(serviceResponse.getRepositoryUrl());
+					update(project);
+				}
+
+				return serviceResponse;
 			} catch (ExecutionException | InterruptedException e) {
 				throw new ProvisioningException("Failed to provision new source code repository", e);
 			}
@@ -296,6 +303,15 @@ public class Provisioner {
 	void removeProjectFromDb(Project project) {
 		try {
 			projectDao.get().remove(project);
+		} catch (Throwable e) {
+			LOG.error(e.getMessage(), e);
+		}
+	}
+
+	@Transactional
+	void update(Project project) {
+		try {
+			projectDao.get().merge(project);
 		} catch (Throwable e) {
 			LOG.error(e.getMessage(), e);
 		}

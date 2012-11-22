@@ -19,10 +19,12 @@ import nl.tudelft.ewi.devhub.services.ServiceProvider;
 import nl.tudelft.ewi.devhub.services.continuousintegration.ContinuousIntegrationService;
 import nl.tudelft.ewi.devhub.services.versioncontrol.VersionControlService;
 
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
 @Path("api/projects")
+@Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class ProjectsResource {
 
@@ -38,7 +40,7 @@ public class ProjectsResource {
 	}
 
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Transactional
 	public Response createNewProject(CourseProjectRequest request) {
 		User currentUser = securityProvider.getUser();
 		VersionControlService versioningService = serviceProvider.getVersionControlService(request.getVersionControlService());
@@ -49,6 +51,7 @@ public class ProjectsResource {
 
 	@GET
 	@Path("provisioning/{projectId}")
+	@Transactional
 	public Response checkProvisioningState(@PathParam("projectId") long projectId) {
 		State state = provisioner.getState(projectId);
 		if (state.isFailures()) {

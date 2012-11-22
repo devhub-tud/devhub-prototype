@@ -27,6 +27,11 @@ import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.model.UserRole;
 import nl.tudelft.ewi.dea.security.SecurityProvider;
 import nl.tudelft.ewi.dea.security.UserFactory;
+import nl.tudelft.ewi.devhub.services.models.ServiceUser;
+import nl.tudelft.ewi.devhub.services.versioncontrol.VersionControlService;
+import nl.tudelft.ewi.devhub.services.versioncontrol.implementations.GitoliteService;
+import nl.tudelft.ewi.devhub.services.versioncontrol.models.SshKeyIdentifier;
+import nl.tudelft.ewi.devhub.services.versioncontrol.models.SshKeyRepresentation;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -48,21 +53,25 @@ public class AccountResource {
 	private final UserFactory userFactory;
 	private final SecurityProvider securityProvider;
 	private final SshKeyDao keyDao;
+	private final VersionControlService localVersioningService;
 
 	@Inject
 	public AccountResource(UserDao userDao, PasswordResetTokenDao passwordResetTokenDao,
-			UserFactory userFactory, SecurityProvider subjectProvider, SshKeyDao keyDao) {
+			UserFactory userFactory, SecurityProvider subjectProvider, SshKeyDao keyDao,
+			GitoliteService localVersioningService) {
 
 		this.userDao = userDao;
 		this.passwordResetTokenDao = passwordResetTokenDao;
 		this.userFactory = userFactory;
 		this.securityProvider = subjectProvider;
 		this.keyDao = keyDao;
+		this.localVersioningService = localVersioningService;
 	}
 
 	@POST
 	@Path("{id}/promote")
 	@RequiresRoles(UserRole.ROLE_ADMIN)
+	@Transactional
 	public Response promoteUserToTeacher(@PathParam("id") long id) {
 		User u = userDao.findById(id);
 		u.promoteToAdmin();
@@ -74,6 +83,7 @@ public class AccountResource {
 	@POST
 	@Path("{id}/demote")
 	@RequiresRoles(UserRole.ROLE_ADMIN)
+	@Transactional
 	public Response demoteTeacherToUser(@PathParam("id") long id) {
 		User u = userDao.findById(id);
 		u.demoteToUser();
@@ -139,8 +149,16 @@ public class AccountResource {
 	@POST
 	@Path("ssh-keys")
 	@Transactional
-	public Response addSshKey(SshKeyObject sshKey) {
-		keyDao.persist(new SshKey(securityProvider.getUser(), sshKey.getName(), sshKey.getKey()));
+	public Response addSshKey(SshKeyObject sshKeyObject) {
+		User user = securityProvider.getUser();
+		SshKey sshKey = new SshKey(user, sshKeyObject.getName(), sshKeyObject.getKey());
+		keyDao.persist(sshKey);
+
+		ServiceUser serviceUser = new ServiceUser(user.getNetId(), user.getEmail());
+		SshKeyIdentifier keyId = new SshKeyIdentifier(sshKey.getKeyName(), serviceUser);
+		SshKeyRepresentation key = new SshKeyRepresentation(keyId, sshKey.getKeyContents());
+		localVersioningService.addSshKey(key);
+
 		return Response.ok().build();
 	}
 
@@ -162,6 +180,12 @@ public class AccountResource {
 		}
 
 		keyDao.remove(remove.toArray());
+
+		ServiceUser serviceUser = new ServiceUser(user.getNetId(), user.getEmail());
+		for (SshKey key : remove) {
+			localVersioningService.removeSshKeys(new SshKeyIdentifier(key.getKeyName(), serviceUser));
+		}
+
 		return Response.ok().build();
 	}
 }

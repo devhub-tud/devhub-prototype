@@ -35,6 +35,7 @@ import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
 @Path("api/accounts")
+@Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class AccountsResource {
 
@@ -50,6 +51,7 @@ public class AccountsResource {
 	}
 
 	@GET
+	@Transactional
 	public Response findBySubString(@QueryParam("substring") String subString) {
 		List<AccountDto> users = AccountDto.convert(userDao.findBySubString(subString));
 		GenericEntity<List<AccountDto>> entity = new GenericEntity<List<AccountDto>>(users) {};
@@ -58,6 +60,7 @@ public class AccountsResource {
 
 	@GET
 	@Path("email/{email}")
+	@Transactional
 	public Response findByEmailSubString(@PathParam("email") String email) {
 		List<AccountDto> users = AccountDto.convert(userDao.findByEmailSubString(email));
 		GenericEntity<List<AccountDto>> entity = new GenericEntity<List<AccountDto>>(users) {};
@@ -66,7 +69,6 @@ public class AccountsResource {
 
 	@POST
 	@Path("activate/{token}")
-	@Consumes(MediaType.APPLICATION_JSON)
 	@Transactional
 	public Response processActivation(@PathParam("token") String token, ActivationRequest request) {
 		checkArgument(isNotEmpty(token), "token must be a non-empty string");

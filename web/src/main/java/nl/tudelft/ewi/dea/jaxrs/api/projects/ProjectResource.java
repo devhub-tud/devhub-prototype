@@ -23,6 +23,7 @@ import nl.tudelft.ewi.dea.model.ProjectMembership;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.security.SecurityProvider;
 
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
@@ -54,6 +55,7 @@ public class ProjectResource {
 
 	@GET
 	@Path("{projectId}/invite/{userMail}")
+	@Transactional
 	public Response inviteUser(@PathParam("projectId") long projectId, @PathParam("userMail") String email) {
 		Project project = projectDao.findById(projectId);
 		User otherUser;
@@ -72,17 +74,14 @@ public class ProjectResource {
 		ProjectInvitation invitation = new ProjectInvitation(otherUser, project);
 		invitationDao.persist(invitation);
 
-		String fromName = otherUser.getDisplayName();
-		if (fromName == null || fromName.isEmpty()) {
-			fromName = otherUser.getEmail();
-		}
-
+		String fromName = securityProvider.getUser().getDisplayName();
 		mail.sendProjectInvite(otherUser.getEmail(), fromName, project.getName(), publicUrl);
 		return Response.ok().build();
 	}
 
 	@GET
 	@Path("{id}/invitation")
+	@Transactional
 	public Response answerInvitation(@PathParam("id") long id, @QueryParam("accept") boolean accept) {
 		User currentUser = securityProvider.getUser();
 		Project project = projectDao.findById(id);

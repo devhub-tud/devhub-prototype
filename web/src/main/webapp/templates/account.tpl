@@ -7,7 +7,6 @@
 				<img src="${user.getGravatarUrl(512)}" class="img-polaroid" />
 				<div style="margin: 0px 5px;">
 					<h4>$user.getDisplayName()</h4>
-					<h6 class="muted">$user.getRole().getDisplayName()</h6>
 				</div>
 			</div>
 			<ul class="nav nav-tabs nav-stacked affix-top">

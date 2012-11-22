@@ -25,6 +25,7 @@ import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
 @Path("api/register")
+@Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class RegisterResource {
 
@@ -65,7 +66,6 @@ public class RegisterResource {
 	 *            hostname.
 	 */
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
 	@Transactional
 	public Response processSignupRequest(SignupRequest request) throws UnknownHostException {
 		if (!AddressValidator.isTuAddress(request.getEmail())) {

@@ -21,7 +21,8 @@
 	"services" : {
 		"versionControl" : {
 			"Gitolite" : {
-				"url" : "git@example.com:gitolite-admin"
+				"host" : "git@example.com",
+				"admin-repo" : "gitolite-admin"
 			}
 		},
 		"continuousIntegration" : {

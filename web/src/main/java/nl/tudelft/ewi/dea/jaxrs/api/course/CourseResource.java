@@ -1,6 +1,7 @@
 package nl.tudelft.ewi.dea.jaxrs.api.course;
 
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -23,6 +24,7 @@ import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
 @Path("api/course")
+@Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class CourseResource {
 

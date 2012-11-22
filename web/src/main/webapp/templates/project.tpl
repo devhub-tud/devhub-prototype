@@ -18,7 +18,7 @@
 			<tbody>
 				<tr>
 					<td class="attribute">Git URL</td>
-					<td>${git-path}</td>
+					<td>$sourceCodeUrl</td>
 				</tr>
 				<tr>
 					<td class="attribute">Jenkins job URL</td>

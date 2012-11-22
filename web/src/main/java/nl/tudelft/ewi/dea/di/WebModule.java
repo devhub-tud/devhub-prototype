@@ -64,6 +64,8 @@ public class WebModule extends ServletModule {
 	@Override
 	protected void configureServlets() {
 		bind(BuildInfo.class).toInstance(buildInfo);
+		bind(ServerConfig.class).toInstance(serverConfig);
+
 		install(new SecurityModule(servletContext));
 		install(new PersistenceModule(serverConfig.getDbConfig(), ""));
 		filter("/*").through(PersistFilter.class);

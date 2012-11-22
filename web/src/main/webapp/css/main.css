@@ -1,7 +1,3 @@
-body {
-	margin-bottom: 20px;
-}
-
 .navbar .brand {
 	margin-left: 0px;
 }
@@ -39,7 +35,11 @@ body {
 }
 
 .alert {
-	padding: 8px 28px 8px 12px;
+	padding: 8px 12px;
+}
+
+.alert .close {
+	margin: 0 20px;
 }
 
 .alert-info td {
@@ -51,35 +51,25 @@ body {
 	color: #164a70;
 }
 
+.invitations {
+	margin-bottom: 64px;
+}
+
+.invitations h3 {
+	line-height: 0px;
+	padding: 6px 0px 12px 0px;
+}
+
+.invitations table {
+	margin-bottom: 3px;
+}
+
 .navbar-fixed-top {
 	position: inherit !important;
 }
 
 table .btn-panel {
 	float: right;
-}
-
-.page-head {
-	height: 60px;
-}
-
-.page-head h1, .page-head h2, .page-head h3, .page-head h4, .page-head h5, .page-head h6 {
-	display: inline;
-}
-
-.page-head .btn-group {
-	width: 300px;
-	display: inline;
-	float: right;
-}
-
-.page-head .btn {
-	margin-top: 5px;
-	float: right;
-}
-
-.page-head .dropdown-menu {
-	width: 300px;
 }
 
 .form-horizontal .input-wide {
@@ -204,9 +194,18 @@ h1 .btn {
 	margin: 20px 0px 5px 0px !important;
 }
 
+pre button {
+	margin: -2px;
+}
+
 .button-bar {
 	margin: 10px 0px;
 	height: 30px;
+}
+
+.step {
+	margin-top: 16px;
+	margin-bottom: 32px;
 }
 
 .item {
@@ -253,6 +252,15 @@ h1 .btn {
 
 .item:hover .subtitle {
 	color: #222;
+}
+
+.footer {
+	position: absolute;
+	bottom: 0px;
+	background-color: #eee; 
+	border-top: 1px solid #ccc;
+	height: 100px;
+	width: 100%;
 }
 
 A.item {
