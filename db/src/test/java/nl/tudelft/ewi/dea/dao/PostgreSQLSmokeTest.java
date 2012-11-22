@@ -6,8 +6,7 @@ import static org.junit.Assume.assumeThat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Properties;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -54,10 +53,10 @@ public class PostgreSQLSmokeTest {
 		new DatabaseStructure(props, "");
 
 		LOG.debug("Verifying database structure...");
-		Persistence.createEntityManagerFactory("test-postgresql").close();
+		Persistence.createEntityManagerFactory("test-postgresql", props.asJpaProperties()).close();
 
 		LOG.debug("Dropping database contents...");
-		final Map<String, String> properties = new HashMap<>();
+		final Properties properties = props.asJpaProperties();
 		properties.put("hibernate.hbm2ddl.auto", "create-drop");
 		final EntityManagerFactory emf = Persistence.createEntityManagerFactory("test-postgresql", properties);
 		final EntityManager em = emf.createEntityManager();
