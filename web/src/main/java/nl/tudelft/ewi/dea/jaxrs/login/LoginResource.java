@@ -10,7 +10,6 @@ import javax.ws.rs.core.MediaType;
 import nl.tudelft.ewi.dea.BuildInfo;
 import nl.tudelft.ewi.dea.jaxrs.utils.Renderer;
 
-import com.google.common.collect.Lists;
 import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped

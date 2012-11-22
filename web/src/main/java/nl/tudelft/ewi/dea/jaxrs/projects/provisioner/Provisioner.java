@@ -6,11 +6,9 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-import javax.naming.ServiceUnavailableException;
 import javax.persistence.NoResultException;
 
 import lombok.Data;
-import nl.tudelft.ewi.dea.DevHubException;
 import nl.tudelft.ewi.dea.ServerConfig;
 import nl.tudelft.ewi.dea.dao.CourseDao;
 import nl.tudelft.ewi.dea.dao.ProjectDao;
@@ -71,10 +69,10 @@ public class Provisioner {
 		this.invitationDao = invitationDao;
 		this.userDao = userDao;
 		this.mailer = mailer;
-		this.publicUrl = config.getWebUrl();
+		publicUrl = config.getWebUrl();
 
-		this.stateCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).maximumSize(500).build();
-		this.executor = new ScheduledThreadPoolExecutor(0);
+		stateCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).maximumSize(500).build();
+		executor = new ScheduledThreadPoolExecutor(0);
 		executor.setMaximumPoolSize(1);
 	}
 
