@@ -177,14 +177,7 @@ public class ProjectInvitationDaoImplTest extends DatabaseTest {
 	public void whenNewUserAddedUpdateTableIsDoneCorrectly() {
 		final ProjectInvitation invitation = new ProjectInvitation(mail, project);
 		invitationDao.persist(otherUser, user, course, project, invitation);
-		long persistedId = invitation.getId();
 		invitationDao.updateInvitesForNewUser(user);
-
 		assertThat(invitationDao.findByUser(user).size(), is(1));
-		try {
-			invitationDao.findById(persistedId);
-		} catch (NoResultException e) {
-			// That's what we want!
-		}
 	}
 }
