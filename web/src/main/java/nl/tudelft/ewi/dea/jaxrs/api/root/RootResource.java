@@ -11,7 +11,6 @@ import nl.tudelft.ewi.dea.BuildInfo;
 import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
-@Path("api")
 @Produces(MediaType.APPLICATION_JSON)
 public class RootResource {
 

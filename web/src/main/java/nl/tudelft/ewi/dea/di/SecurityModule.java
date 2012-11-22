@@ -72,10 +72,10 @@ public class SecurityModule extends AbstractModule {
 			addFilterChain("/account/activate/*", ANON);
 			addFilterChain("/forgot-password", ANON);
 			addFilterChain("/forgot-password/**", ANON);
+			addFilterChain("/version", ANON);
 			addFilterChain("/logout", LOGOUT);
 			addFilterChain("/login", AUTHC);
 
-			addFilterChain("/api/version", ANON);
 			addFilterChain("/api/register", ANON);
 			addFilterChain("/api/register/**", ANON);
 			addFilterChain("/api/account/*/reset-password/*", ANON);
