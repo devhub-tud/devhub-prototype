@@ -21,7 +21,6 @@ $(document).ready(function() {
 				window.location.replace("/dashboard");
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				console.log(jqXHR);
 				if (jqXHR.status === 405) {
 					showAlert("alert-error", "Wrong username or password");
 					$('#signin').find('input[name="password"]').val("");
@@ -50,7 +49,7 @@ $(document).ready(function() {
 		
 		$.ajax({
 			type: "post",
-			url: "/register",
+			url: "/api/register",
 			data: JSON.stringify({ "email": email }),
 			dataType: "text",
 			contentType: "application/json",

@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -19,15 +18,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import liquibase.util.MD5Util;
-import lombok.EqualsAndHashCode;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.google.common.collect.Sets;
+
 @Entity
 @NotThreadSafe
 @Table(name = "Users")
-@EqualsAndHashCode
 public class User {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
@@ -42,7 +41,7 @@ public class User {
 
 	@Enumerated(EnumType.STRING) @Column(name = "access_role", nullable = false) private UserRole role;
 
-	@OneToMany(mappedBy = "user") private Set<ProjectMembership> memberships = new HashSet<>();
+	@OneToMany(mappedBy = "user") private final Set<ProjectMembership> memberships = Sets.newHashSet();
 
 	/**
 	 * Constructor required by Hibernate.
@@ -79,7 +78,7 @@ public class User {
 	}
 
 	public String getGravatarUrl(int size) {
-		return "http://www.gravatar.com/avatar/" + MD5Util.computeMD5(email.toLowerCase()) + "?s=" + size;
+		return "http://www.gravatar.com/avatar/" + MD5Util.computeMD5(email.toLowerCase()) + "?s=" + size + "&d=mm";
 	}
 
 	public String getNetId() {
@@ -115,7 +114,6 @@ public class User {
 		builder.append("netid", getNetId());
 		builder.append("studentNumber", getStudentNumber());
 		builder.append("role", getRole());
-		builder.append("memberships", getProjectMemberships());
 		return builder.toString();
 	}
 
@@ -131,22 +129,14 @@ public class User {
 		return memberships;
 	}
 
-	void setProjectMemberships(final Set<ProjectMembership> memberships) {
-		this.memberships = memberships;
-	}
-
-	public ProjectMembership addProjectMembership(final Project p) {
-
-		final ProjectMembership pm = new ProjectMembership(this, p);
-
-		return pm;
-
+	public ProjectMembership addProjectMembership(Project p) {
+		return new ProjectMembership(this, p);
 	}
 
 	/**
 	 * @param hashedPassword The hashed password.
 	 */
-	public void setPassword(final String hashedPassword) {
+	public void setPassword(String hashedPassword) {
 		password = hashedPassword;
 	}
 

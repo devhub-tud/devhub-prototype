@@ -65,14 +65,25 @@ public class SecurityModule extends AbstractModule {
 			addFilterChain("/js/**", ANON);
 			addFilterChain("/css/**", ANON);
 			addFilterChain("/img/**", ANON);
+
+			addFilterChain("/guides", ANON);
 			addFilterChain("/register", ANON);
 			addFilterChain("/register/**", ANON);
-			addFilterChain("/accounts/activate/*", ANON);
-			addFilterChain("/account/*/reset-password/*", ANON);
-			addFilterChain("/reset-password", ANON);
-			addFilterChain("/reset-password/*", ANON);
+			addFilterChain("/account/activate/*", ANON);
+			addFilterChain("/forgot-password", ANON);
+			addFilterChain("/forgot-password/**", ANON);
+			addFilterChain("/version", ANON);
 			addFilterChain("/logout", LOGOUT);
 			addFilterChain("/login", AUTHC);
+
+			addFilterChain("/api/register", ANON);
+			addFilterChain("/api/register/**", ANON);
+			addFilterChain("/api/account/*/reset-password/*", ANON);
+			addFilterChain("/api/accounts/activate/*", ANON);
+			addFilterChain("/api/forgot-password", ANON);
+			addFilterChain("/api/forgot-password/**", ANON);
+			addFilterChain("/api/logout", LOGOUT);
+
 			addFilterChain("/**", AUTHC);
 		}
 	}

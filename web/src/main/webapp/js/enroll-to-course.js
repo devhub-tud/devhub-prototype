@@ -63,7 +63,7 @@ $(document).ready(function() {
 		$.ajax({
 				type: "get",
 				contentType: "application/json",
-				url: "/courses?enrolled=false&substring=" + query,
+				url: "/api/courses?enrolled=false&substring=" + query,
 				success: function(data) {
 					callback.call(this, data);
 				},
@@ -101,7 +101,7 @@ $(document).ready(function() {
 				$.ajax({
 					type: "get",
 					contentType: "application/json",
-					url: "/course/" + courseId + "/enroll",
+					url: "/api/course/" + courseId + "/enroll",
 					success: function(data) {
 						success++;
 						if (success + errors.length == total) {

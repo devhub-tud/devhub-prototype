@@ -13,7 +13,7 @@ import nl.tudelft.ewi.dea.BuildInfo;
 import nl.tudelft.ewi.dea.CommonModule;
 import nl.tudelft.ewi.dea.DevHubException;
 import nl.tudelft.ewi.dea.ServerConfig;
-import nl.tudelft.ewi.dea.jaxrs.projects.provisioner.Provisioner;
+import nl.tudelft.ewi.dea.jaxrs.api.projects.provisioner.Provisioner;
 import nl.tudelft.ewi.dea.mail.MailModule;
 import nl.tudelft.ewi.dea.template.TemplateEngine;
 
@@ -64,6 +64,8 @@ public class WebModule extends ServletModule {
 	@Override
 	protected void configureServlets() {
 		bind(BuildInfo.class).toInstance(buildInfo);
+		bind(ServerConfig.class).toInstance(serverConfig);
+
 		install(new SecurityModule(servletContext));
 		install(new PersistenceModule(serverConfig.getDbConfig(), ""));
 		filter("/*").through(PersistFilter.class);

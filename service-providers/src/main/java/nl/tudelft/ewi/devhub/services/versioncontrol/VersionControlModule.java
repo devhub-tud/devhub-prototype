@@ -18,7 +18,11 @@ public class VersionControlModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
+		GitoliteService gitoliteService = new GitoliteService(configuration.get("Gitolite"));
+
+		bind(GitoliteService.class).toInstance(gitoliteService);
+
 		Multibinder.newSetBinder(binder(), VersionControlService.class)
-				.addBinding().toInstance(new GitoliteService(configuration.get("Gitolite")));
+				.addBinding().toInstance(gitoliteService);
 	}
 }

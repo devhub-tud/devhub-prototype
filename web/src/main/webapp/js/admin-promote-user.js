@@ -46,7 +46,7 @@ $(document).ready(function() {
 					$.ajax({
 						type: "post",
 						contentType: "application/json",
-						url: "/account/" + id + "/" + (admin ? "demote" : "promote"),
+						url: "/api/account/" + id + "/" + (admin ? "demote" : "promote"),
 						success: function(data) {
 							updateButtons(parent, !admin);
 						},
@@ -98,7 +98,7 @@ $(document).ready(function() {
 		$.ajax({
 				type: "get",
 				contentType: "application/json",
-				url: "/accounts?substring=" + query,
+				url: "/api/accounts?substring=" + query,
 				success: function(data) {
 					callback.call(this, data);
 				},

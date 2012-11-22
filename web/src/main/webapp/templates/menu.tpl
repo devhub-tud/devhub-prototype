@@ -3,6 +3,7 @@
 		<div class="container">
 			<a class="brand" href="/">DevHub</a>
 
+#if ($user) 
 			<div class="pull-right">
 				<ul class="nav">
 					<li class="dropdown">
@@ -19,16 +20,17 @@
 								</span>
 							</li>
 							<li class="divider"></li>
-#if(${user.isAdmin()})
+	#if(${user.isAdmin()})
 							<li><a href="/admin">Admin panel</a></li>
-#end
-							<li><a href="/account/${user.getId()}">Show profile</a></li>
+	#end
+							<li><a href="/account">Show account details</a></li>
 							<li class="divider"></li>
 							<li><a href="/logout">Logout</a></li>
 						</ul>
 					</li>
 				</ul>
 			</div>
+#end
 		</div>
 	</div>
 </div>
