@@ -1,6 +1,7 @@
 package nl.tudelft.ewi.dea.jaxrs.api.account;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -11,6 +12,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import nl.tudelft.ewi.dea.dao.SshKeyDao;
 import nl.tudelft.ewi.dea.dao.UserDao;
@@ -19,6 +21,7 @@ import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.model.UserRole;
 import nl.tudelft.ewi.dea.security.SecurityProvider;
 import nl.tudelft.ewi.dea.security.UserFactory;
+import nl.tudelft.ewi.devhub.services.models.ServiceResponse;
 import nl.tudelft.ewi.devhub.services.models.ServiceUser;
 import nl.tudelft.ewi.devhub.services.versioncontrol.VersionControlService;
 import nl.tudelft.ewi.devhub.services.versioncontrol.implementations.GitoliteService;
@@ -27,6 +30,8 @@ import nl.tudelft.ewi.devhub.services.versioncontrol.models.SshKeyRepresentation
 
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.google.inject.persist.Transactional;
@@ -37,6 +42,8 @@ import com.google.inject.servlet.RequestScoped;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class AccountResource {
+
+	private static final Logger LOG = LoggerFactory.getLogger(AccountResource.class);
 
 	private final UserDao userDao;
 	private final UserFactory userFactory;
@@ -109,13 +116,24 @@ public class AccountResource {
 	public Response addSshKey(SshKeyObject sshKeyObject) {
 		User user = securityProvider.getUser();
 		SshKey sshKey = new SshKey(user, sshKeyObject.getName(), sshKeyObject.getKey());
-		keyDao.persist(sshKey);
 
 		ServiceUser serviceUser = new ServiceUser(user.getNetId(), user.getEmail());
 		SshKeyIdentifier keyId = new SshKeyIdentifier(sshKey.getKeyName(), serviceUser);
 		SshKeyRepresentation key = new SshKeyRepresentation(keyId, sshKey.getKeyContents());
-		localVersioningService.addSshKey(key);
 
+		ServiceResponse response;
+		try {
+			response = localVersioningService.addSshKey(key).get();
+		} catch (ExecutionException | InterruptedException e) {
+			LOG.error(e.getMessage(), e);
+			return Response.status(Status.CONFLICT).entity("Could not add your SSH key!").build();
+		}
+
+		if (!response.isSuccess()) {
+			return Response.status(Status.CONFLICT).entity(response.getMessage()).build();
+		}
+
+		keyDao.persist(sshKey);
 		return Response.ok().build();
 	}
 
@@ -136,13 +154,26 @@ public class AccountResource {
 			}
 		}
 
-		keyDao.remove(remove.toArray());
-
 		ServiceUser serviceUser = new ServiceUser(user.getNetId(), user.getEmail());
-		for (SshKey key : remove) {
-			localVersioningService.removeSshKeys(new SshKeyIdentifier(key.getKeyName(), serviceUser));
+		SshKeyIdentifier[] keyArray = new SshKeyIdentifier[remove.size()];
+		for (int i = 0; i < remove.size(); i++) {
+			SshKey key = remove.get(i);
+			keyArray[i] = new SshKeyIdentifier(key.getKeyName(), serviceUser);
 		}
 
+		ServiceResponse response;
+		try {
+			response = localVersioningService.removeSshKeys(keyArray).get();
+		} catch (ExecutionException | InterruptedException e) {
+			LOG.error(e.getMessage(), e);
+			return Response.status(Status.CONFLICT).entity("Could not remove your SSH key(s)!").build();
+		}
+
+		if (!response.isSuccess()) {
+			return Response.status(Status.CONFLICT).entity(response.getMessage()).build();
+		}
+
+		keyDao.remove(remove.toArray());
 		return Response.ok().build();
 	}
 }

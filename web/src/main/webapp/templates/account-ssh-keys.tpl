@@ -2,8 +2,11 @@
 				<div class="page-header">
 					<h1>SSH key management <a class="btn right" id="add-key">Add new key</a></h1>
 				</div>
+				<div class="alerts"></div>
 #if ($ssh-keys.isEmpty())
-				<div class="alert alert-danger"><strong>You haven't added any SSH keys yet!</strong></div>
+				<div class="alert alert-warning hero"><strong>You have not yet added any SSH keys!</strong> 
+				This means that you currently cannot access your projects on the DevHub Git server.
+				If you wish to access your projects with Git, you will have to add your public SSH key here.</div>
 #else
 				<table class="values table table-striped table-bordered">
 					<tbody>
@@ -29,7 +32,6 @@
 					<div class="modal-body">
 						<form id="add-new-ssh-key-form" class="form-vertical">
 							<div class="alert alert-info"><a href="/guides#key-management" target="_blank"><strong>Need some help with SSH keys?</strong> Follow this guide...</a></div>
-							<div class="alerts"></div>
 							<div class="control-group condensed">
 								<label class="control-label" for="ssh-key-name">Name</label>
 								<div class="controls">

@@ -8,6 +8,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
 import nl.minicom.gitolite.manager.ConfigManager;
+import nl.minicom.gitolite.manager.exceptions.ServiceUnavailable;
 import nl.minicom.gitolite.manager.git.PassphraseCredentialsProvider;
 import nl.minicom.gitolite.manager.models.Config;
 import nl.minicom.gitolite.manager.models.Permission;
@@ -106,7 +107,7 @@ public class GitoliteService implements VersionControlService {
 					configManager.applyConfig();
 
 					return new ServiceResponse(true, "Successfully added your new SSH key!");
-				} catch (IOException e) {
+				} catch (IOException | ServiceUnavailable e) {
 					LOG.error(e.getMessage(), e);
 					return new ServiceResponse(false, "The Gitolite service seems to be offline.");
 				} catch (Throwable e) {
@@ -133,7 +134,7 @@ public class GitoliteService implements VersionControlService {
 					configManager.applyConfig();
 
 					return new ServiceResponse(true, "Successfully removed your SSH key(s)!");
-				} catch (IOException e) {
+				} catch (IOException | ServiceUnavailable e) {
 					LOG.error(e.getMessage(), e);
 					return new ServiceResponse(false, "The Gitolite service seems to be unavailable...");
 				} catch (Throwable e) {

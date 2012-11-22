@@ -22,6 +22,8 @@ $(document).ready(function() {
 	
 	modal.on("hide", function() {
 		stopTimers(timers);
+		nameField.val("");
+		keyField.val("");
 	});
 	
 	addKeyBtn.click(function(e) {
@@ -29,6 +31,9 @@ $(document).ready(function() {
 		
 		stopTimers(timers);
 		setButtonState(addKeyBtn, false);
+		
+		modal.modal('hide');
+		$("body").append("<div class='preloader'><div class='processing'><img src='/img/processing.gif'></div><div class='modal-backdrop fade in' style='opacity: 0.2;'></div></div>")
 		
 		$.ajax({
 			type: "post",
@@ -39,6 +44,7 @@ $(document).ready(function() {
 				window.location.replace("/account/ssh-keys");
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
+				$(".preloader").remove();
 				if (jqXHR.status == 409) {
 					showAlert("alert-error", jqXHR.responseText);
 				} else {
@@ -57,6 +63,8 @@ $(document).ready(function() {
 		
 		var value = JSON.stringify({ "keyIds": keys });
 		
+		
+		
 		$.ajax({
 			type: "delete",
 			contentType: "application/json",
@@ -64,8 +72,10 @@ $(document).ready(function() {
 			data: value,
 			success: function(data) {
 				window.location.replace("/account/ssh-keys");
+				$(".processing").remove();
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
+				$(".processing").remove();
 				if (jqXHR.status == 409) {
 					showAlert("alert-error", jqXHR.responseText);
 				} else {
