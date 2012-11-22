@@ -2,5 +2,5 @@
 	"dburl" : "jdbc:postgresql://localhost/devhub-test",
 	"user" : "devhub-test",
 	"password" : "TestIt!",
-	"persistanceUnit" : "test-h2"
+	"persistanceUnit" : "test-postgresql"
 }
