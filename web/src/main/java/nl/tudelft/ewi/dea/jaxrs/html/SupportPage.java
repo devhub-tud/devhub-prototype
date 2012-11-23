@@ -15,22 +15,29 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
-@Path("guides")
+@Path("support")
 @Produces(MediaType.TEXT_HTML)
-public class GuidesPage {
+public class SupportPage {
 
 	private final Renderer renderer;
 	private final ServerConfig config;
 
 	@Inject
-	public GuidesPage(Renderer renderer, ServerConfig config) {
+	public SupportPage(Renderer renderer, ServerConfig config) {
 		this.renderer = renderer;
 		this.config = config;
 	}
 
 	@GET
 	@Transactional
-	public String serveGuidesPage() {
+	public String serveMainPage() {
+		return renderer.render("support-main.tpl");
+	}
+
+	@GET
+	@Path("ssh-key-management")
+	@Transactional
+	public String serveSshKeyManagementSupportPage() {
 		Properties gitoliteSettings = config.getServices().get("versionControl").get("Gitolite");
 		String gitHost = gitoliteSettings.getProperty("host");
 		String gitUser = gitoliteSettings.getProperty("user");
@@ -38,8 +45,9 @@ public class GuidesPage {
 		return renderer
 				.setValue("gitUser", gitUser)
 				.setValue("gitHost", gitHost)
-				.addJS("guides.js")
-				.render("guides.tpl");
+				.addJS("animate-colors.js")
+				.addJS("support.js")
+				.render("support-ssh-key-management.tpl");
 	}
 
 }

@@ -1,4 +1,6 @@
-
+body {
+	height: 100%;
+}
 
 .processing {
 	-webkit-border-radius: 5px;
@@ -171,7 +173,8 @@ table .attribute {
 
 .right {
 	float: right;
-	margin-left: 20px;
+	display: block;
+	margin-left: 5px;
 }
 
 .left {
@@ -223,8 +226,15 @@ pre button {
 }
 
 .step {
-	margin-top: 16px;
-	margin-bottom: 32px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	margin: 0px -10px 0px -10px;
+	padding: 10px;
+}
+
+h2 .label {
+	vertical-align: 4px;
 }
 
 .item {
@@ -274,11 +284,16 @@ pre button {
 }
 
 .footer {
-	position: absolute;
-	bottom: 0px;
-	background-color: #eee; 
+	margin-top: 64px;
+	background: -moz-linear-gradient(top, rgba(238,238,238,1) 0%, rgba(255,255,255,0) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(238,238,238,1)), color-stop(100%,rgba(255,255,255,0)));
+	background: -webkit-linear-gradient(top, rgba(238,238,238,1) 0%,rgba(255,255,255,0) 100%);
+	background: -o-linear-gradient(top, rgba(238,238,238,1) 0%,rgba(255,255,255,0) 100%);
+	background: -ms-linear-gradient(top, rgba(238,238,238,1) 0%,rgba(255,255,255,0) 100%);
+	background: linear-gradient(to bottom, rgba(238,238,238,1) 0%,rgba(255,255,255,0) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#00ffffff',GradientType=0 );
 	border-top: 1px solid #ccc;
-	height: 100px;
+	height: 120px;
 	width: 100%;
 }
 
