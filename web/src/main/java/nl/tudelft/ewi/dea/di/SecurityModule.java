@@ -66,7 +66,7 @@ public class SecurityModule extends AbstractModule {
 			addFilterChain("/css/**", ANON);
 			addFilterChain("/img/**", ANON);
 
-			addFilterChain("/guides", ANON);
+			addFilterChain("/support", ANON);
 			addFilterChain("/register", ANON);
 			addFilterChain("/register/**", ANON);
 			addFilterChain("/account/activate/*", ANON);

@@ -31,7 +31,7 @@
 					</div>
 					<div class="modal-body">
 						<form id="add-new-ssh-key-form" class="form-vertical">
-							<div class="alert alert-info"><a href="/guides#key-management" target="_blank"><strong>Need some help with SSH keys?</strong> Follow this guide...</a></div>
+							<div class="alert alert-info"><a href="/support/ssh-key-management" target="_blank"><strong>Need some help with SSH keys?</strong> Follow this guide...</a></div>
 							<div class="control-group condensed">
 								<label class="control-label" for="ssh-key-name">Name</label>
 								<div class="controls">
