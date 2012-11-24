@@ -96,7 +96,7 @@ public class DatabaseStructure {
 		Map<String, Object> properties = Maps.newHashMap();
 
 		try {
-			Document doc = new SAXBuilder().build(getClass().getResource("/META-INF/persistence.xml"));
+			Document doc = new SAXBuilder().build(DatabaseStructure.class.getResource("/META-INF/persistence.xml"));
 			Element root = doc.getRootElement();
 
 			for (Element element : root.getChildren()) {

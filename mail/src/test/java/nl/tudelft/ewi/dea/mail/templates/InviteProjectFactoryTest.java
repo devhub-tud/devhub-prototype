@@ -31,8 +31,8 @@ public class InviteProjectFactoryTest {
 		SimpleMessage generatedMessage = factory.sendProjectInvite(mailAddress, "John", "SampleProject", "html://verify.this.com");
 		String expextedTemplate = Resources.toString(Resources.getResource("inviteToProjectMailSample.txt"), Charsets.UTF_8);
 
-		assertThat(generatedMessage.body, is(expextedTemplate));
-		assertThat(generatedMessage.from, is(MAIL_PROPS.getFrom()));
+		assertThat(generatedMessage.getBody(), is(expextedTemplate));
+		assertThat(generatedMessage.getFrom(), is(MAIL_PROPS.getFrom()));
 		assertThat(generatedMessage.to.size(), is(1));
 		assertThat(generatedMessage.to, hasItem(mailAddress));
 	}

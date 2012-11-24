@@ -167,13 +167,9 @@ public class TemplateEngine {
 	}
 
 	private String getTemplateFromResource(final String templatePath) {
-		InputStream stream = null;
-		BufferedReader reader = null;
-
-		try {
+		File file = new File(path.toFile(), templatePath);
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
 			StringBuilder builder = new StringBuilder();
-			stream = new FileInputStream(new File(path.toFile(), templatePath));
-			reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
 			while (true) {
 				String line = reader.readLine();
 				if (line == null) {
@@ -187,17 +183,6 @@ public class TemplateEngine {
 		} catch (IOException ex) {
 			LOG.error("Could not load template: " + templatePath);
 			throw new DevHubException(ex);
-		} finally {
-			try {
-				if (reader != null) {
-					reader.close();
-				}
-				if (stream != null) {
-					stream.close();
-				}
-			} catch (IOException e) {
-				// Ignore...
-			}
 		}
 	}
 
@@ -222,7 +207,7 @@ public class TemplateEngine {
 				return engine.getTemplate(templatePath);
 			} catch (Exception e) {
 				LOG.error(e.getLocalizedMessage(), e);
-				throw new RuntimeException(e);
+				throw new DevHubException(e);
 			}
 		}
 	}

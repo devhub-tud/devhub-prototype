@@ -15,6 +15,8 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import lombok.Data;
+
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -22,13 +24,14 @@ import com.google.common.collect.ImmutableSet;
  * a {@link MimeMessage} for javax.mail stuff.
  * 
  */
+@Data
 @Immutable
 public class SimpleMessage {
 
 	public final ImmutableSet<String> to;
-	public final String subject;
-	public final String body;
-	public final String from;
+	private final String subject;
+	private final String body;
+	private final String from;
 
 	public SimpleMessage(Set<String> to, String subject, String body, String from) {
 		checkArgument(to != null && !to.isEmpty(), "More then one TO address required");
@@ -64,57 +67,4 @@ public class SimpleMessage {
 			throw new MailException("Address error for from address: " + from + " in email: " + toString(), e);
 		}
 	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((body == null) ? 0 : body.hashCode());
-		result = prime * result + ((subject == null) ? 0 : subject.hashCode());
-		result = prime * result + ((to == null) ? 0 : to.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		SimpleMessage other = (SimpleMessage) obj;
-		if (body == null) {
-			if (other.body != null) {
-				return false;
-			}
-		} else if (!body.equals(other.body)) {
-			return false;
-		}
-		if (subject == null) {
-			if (other.subject != null) {
-				return false;
-			}
-		} else if (!subject.equals(other.subject)) {
-			return false;
-		}
-		if (to == null) {
-			if (other.to != null) {
-				return false;
-			}
-		} else if (!to.equals(other.to)) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
-	public String toString() {
-		String truncatedBody = body.replaceAll("\n", "\\\\n");
-		return "Message [to=" + to + ", subject=" + subject + ", body=" + truncatedBody + "]";
-	}
-
 }

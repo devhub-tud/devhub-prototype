@@ -23,35 +23,35 @@ public class SimpleMessageTest {
 
 	@Test(expected = NullPointerException.class)
 	public void messageDoesntAllowNullSubject() {
-		new SimpleMessage(SAMPLE_MESSAGE.to, null, SAMPLE_MESSAGE.body, SAMPLE_MESSAGE.from);
+		new SimpleMessage(SAMPLE_MESSAGE.to, null, SAMPLE_MESSAGE.getBody(), SAMPLE_MESSAGE.getFrom());
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void messageDoesntAllowNullTo() {
 		String to = null;
-		new SimpleMessage(to, SAMPLE_MESSAGE.subject, SAMPLE_MESSAGE.body, SAMPLE_MESSAGE.from);
+		new SimpleMessage(to, SAMPLE_MESSAGE.getSubject(), SAMPLE_MESSAGE.getBody(), SAMPLE_MESSAGE.getFrom());
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void messageDoesntAllowNullCollection() {
 		String to = null;
-		new SimpleMessage(to, SAMPLE_MESSAGE.subject, SAMPLE_MESSAGE.body, SAMPLE_MESSAGE.from);
+		new SimpleMessage(to, SAMPLE_MESSAGE.getSubject(), SAMPLE_MESSAGE.getBody(), SAMPLE_MESSAGE.getFrom());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void messageDoesntAllowEmptyCollection() {
 		Set<String> emptySet = Collections.emptySet();
-		new SimpleMessage(emptySet, null, SAMPLE_MESSAGE.body, SAMPLE_MESSAGE.from);
+		new SimpleMessage(emptySet, null, SAMPLE_MESSAGE.getBody(), SAMPLE_MESSAGE.getFrom());
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void messageDoesntAllowNullBody() {
-		new SimpleMessage(SAMPLE_MESSAGE.to, SAMPLE_MESSAGE.body, null, SAMPLE_MESSAGE.from);
+		new SimpleMessage(SAMPLE_MESSAGE.to, SAMPLE_MESSAGE.getBody(), null, SAMPLE_MESSAGE.getFrom());
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void messageDoesntAllowNullFrom() {
-		new SimpleMessage(SAMPLE_MESSAGE.to, SAMPLE_MESSAGE.body, SAMPLE_MESSAGE.body, null);
+		new SimpleMessage(SAMPLE_MESSAGE.to, SAMPLE_MESSAGE.getBody(), SAMPLE_MESSAGE.getBody(), null);
 	}
 
 	@Test
@@ -62,9 +62,9 @@ public class SimpleMessageTest {
 		assertThat(message.getAllRecipients().length, is(1));
 		assertThat(message.getAllRecipients(), hasItemInArray(toAddress));
 
-		Address from = new InternetAddress(SAMPLE_MESSAGE.from);
+		Address from = new InternetAddress(SAMPLE_MESSAGE.getFrom());
 		assertThat(message.getFrom()[0], is(from));
 		assertThat(message.getContent(), is(instanceOf(String.class)));
-		assertThat((String) message.getContent(), is(SAMPLE_MESSAGE.body));
+		assertThat((String) message.getContent(), is(SAMPLE_MESSAGE.getBody()));
 	}
 }

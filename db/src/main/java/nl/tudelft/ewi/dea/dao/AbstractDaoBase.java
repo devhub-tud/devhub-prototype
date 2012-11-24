@@ -24,7 +24,7 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 	private final EntityManager em;
 
 	private final Class<T> entityClass;
-	protected final String entityName;
+	private final String entityName;
 
 	protected AbstractDaoBase(final EntityManager em, final Class<T> clazz) {
 
@@ -39,9 +39,9 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 	@Transactional
 	public final List<T> findAll() {
 
-		LOG.trace("{}: Find all...", entityName);
+		LOG.trace("{}: Find all...", getEntityName());
 
-		final TypedQuery<T> query = createQuery("FROM " + entityName);
+		final TypedQuery<T> query = createQuery("FROM " + getEntityName());
 
 		return query.getResultList();
 
@@ -51,7 +51,7 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 	@Transactional
 	public final T findById(final long id) {
 
-		LOG.trace("{}: Find by id: {}", entityName, id);
+		LOG.trace("{}: Find by id: {}", getEntityName(), id);
 
 		final T result = em.find(entityClass, id);
 
@@ -67,13 +67,13 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 	@Transactional
 	public final void persist(final T object) {
 
-		LOG.trace("{}: Persist: {}", entityName, object);
+		LOG.trace("{}: Persist: {}", getEntityName(), object);
 
 		checkNotNull(object, "object must be non-null");
 
 		em.persist(object);
 
-		LOG.trace("{}: Persisted: {}", entityName, object);
+		LOG.trace("{}: Persisted: {}", getEntityName(), object);
 
 	}
 
@@ -81,7 +81,7 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 	@Transactional
 	public final void persist(final Object... objects) {
 
-		LOG.trace("{}: Persist: {}", entityName, objects);
+		LOG.trace("{}: Persist: {}", getEntityName(), objects);
 
 		checkNotNull(objects, "objects must be non-null");
 
@@ -115,7 +115,7 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 	@Transactional
 	public final void remove(final T object) {
 
-		LOG.trace("{}: Remove: {}", entityName, object);
+		LOG.trace("{}: Remove: {}", getEntityName(), object);
 
 		checkNotNull(object, "object must be non-null");
 
@@ -127,7 +127,7 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 	@Transactional
 	public final void remove(final Object... objects) {
 
-		LOG.trace("{}: Remove: {}", entityName, objects);
+		LOG.trace("{}: Remove: {}", getEntityName(), objects);
 
 		checkNotNull(objects, "objects must be non-null");
 
@@ -151,6 +151,10 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 	protected final TypedQuery<T> createQuery(CriteriaQuery<T> criteria) {
 		checkNotNull(criteria, "query must be non-empty");
 		return em.createQuery(criteria);
+	}
+
+	public String getEntityName() {
+		return entityName;
 	}
 
 }

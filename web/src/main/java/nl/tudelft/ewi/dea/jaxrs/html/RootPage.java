@@ -17,11 +17,11 @@ import com.google.inject.servlet.RequestScoped;
 @Path("/")
 public class RootPage {
 
-	private final BuildInfo version;
+	private final BuildInfo buildInfo;
 
 	@Inject
-	RootPage(BuildInfo version) {
-		this.version = version;
+	RootPage(BuildInfo buildInfo) {
+		this.buildInfo = buildInfo;
 	}
 
 	@GET
@@ -33,7 +33,7 @@ public class RootPage {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("version")
 	public BuildInfo version() {
-		return version;
+		return buildInfo;
 	}
 
 }

@@ -9,6 +9,9 @@ import java.io.IOException;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import nl.tudelft.ewi.dea.CommonModule;
 import nl.tudelft.ewi.dea.DevHubException;
 import nl.tudelft.ewi.dea.mail.MailProperties;
@@ -19,6 +22,8 @@ import nl.tudelft.ewi.dea.mail.internals.UnsentMail;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class CommonTestData {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CommonTestData.class);
 
 	public static final SimpleMessage SAMPLE_MESSAGE =
 			new SimpleMessage("harry@potter.com", "test subject",
@@ -32,7 +37,7 @@ public class CommonTestData {
 			return mapper.readValue(ManualMailTest.class.getResourceAsStream("/mailconfig.json"), MailProperties.class);
 		} catch (IOException e) {
 			DevHubException ex = new DevHubException("Could not read classpath:/mailconfig.json", e);
-			ex.printStackTrace();
+			LOG.error("Could not initialize", ex);
 			throw ex;
 		}
 	}

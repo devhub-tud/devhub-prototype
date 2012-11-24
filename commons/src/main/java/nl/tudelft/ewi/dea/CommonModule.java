@@ -12,10 +12,12 @@ import com.google.inject.Provides;
 
 public class CommonModule extends AbstractModule {
 
+	public static final int MINIMUM_THREADPOOL_SIZE = 3;
+
 	@Override
 	protected void configure() {
 		bind(ExecutorService.class).to(ScheduledExecutorService.class);
-		bind(ScheduledExecutorService.class).toInstance(Executors.newScheduledThreadPool(3));
+		bind(ScheduledExecutorService.class).toInstance(Executors.newScheduledThreadPool(MINIMUM_THREADPOOL_SIZE));
 	}
 
 	/**
