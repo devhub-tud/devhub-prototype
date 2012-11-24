@@ -11,10 +11,6 @@
 	<artifactId>devhub-commons</artifactId>
 	<name>DevHub - Commons module</name>
 
-	<properties>
-		<metrics.version>2.1.5</metrics.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
