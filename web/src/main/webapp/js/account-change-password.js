@@ -32,11 +32,14 @@ $(document).ready(function() {
 				success: function(data) {
 					$("#passwordUpdated").show('normal');
 					$("#unkownError").hide('normal');
+					password.val("");
+					confirmPassword.val("");
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
-					console.log(errorThrown);
 					$("#passwordUpdated").hide('normal');
 					$("#unkownError").show('normal');
+					password.val("");
+					confirmPassword.val("");
 				}
 		});
 		}
