@@ -29,18 +29,19 @@ public class ProjectInvitationDaoImpl extends AbstractDaoBase<ProjectInvitation>
 
 	@Override
 	@Transactional
-	public ProjectInvitation findByProjectAndUser(final Project project, final User user) throws NoResultException {
+	public ProjectInvitation findByProjectAndEMail(final Project project, final String userEmail)
+			throws NoResultException {
 
-		LOG.trace("Find by project {} and user {}", project, user);
+		LOG.trace("Find by project {} and user {}", project, userEmail);
 
 		checkNotNull(project, "project must be non-null");
-		checkNotNull(user, "user must be non-null");
+		checkNotNull(userEmail, "user must be non-null");
 
-		final String query = "SELECT pi FROM ProjectInvitation pi WHERE pi.project = :project AND pi.user = :user";
+		String query = "SELECT pi FROM ProjectInvitation pi WHERE pi.project = :project AND pi.email = :userEmail";
 
-		final TypedQuery<ProjectInvitation> tq = createQuery(query);
+		TypedQuery<ProjectInvitation> tq = createQuery(query);
 		tq.setParameter("project", project);
-		tq.setParameter("user", user);
+		tq.setParameter("userEmail", userEmail);
 
 		return tq.getSingleResult();
 
@@ -76,6 +77,22 @@ public class ProjectInvitationDaoImpl extends AbstractDaoBase<ProjectInvitation>
 		tq.setParameter("user", user);
 
 		return tq.getResultList();
+
+	}
+
+	@Override
+	public void updateInvitesForNewUser(User user) {
+		LOG.trace("Finding invites for new user {}", user);
+		final String query = "SELECT pi FROM ProjectInvitation pi WHERE pi.email = :email";
+
+		final TypedQuery<ProjectInvitation> tq = createQuery(query);
+		tq.setParameter("email", user.getEmail());
+
+		for (ProjectInvitation invite : tq.getResultList()) {
+			invite.setUser(user);
+			persist(user);
+			LOG.trace("Update invite for user {} to project {}", user, invite.getProject());
+		}
 
 	};
 

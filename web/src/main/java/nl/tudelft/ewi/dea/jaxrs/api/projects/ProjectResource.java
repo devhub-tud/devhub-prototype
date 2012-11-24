@@ -1,7 +1,6 @@
 package nl.tudelft.ewi.dea.jaxrs.api.projects;
 
 import javax.inject.Inject;
-import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -12,17 +11,16 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import nl.tudelft.ewi.dea.ServerConfig;
 import nl.tudelft.ewi.dea.dao.ProjectDao;
 import nl.tudelft.ewi.dea.dao.ProjectInvitationDao;
 import nl.tudelft.ewi.dea.dao.ProjectMembershipDao;
-import nl.tudelft.ewi.dea.dao.UserDao;
-import nl.tudelft.ewi.dea.mail.DevHubMail;
 import nl.tudelft.ewi.dea.model.Project;
 import nl.tudelft.ewi.dea.model.ProjectInvitation;
 import nl.tudelft.ewi.dea.model.ProjectMembership;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.security.SecurityProvider;
+
+import org.slf4j.Logger;
 
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -32,65 +30,57 @@ import com.google.inject.servlet.RequestScoped;
 @Produces(MediaType.APPLICATION_JSON)
 public class ProjectResource {
 
+	private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(ProjectResource.class);
+
 	private final SecurityProvider securityProvider;
-	private final UserDao userDao;
 	private final ProjectDao projectDao;
 	private final ProjectInvitationDao invitationDao;
 	private final ProjectMembershipDao membershipDao;
-	private final DevHubMail mail;
-	private final String publicUrl;
+
+	private final InviteManager invateMngr;
 
 	@Inject
 	public ProjectResource(SecurityProvider securityProvider, ProjectDao projectDao,
-			UserDao userDao, ProjectInvitationDao invitationDao, ProjectMembershipDao membershipDao, DevHubMail mail,
-			ServerConfig serverConfig) {
+			ProjectInvitationDao invitationDao, ProjectMembershipDao membershipDao, InviteManager invateMngr) {
 
-		this.userDao = userDao;
 		this.projectDao = projectDao;
 		this.invitationDao = invitationDao;
 		this.membershipDao = membershipDao;
 		this.securityProvider = securityProvider;
-		this.publicUrl = serverConfig.getWebUrl();
-		this.mail = mail;
+		this.invateMngr = invateMngr;
 	}
 
 	@GET
 	@Path("{projectId}/invite/{userMail}")
 	@Transactional
-	public Response inviteUser(@PathParam("projectId") long projectId, @PathParam("userMail") String email) {
-		Project project = projectDao.findById(projectId);
-		User otherUser;
-		try {
-			otherUser = userDao.findByEmail(email);
-		} catch (NoResultException e) {
-			return Response.status(Status.CONFLICT).entity("unknown-user").build();
-		}
+	public Response inviteUser(@PathParam("projectId") final long projectId, @PathParam("userMail") final String email) {
 
-		if (userIsAlreadyInvited(project, otherUser)) {
+		LOG.trace("Inviting user {} for project {}", email, projectId);
+
+		try {
+			invateMngr.inviteUser(securityProvider.getUser(), email, projectId);
+		} catch (InviteException e) {
+			LOG.info("Could not invite user", e);
 			return Response.status(Status.CONFLICT)
-					.entity("User is already invited")
+					.entity(e.getMessage())
 					.build();
 		}
 
-		ProjectInvitation invitation = new ProjectInvitation(otherUser, project);
-		invitationDao.persist(invitation);
-
-		String fromName = otherUser.getDisplayName();
-		if (fromName == null || fromName.isEmpty()) {
-			fromName = otherUser.getEmail();
-		}
-
-		mail.sendProjectInvite(otherUser.getEmail(), fromName, project.getName(), publicUrl);
 		return Response.ok().build();
+
 	}
 
 	@POST
 	@Path("{id}/invitation")
 	@Transactional
-	public Response answerInvitation(@PathParam("id") long id, @QueryParam("accept") boolean accept) {
-		User currentUser = securityProvider.getUser();
-		Project project = projectDao.findById(id);
-		ProjectInvitation invitation = invitationDao.findByProjectAndUser(project, currentUser);
+	public Response answerInvitation(@PathParam("id") final long id, @QueryParam("accept") final boolean accept) {
+
+		LOG.trace("Answering invitation for project: {} - accept? {}", id, accept);
+
+		final User currentUser = securityProvider.getUser();
+		final Project project = projectDao.findById(id);
+
+		final ProjectInvitation invitation = invitationDao.findByProjectAndEMail(project, currentUser.getEmail());
 
 		if (accept) {
 			final ProjectMembership membership = new ProjectMembership(currentUser, project);
@@ -98,16 +88,9 @@ public class ProjectResource {
 		}
 
 		invitationDao.remove(invitation);
-		return Response.ok().build();
-	}
 
-	private boolean userIsAlreadyInvited(final Project project, final User user) {
-		try {
-			invitationDao.findByProjectAndUser(project, user);
-			return true;
-		} catch (final NoResultException e) {
-			return false;
-		}
+		return Response.ok().build();
+
 	}
 
 }

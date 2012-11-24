@@ -20,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import nl.tudelft.ewi.dea.dao.ProjectInvitationDao;
 import nl.tudelft.ewi.dea.dao.RegistrationTokenDao;
 import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.model.RegistrationToken;
@@ -42,12 +43,15 @@ public class AccountsResource {
 	private final UserDao userDao;
 	private final RegistrationTokenDao registrationTokenDao;
 	private final UserFactory userFactory;
+	private final ProjectInvitationDao projectInviteDao;
 
 	@Inject
-	public AccountsResource(UserDao userDao, RegistrationTokenDao registrationTokenDao, UserFactory userFactory) {
+	public AccountsResource(UserDao userDao, RegistrationTokenDao registrationTokenDao, UserFactory userFactory,
+			ProjectInvitationDao projectInviteDao) {
 		this.userDao = userDao;
 		this.registrationTokenDao = registrationTokenDao;
 		this.userFactory = userFactory;
+		this.projectInviteDao = projectInviteDao;
 	}
 
 	@GET
@@ -100,16 +104,18 @@ public class AccountsResource {
 		}
 
 		String password = request.getPassword();
-		User u = userFactory.createUser(email, request.getDisplayName(), request.getNetId(), request.getStudentNumber(), password);
+		User user = userFactory.createUser(email, request.getDisplayName(), request.getNetId(), request.getStudentNumber(), password);
 
 		registrationTokenDao.remove(registrationToken);
-		userDao.persist(u);
+		userDao.persist(user);
 
 		SecurityUtils.getSubject().login(new UsernamePasswordToken(email, password));
 
 		// TODO: send a confirmation email.
 
-		long accountId = u.getId();
+		long accountId = user.getId();
+
+		projectInviteDao.updateInvitesForNewUser(user);
 
 		return Response.ok(Long.toString(accountId)).build();
 	}

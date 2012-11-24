@@ -30,6 +30,19 @@ import com.google.inject.servlet.GuiceServletContextListener;
  */
 public class ServerStartupListener extends GuiceServletContextListener {
 
+	@VisibleForTesting
+	public static ServerConfig readServerConfig(ObjectMapper mapper) {
+		InputStream configAsJson = ServerStartupListener.class.getResourceAsStream("/serverconfig.json");
+		checkNotNull(configAsJson, "Config file not found!");
+		try {
+			ServerConfig config = mapper.readValue(configAsJson, ServerConfig.class);
+			config.verifyConfig();
+			return config;
+		} catch (IOException e) {
+			throw new ConfigurationException("Could not read the server config file " + e.getMessage(), e);
+		}
+	}
+
 	private static final Logger LOG = LoggerFactory.getLogger(ServerStartupListener.class);
 	private Injector injector;
 	private ServletContext servletContext;
@@ -53,19 +66,6 @@ public class ServerStartupListener extends GuiceServletContextListener {
 			inErrorMode = true;
 			injector = switchToErrorMode(new Exception(e));
 			return injector;
-		}
-	}
-
-	@VisibleForTesting
-	public ServerConfig readServerConfig(ObjectMapper mapper) {
-		InputStream configAsJson = ServerStartupListener.class.getResourceAsStream("/serverconfig.json");
-		checkNotNull(configAsJson, "Config file not found!");
-		try {
-			ServerConfig config = mapper.readValue(configAsJson, ServerConfig.class);
-			config.verifyConfig();
-			return config;
-		} catch (IOException e) {
-			throw new ConfigurationException("Could not read the server config file " + e.getMessage(), e);
 		}
 	}
 

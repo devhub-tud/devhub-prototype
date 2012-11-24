@@ -21,4 +21,11 @@ public interface DevHubMail {
 	 */
 	void sendProjectInvite(String email, String displayName, String projectName, String url);
 
+	/**
+	 * @param email The address to send the mail to.
+	 * @param projectName The name of the project.
+	 * @param publicUrl The public URL of the server.
+	 */
+	void sendDevHubInvite(String email, String fromDisplayName, String projectName, String publicUrl);
+
 }

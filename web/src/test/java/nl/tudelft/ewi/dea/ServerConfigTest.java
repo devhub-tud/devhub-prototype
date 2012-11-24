@@ -18,7 +18,7 @@ public class ServerConfigTest {
 
 	@Test
 	public void verifyConfigIsReadbleAndCorrect() {
-		ServerConfig config = new ServerStartupListener().readServerConfig(mapper);
+		ServerConfig config = ServerStartupListener.readServerConfig(mapper);
 		config.verifyConfig();
 	}
 

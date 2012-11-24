@@ -1,0 +1,8 @@
+Hi there!
+
+$userName has invited you to join his project "$projectName" on DevHub. DevHub is an application that manages project code, continues integration and static analysis.
+
+To accept or decline your invitation, you must register at DevHub first. To do so, just follow this url: $url
+
+Kind regards,
+The DevHub team

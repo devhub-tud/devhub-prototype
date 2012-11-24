@@ -4,8 +4,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.inject.Singleton;
@@ -25,24 +23,15 @@ public class MailModule extends AbstractModule {
 
 	private final MailProperties properties;
 	private final Properties rawMailProperties;
-	private final ExecutorService executor;
-
-	public MailModule(MailProperties properties, ExecutorService executor) {
-		this.properties = properties;
-		this.executor = executor;
-		rawMailProperties = configure(properties);
-	}
 
 	public MailModule(MailProperties properties) {
 		this.properties = properties;
-		this.executor = Executors.newCachedThreadPool();
 		rawMailProperties = configure(properties);
 	}
 
 	@Override
 	protected void configure() {
 		bind(MailProperties.class).toInstance(properties);
-		bind(ExecutorService.class).toInstance(executor);
 		bind(Session.class).toInstance(Session.getDefaultInstance(rawMailProperties));
 	}
 

@@ -9,8 +9,8 @@ The project is sponsored by Arie van Deursen and was initially developed by Davi
 ## Configure
 Under *web/env* you can put your configuration. You must create a config folder structure like this:
 
-	web/src/local/serverconfig.json
-	web/src/production/serverconfig.json
+	web/env/local/serverconfig.json
+	web/env/production/serverconfig.json
 
 You can find and example `serverconfig.json` in `web/env/serverconfig.json.example`.
 
