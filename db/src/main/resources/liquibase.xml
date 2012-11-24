@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
@@ -12,76 +11,74 @@
 	<changeSet id="1" author="team">
 		<createTable tableName="users">
 			<column name="id" type="bigint" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false" />
+				<constraints primaryKey="true" nullable="false"/>
 			</column>
 			<column name="displayname" type="varchar(32)">
-				<constraints nullable="false" unique="true" />
+				<constraints nullable="false" unique="true"/>
 			</column>
 			<column name="email" type="varchar(255)">
-				<constraints nullable="false" unique="true" />
+				<constraints nullable="false" unique="true"/>
 			</column>
 			<column name="netid" type="varchar(255)">
-				<constraints unique="true" />
+				<constraints unique="true"/>
 			</column>
 			<column name="studentnumber" type="bigint">
 			</column>
 			<column name="salt" type="varchar(8)">
-				<constraints nullable="false" />
+				<constraints nullable="false"/>
 			</column>
 			<column name="password" type="varchar(64)">
-				<constraints nullable="false" />
+				<constraints nullable="false"/>
 			</column>
 			<column name="role" type="varchar(16)">
-				<constraints nullable="false" />
+				<constraints nullable="false"/>
 			</column>
 		</createTable>
 		<createTable tableName="registrationtoken">
 			<column name="id" type="bigint" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false" />
+				<constraints primaryKey="true" nullable="false"/>
 			</column>
 			<column name="email" type="varchar(255)">
-				<constraints nullable="false" unique="true" />
+				<constraints nullable="false" unique="true"/>
 			</column>
 			<column name="token" type="varchar(255)">
-				<!-- This should really be uuid, but JPA/Hibernate doesn't understand 
-					it. -->
-				<!-- And if it is bytea (which hibernate generates for postgresql), it 
-					doesn't work with h2 -->
+				<!-- This should really be uuid, but JPA/Hibernate doesn't understand it. -->
+				<!-- And if it is bytea (which hibernate generates for postgresql), it doesn't work with h2 -->
 				<!-- See also changeSet 5. -->
-				<constraints nullable="true" unique="true" />
+				<constraints nullable="true" unique="true"/>
 			</column>
 		</createTable>
 		<createTable tableName="course">
 			<column name="id" type="bigint" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false" />
+				<constraints primaryKey="true" nullable="false"/>
 			</column>
 			<column name="name" type="varchar(255)">
-				<constraints unique="true" nullable="false" />
+				<constraints unique="true" nullable="false"/>
 			</column>
 			<column name="owner_id" type="bigint">
-				<constraints nullable="false" />
+				<constraints nullable="false"/>
 			</column>
 		</createTable>
 		<createTable tableName="project">
 			<column name="id" type="bigint" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false" />
+				<constraints primaryKey="true" nullable="false"/>
 			</column>
 			<column name="name" type="varchar(255)">
-				<constraints nullable="false" />
+				<constraints nullable="false"/>
 			</column>
 			<column name="course_id" type="bigint">
-				<constraints nullable="false" />
+				<constraints nullable="false"/>
 			</column>
 		</createTable>
 		<createTable tableName="projectmembership">
 			<column name="id" type="bigint" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false" />
+				<constraints primaryKey="true" nullable="false"/>
 			</column>
 			<column name="user_id" type="bigint">
-				<constraints nullable="false" />
+				<constraints nullable="false"/>
 			</column>
 			<column name="project_id" type="bigint">
-				<constraints nullable="false" />
+				<constraints nullable="false"/>
 			</column>
 		</createTable>
 	</changeSet>
@@ -94,8 +91,7 @@
 			<column name="netid">test-admin</column>
 			<column name="studentnumber">0</column>
 			<column name="salt">cafc393e</column>
-			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c
-			</column>
+			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c</column>
 			<column name="role">ADMIN</column>
 		</insert>
 	</changeSet>
@@ -108,8 +104,7 @@
 			<column name="netid">jdoe</column>
 			<column name="studentnumber">0</column>
 			<column name="salt">cafc393e</column>
-			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c
-			</column>
+			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c</column>
 			<column name="role">ADMIN</column>
 		</insert>
 		<insert tableName="users">
@@ -119,8 +114,7 @@
 			<column name="netid">jx</column>
 			<column name="studentnumber">12345</column>
 			<column name="salt">cafc393e</column>
-			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c
-			</column>
+			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c</column>
 			<column name="role">ADMIN</column>
 		</insert>
 		<insert tableName="course">
@@ -156,49 +150,45 @@
 	<changeSet id="5" author="david">
 		<createTable tableName="passwordresettoken">
 			<column name="id" type="bigint" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false" />
+				<constraints primaryKey="true" nullable="false"/>
 			</column>
 			<column name="user_id" type="bigint">
-				<constraints nullable="false" />
+				<constraints nullable="false"/>
 			</column>
 			<column name="token" type="varchar(255)">
-				<!-- See comment for column token in createTable registrationToken in 
-					changeSet 1. -->
-				<constraints nullable="true" unique="true" />
+				<!-- See comment for column token in createTable registrationToken in changeSet 1. -->
+				<constraints nullable="true" unique="true"/>
 			</column>
 		</createTable>
 	</changeSet>
 
-	<!-- Renaming column 'role' to 'access_role' since, 'role' is a reserved 
-		keyword in most DBs. -->
+	<!-- Renaming column 'role' to 'access_role' since, 'role' is a reserved keyword in most DBs. -->
 	<changeSet id="6" author="michaelj">
-		<renameColumn tableName="users" oldColumnName="role"
-			newColumnName="access_role" />
+		<renameColumn tableName="users" oldColumnName="role" newColumnName="access_role"/>
 	</changeSet>
 
 	<changeSet id="7" author="david">
 		<createTable tableName="projectinvitation">
 			<column name="id" type="bigint" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false" />
+				<constraints primaryKey="true" nullable="false"/>
 			</column>
 			<column name="user_id" type="bigint">
-				<constraints nullable="false" />
+				<constraints nullable="false"/>
 			</column>
 			<column name="project_id" type="bigint">
-				<constraints nullable="false" />
+				<constraints nullable="false"/>
 			</column>
 		</createTable>
 	</changeSet>
 
 	<changeSet id="8" author="michaelj">
-		<addForeignKeyConstraint constraintName="project_projectinvitation"
-			referencedTableName="project" baseColumnNames="project_id"
-			baseTableName="projectinvitation" referencedColumnNames="id"
-			onDelete="CASCADE" />
-		<addForeignKeyConstraint constraintName="project_projectmembership"
-			referencedTableName="project" baseColumnNames="project_id"
-			baseTableName="projectmembership" referencedColumnNames="id"
-			onDelete="CASCADE" />
+		<addForeignKeyConstraint constraintName="project_projectinvitation" referencedTableName="project" baseColumnNames="project_id" baseTableName="projectinvitation"
+	referencedColumnNames="id" onDelete="CASCADE"/>
+		<addForeignKeyConstraint constraintName="project_projectmembership" 
+			referencedTableName="project" 
+			baseColumnNames="project_id" 
+			baseTableName="projectmembership"
+			referencedColumnNames="id" onDelete="CASCADE"/>
 	</changeSet>
 
 	<changeSet id="9" author="michaelj">
@@ -206,20 +196,20 @@
 			<column name="source_code_url" type="varchar(255)"></column>
 		</addColumn>
 	</changeSet>
-	
+
 	<changeSet id="10" author="michaelj">
 		<createTable tableName="ssh_keys">
 			<column name="id" type="bigint" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false" />
+				<constraints primaryKey="true" nullable="false"/>
 			</column>
 			<column name="user_id" type="bigint">
-				<constraints nullable="false" />
+				<constraints nullable="false"/>
 			</column>
 			<column name="key_name" type="varchar(255)">
-				<constraints nullable="false" />
+				<constraints nullable="false"/>
 			</column>
 			<column name="key_contents" type="text">
-				<constraints nullable="false" />
+				<constraints nullable="false"/>
 			</column>
 		</createTable>
 	</changeSet>
@@ -232,7 +222,8 @@
 	</changeSet>
 
 	<changeSet id="12" author="michaelj">
-		<addForeignKeyConstraint constraintName="sshkey_user" referencedTableName="users" baseColumnNames="user_id" baseTableName="ssh_keys" referencedColumnNames="id" onDelete="CASCADE" />
+		<addForeignKeyConstraint constraintName="sshkey_user" referencedTableName="users" baseColumnNames="user_id" baseTableName="ssh_keys"
+			referencedColumnNames="id" onDelete="CASCADE"/>
 	</changeSet>
 
 	<changeSet id="13" author="alexnederlof">
@@ -242,10 +233,8 @@
 	</changeSet>
 
 	<changeSet id="14" author="alexnederlof">
-		<addUniqueConstraint tableName="projectinvitation"
-			columnNames="email,project_id" constraintName="project_email_unique" />
-		
-		<dropNotNullConstraint tableName="projectinvitation"
-			columnName="user_id" columnDataType="bigint" />
+		<addUniqueConstraint tableName="projectinvitation" columnNames="email,project_id" constraintName="project_email_unique"/>
+
+		<dropNotNullConstraint tableName="projectinvitation" columnName="user_id" columnDataType="bigint"/>
 	</changeSet>
 </databaseChangeLog>
