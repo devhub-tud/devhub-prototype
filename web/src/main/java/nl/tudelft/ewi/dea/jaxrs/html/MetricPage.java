@@ -1,8 +1,10 @@
 package nl.tudelft.ewi.dea.jaxrs.html;
 
 import java.text.DecimalFormat;
-import java.util.Map.Entry;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -12,11 +14,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nl.tudelft.ewi.dea.jaxrs.html.utils.Renderer;
+import nl.tudelft.ewi.dea.metrics.HtmlMetricProcessor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import com.yammer.metrics.core.Metric;
 import com.yammer.metrics.core.MetricName;
@@ -45,19 +49,23 @@ public class MetricPage {
 	}
 
 	@GET
+	@Transactional
 	public String servePage() {
-		for (Entry<String, SortedMap<MetricName, Metric>> groupEntry : registry.groupedMetrics().entrySet()) {
-			StringBuilder sb = new StringBuilder("Group=").append(groupEntry.getKey()).append('\n');
-			for (Entry<MetricName, Metric> metric : groupEntry.getValue().entrySet()) {
-				sb.append("name=").append(metric.getKey()).append(" metric is=").append(metric.getValue());
+		SortedMap<String, String> customMetrics = new TreeMap<>();
+		HtmlMetricProcessor processor = new HtmlMetricProcessor();
+		for (SortedMap<MetricName, Metric> groupEntry : registry.groupedMetrics().values()) {
+			String key = groupEntry.firstKey().getGroup();
+			String value = processor.processAll(groupEntry);
+			if (customMetrics.containsKey(key)) {
+				customMetrics.put(key, customMetrics.get(key) + value);
+			} else {
+				customMetrics.put(key, value);
 			}
-			LOG.warn("\n" + sb.toString());
 		}
-		LOG.warn(vmMetrics.toString());
 		ImmutableMap<Object, Object> vmMetricsMap = createVmMap();
-
 		return renderer
 				.setValue("vmMetrics", vmMetricsMap)
+				.setValue("customMetrics", customMetrics)
 				.render("metrics.tpl");
 	}
 
@@ -98,5 +106,4 @@ public class MetricPage {
 	private static String inMegaBytes(double heapMax) {
 		return DECIMALS.format(heapMax / (1024 * 1024)) + " MB";
 	}
-
 }

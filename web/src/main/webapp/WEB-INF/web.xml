@@ -19,4 +19,8 @@
 		<listener-class>nl.tudelft.ewi.dea.di.ServerStartupListener</listener-class>
 	</listener>
 
+	<listener>
+		<listener-class>nl.tudelft.ewi.dea.metrics.InstrumentedSessionListener</listener-class>
+	</listener>
+
 </web-app>

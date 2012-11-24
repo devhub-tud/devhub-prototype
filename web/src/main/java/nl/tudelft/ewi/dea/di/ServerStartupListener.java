@@ -15,6 +15,8 @@ import nl.tudelft.ewi.dea.ConfigurationException;
 import nl.tudelft.ewi.dea.ServerConfig;
 import nl.tudelft.ewi.dea.template.TemplateEngine;
 
+import org.apache.shiro.session.mgt.AbstractNativeSessionManager;
+import org.apache.shiro.session.mgt.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,6 +89,7 @@ public class ServerStartupListener extends GuiceServletContextListener {
 		if (!inErrorMode) {
 			injector.getInstance(TemplateEngine.class).watchForChanges();
 		}
+
 	}
 
 	@Override

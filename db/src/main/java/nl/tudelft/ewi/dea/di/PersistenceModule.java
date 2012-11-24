@@ -1,6 +1,7 @@
 package nl.tudelft.ewi.dea.di;
 
 import nl.tudelft.ewi.dea.dao.DatabaseProperties;
+import nl.tudelft.ewi.dea.dao.StatisticDao;
 import nl.tudelft.ewi.dea.liquibase.DatabaseStructure;
 
 import org.slf4j.Logger;
@@ -38,5 +39,6 @@ public class PersistenceModule extends AbstractModule {
 		}
 		install(jpaModule);
 		bind(DatabaseStructure.class).asEagerSingleton();
+		bind(StatisticDao.class).asEagerSingleton();
 	}
 }
