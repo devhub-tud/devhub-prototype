@@ -11,6 +11,9 @@ import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Transport;
 
+import nl.tudelft.ewi.dea.mail.internals.MailSender;
+import nl.tudelft.ewi.dea.mail.internals.UnsentMail;
+
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
@@ -33,6 +36,7 @@ public class MailModule extends AbstractModule {
 	protected void configure() {
 		bind(MailProperties.class).toInstance(properties);
 		bind(Session.class).toInstance(Session.getDefaultInstance(rawMailProperties));
+		bind(MailSender.class).asEagerSingleton();
 	}
 
 	private Properties configure(MailProperties properties) {
@@ -50,8 +54,8 @@ public class MailModule extends AbstractModule {
 	@Provides
 	@Singleton
 	@MailQueue
-	BlockingQueue<SimpleMessage> mailQueue() {
-		return new LinkedBlockingQueue<SimpleMessage>();
+	BlockingQueue<UnsentMail> mailQueue() {
+		return new LinkedBlockingQueue<UnsentMail>();
 	}
 
 	@Provides

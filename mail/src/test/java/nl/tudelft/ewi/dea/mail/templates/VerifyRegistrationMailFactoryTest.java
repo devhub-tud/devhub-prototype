@@ -1,6 +1,6 @@
 package nl.tudelft.ewi.dea.mail.templates;
 
-import static nl.tudelft.ewi.dea.mail.CommonTestData.MAIL_PROPS;
+import static nl.tudelft.ewi.dea.mail.internals.CommonTestData.MAIL_PROPS;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertThat;

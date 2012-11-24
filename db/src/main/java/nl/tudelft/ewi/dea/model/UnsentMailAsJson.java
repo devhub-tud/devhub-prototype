@@ -11,12 +11,12 @@ import javax.persistence.Table;
 @Entity
 @Immutable
 @Table(name = "unsent_mails")
-public class UnsentMail {
+public class UnsentMailAsJson {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
 	@Column(name = "mail", nullable = false) private String mail;
 
-	public UnsentMail(String mailAsJson) {
+	public UnsentMailAsJson(String mailAsJson) {
 		this.mail = mailAsJson;
 		id = 0L;
 	}

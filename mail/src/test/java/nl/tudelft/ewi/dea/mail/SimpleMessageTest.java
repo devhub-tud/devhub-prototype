@@ -1,6 +1,6 @@
 package nl.tudelft.ewi.dea.mail;
 
-import static nl.tudelft.ewi.dea.mail.CommonTestData.SAMPLE_MESSAGE;
+import static nl.tudelft.ewi.dea.mail.internals.CommonTestData.SAMPLE_MESSAGE;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.collection.IsArrayContaining.hasItemInArray;
 import static org.hamcrest.core.Is.is;
