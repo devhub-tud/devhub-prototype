@@ -88,7 +88,6 @@ public class MetricPage {
 		long hours = TimeUnit.SECONDS.toHours(seconds);
 		seconds -= TimeUnit.HOURS.toMillis(hours);
 		long minutes = TimeUnit.SECONDS.toMinutes(seconds);
-		seconds -= TimeUnit.MINUTES.toMillis(minutes);
 
 		StringBuilder sb = new StringBuilder(64);
 		sb.append(days);
@@ -97,8 +96,6 @@ public class MetricPage {
 		sb.append(" Hours, ");
 		sb.append(minutes);
 		sb.append(" Minutes and ");
-		sb.append(seconds);
-		sb.append(" Seconds");
 
 		return (sb.toString());
 	}

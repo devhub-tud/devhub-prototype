@@ -36,6 +36,8 @@ import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.collect.ImmutableList;
+import com.yammer.metrics.Metrics;
+import com.yammer.metrics.core.MetricsRegistry;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MailQueueTakerTest {
@@ -44,11 +46,12 @@ public class MailQueueTakerTest {
 	private MailProperties mailProps = CommonTestData.MAIL_PROPS;
 	private final Session session = Session.getDefaultInstance(new Properties());
 	@Mock private Transport transport;
+
 	private MailQueueTaker mQueueTaker;
 
 	@Before
 	public void setup() {
-		mQueueTaker = new MailQueueTaker(mailQueue, transport, mailProps, session);
+		mQueueTaker = new MailQueueTaker(mailQueue, transport, mailProps, session, Metrics.defaultRegistry());
 	}
 
 	@Test
@@ -114,7 +117,7 @@ public class MailQueueTakerTest {
 	public void whenThereIsAProblemConnectingTheMessagesAreSentLater() throws MessagingException, InterruptedException {
 		SimpleMessage message = newMessageMock();
 		mailQueue.add(message);
-		mQueueTaker = spy(new MailQueueTaker(mailQueue, transport, mailProps, session));
+		mQueueTaker = spy(new MailQueueTaker(mailQueue, transport, mailProps, session, Metrics.defaultRegistry()));
 		SendFailedException exc = new SendFailedException();
 		doThrow(exc).when(transport).connect(anyString(), anyString(), anyString());
 		doNothing().when(mQueueTaker).tryAgainAfterDelay(any(ImmutableList.class), eq(exc));

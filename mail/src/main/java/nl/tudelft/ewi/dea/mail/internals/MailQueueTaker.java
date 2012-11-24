@@ -20,12 +20,15 @@ import nl.tudelft.ewi.dea.mail.MailModule.MailQueue;
 import nl.tudelft.ewi.dea.mail.MailModule.SMTP;
 import nl.tudelft.ewi.dea.mail.MailProperties;
 import nl.tudelft.ewi.dea.mail.SimpleMessage;
+import nl.tudelft.ewi.dea.metrics.MetricGroup;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.yammer.metrics.core.Counter;
+import com.yammer.metrics.core.MetricsRegistry;
 
 /**
  * Eats the queue from {@link QueuedMailSender}.
@@ -46,13 +49,16 @@ class MailQueueTaker implements Runnable {
 
 	private Session session;
 
+	private Counter mailCounter;
+
 	@Inject
 	MailQueueTaker(@MailQueue BlockingQueue<SimpleMessage> mailQueue, @SMTP Transport transport,
-			MailProperties mailProps, Session session) {
+			MailProperties mailProps, Session session, MetricsRegistry metrics) {
 		this.mailQueue = mailQueue;
 		this.transport = transport;
 		this.mailProps = mailProps;
 		this.session = session;
+		this.mailCounter = metrics.newCounter(MetricGroup.Mail.newName("Mails sent"));
 	}
 
 	@Override
@@ -100,6 +106,7 @@ class MailQueueTaker implements Runnable {
 		for (SimpleMessage message : messagesToSend) {
 			MimeMessage mimeMessage = message.asMimeMessage(session);
 			transport.sendMessage(message.asMimeMessage(session), mimeMessage.getAllRecipients());
+			mailCounter.inc();
 		}
 		LOG.debug("Closing SMTP server");
 		transport.close();

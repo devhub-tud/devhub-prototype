@@ -71,8 +71,8 @@ public class HtmlMetricProcessor implements MetricProcessor<StringBuilder> {
 	@Override
 	public void processTimer(MetricName name, Timer timer, StringBuilder context) {
 		String value = "Mean: " + toString(timer.mean(), timer.durationUnit())
-				+ " max: " + toString(timer.max(), timer.durationUnit())
-				+ " min: " + toString(timer.min(), timer.durationUnit());
+				+ ", Max: " + toString(timer.max(), timer.durationUnit())
+				+ ", Min: " + toString(timer.min(), timer.durationUnit());
 		process(name, value, context);
 	}
 

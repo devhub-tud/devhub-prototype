@@ -5,7 +5,8 @@ import com.yammer.metrics.core.MetricName;
 public enum MetricGroup {
 
 	WEB("Web"),
-	APP("Application");
+	APP("Application"),
+	Mail("Mail");
 
 	private final String groupName;
 
