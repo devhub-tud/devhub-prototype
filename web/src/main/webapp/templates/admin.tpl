@@ -17,7 +17,7 @@
 						</ul>
 					</div>
 				</div>
-				<table class="table table-striped table-bordered table-hover">
+				<table class="table table-striped table-bordered table-hover" style="margin-top: 15px;">
 					<thead>
 						<tr>
 							<th>Course</th>
