@@ -4,12 +4,12 @@
 
 	<parent>
 		<groupId>nl.tudelft.ewi</groupId>
-		<artifactId>devhub</artifactId>
+		<artifactId>devhub-server</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>devhub-commons</artifactId>
-	<name>DevHub - Commons module</name>
+	<name>DevHub Server - Commons module</name>
 
 	<dependencies>
 		<dependency>

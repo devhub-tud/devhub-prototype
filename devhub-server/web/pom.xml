@@ -3,12 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<artifactId>devhub</artifactId>
+		<artifactId>devhub-server</artifactId>
 		<groupId>nl.tudelft.ewi</groupId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
-	<name>DevHub - Web interface</name>
+	<name>DevHub Server - Web interface</name>
 
 	<artifactId>devhub-web</artifactId>
 	<packaging>war</packaging>
