@@ -1,7 +1,6 @@
 package nl.tudelft.ewi.dea.mail.internals;
 
 import static nl.tudelft.ewi.dea.mail.internals.CommonTestData.newMessageMock;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -32,18 +31,20 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
+import com.yammer.metrics.Metrics;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MailQueueTakerTest {
 
 	@Spy private LinkedBlockingQueue<UnsentMail> mailQueue;
-	private MailProperties mailProps = CommonTestData.MAIL_PROPS;
+	private final MailProperties mailProps = CommonTestData.MAIL_PROPS;
 	private final Session session = Session.getDefaultInstance(new Properties());
 	@Mock private Transport transport;
 	@Mock UnsentMailDao unsentMailDao;
@@ -52,7 +53,22 @@ public class MailQueueTakerTest {
 	@Before
 	public void setup() {
 		Provider<ObjectMapper> mapperProv = SimpleProvider.forInstance(new CommonModule().objectMapper());
-		mQueueTaker = spy(new MailQueueTaker(mailQueue, transport, mailProps, session, SimpleProvider.forInstance(unsentMailDao), mapperProv));
+		mQueueTaker = spy(new MailQueueTaker(mailQueue, transport, mailProps, session, SimpleProvider.forInstance(unsentMailDao), mapperProv, Metrics.defaultRegistry()));
+	}
+
+	@Test
+	public void whenConnectionIsTestedTheTakerOpensAndClosesTheTransport() throws MessagingException {
+		mQueueTaker.testConnection();
+		InOrder order = inOrder(mailQueue, transport);
+		order.verify(transport).connect(anyString(), anyString(), anyString());
+		order.verify(transport).close();
+		order.verifyNoMoreInteractions();
+	}
+
+	@Test(expected = MailException.class)
+	public void whenConnectionTestFailsTheMethodInterrups() throws MessagingException {
+		doThrow(new MessagingException()).when(transport).connect(anyString(), anyString(), anyString());
+		mQueueTaker.testConnection();
 	}
 
 	@Test
@@ -71,7 +87,7 @@ public class MailQueueTakerTest {
 		order.verify(transport).close();
 
 		order.verify(mailQueue).take();
-		order.verify(mailQueue).drainTo(any(Collection.class));
+		order.verify(mailQueue).drainTo(Matchers.<Collection<UnsentMail>> any());
 
 		order.verify(transport).connect(anyString(), anyString(), anyString());
 
@@ -108,10 +124,10 @@ public class MailQueueTakerTest {
 		mailQueue.add(message);
 		SendFailedException exc = new SendFailedException();
 		doThrow(exc).when(transport).connect(anyString(), anyString(), anyString());
-		doNothing().when(mQueueTaker).tryAgainAfterDelay(any(ImmutableList.class), eq(exc));
+		doNothing().when(mQueueTaker).tryAgainAfterDelay(Matchers.<ImmutableList<UnsentMail>> any(), eq(exc));
 
 		mQueueTaker.sendMessages(ImmutableList.of(message));
 
-		verify(mQueueTaker).tryAgainAfterDelay(any(ImmutableList.class), eq(exc));
+		verify(mQueueTaker).tryAgainAfterDelay(Matchers.<ImmutableList<UnsentMail>> any(), eq(exc));
 	}
 }

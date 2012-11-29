@@ -23,6 +23,7 @@ import nl.tudelft.ewi.dea.mail.MailModule.MailQueue;
 import nl.tudelft.ewi.dea.mail.MailModule.SMTP;
 import nl.tudelft.ewi.dea.mail.MailProperties;
 import nl.tudelft.ewi.dea.mail.SimpleMessage;
+import nl.tudelft.ewi.dea.metrics.MetricGroup;
 import nl.tudelft.ewi.dea.model.UnsentMailAsJson;
 
 import org.slf4j.Logger;
@@ -31,6 +32,8 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.yammer.metrics.core.Counter;
+import com.yammer.metrics.core.MetricsRegistry;
 
 /**
  * Eats the queue from {@link QueuedMailSender}.
@@ -47,17 +50,20 @@ class MailQueueTaker implements Runnable {
 	private final Transport transport;
 	private final Session session;
 	private final Provider<UnsentMailDao> unsentMailDao;
-	private Provider<ObjectMapper> mapper;
+	private final Provider<ObjectMapper> mapper;
+
+	private final Counter mailCounter;
 
 	@Inject
 	MailQueueTaker(@MailQueue BlockingQueue<UnsentMail> mailQueue, @SMTP Transport transport,
-			MailProperties mailProps, Session session, Provider<UnsentMailDao> unsentMailDao, Provider<ObjectMapper> mapper) {
+			MailProperties mailProps, Session session, Provider<UnsentMailDao> unsentMailDao, Provider<ObjectMapper> mapper, MetricsRegistry metrics) {
 		this.mailQueue = mailQueue;
 		this.transport = transport;
 		this.mailProps = mailProps;
 		this.session = session;
 		this.unsentMailDao = unsentMailDao;
 		this.mapper = mapper;
+		this.mailCounter = metrics.newCounter(MetricGroup.Mail.newName("Mails sent"));
 	}
 
 	@Override
@@ -97,7 +103,8 @@ class MailQueueTaker implements Runnable {
 		}
 	}
 
-	private void testConnection() {
+	@VisibleForTesting
+	protected void testConnection() {
 		LOG.info("Testing SMTP connection");
 		try {
 			transport.connect(mailProps.getHost(), mailProps.getUser(), mailProps.getPassword());
@@ -127,7 +134,9 @@ class MailQueueTaker implements Runnable {
 			MimeMessage mimeMessage = message.getMessage().asMimeMessage(session);
 			transport.sendMessage(message.getMessage().asMimeMessage(session), mimeMessage.getAllRecipients());
 			unsentMailDao.get().remove(message.getId());
+			mailCounter.inc();
 		}
+
 		LOG.debug("Closing SMTP server");
 		transport.close();
 	}

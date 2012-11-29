@@ -40,7 +40,7 @@ public class CourseResourceIntegrationTest {
 	@Before
 	public void setUp() {
 		when(servletContext.getRealPath("/templates/")).thenReturn("src/main/webapp/templates/");
-		ServerConfig serverConfig = new ServerStartupListener().readServerConfig(mapper);
+		ServerConfig serverConfig = ServerStartupListener.readServerConfig(mapper);
 
 		injector = Guice.createInjector(
 				new WebModule(servletContext, serverConfig),

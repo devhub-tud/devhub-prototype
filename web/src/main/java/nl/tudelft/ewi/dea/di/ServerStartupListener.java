@@ -45,6 +45,7 @@ public class ServerStartupListener extends GuiceServletContextListener {
 	}
 
 	private static final Logger LOG = LoggerFactory.getLogger(ServerStartupListener.class);
+
 	private Injector injector;
 	private ServletContext servletContext;
 	private boolean inErrorMode = false;
