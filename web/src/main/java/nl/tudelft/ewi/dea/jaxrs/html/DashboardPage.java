@@ -19,6 +19,7 @@ import nl.tudelft.ewi.dea.security.SecurityProvider;
 
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import com.yammer.metrics.annotation.Timed;
 
 @RequestScoped
 @Path("dashboard")
@@ -43,6 +44,7 @@ public class DashboardPage {
 	}
 
 	@GET
+	@Timed(name = "Dashboard rendertime", group = "Web", type = "")
 	@Transactional
 	public String servePage() {
 		User me = securityProvider.getUser();

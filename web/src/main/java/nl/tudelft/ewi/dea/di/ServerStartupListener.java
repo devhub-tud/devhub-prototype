@@ -87,6 +87,7 @@ public class ServerStartupListener extends GuiceServletContextListener {
 		if (!inErrorMode) {
 			injector.getInstance(TemplateEngine.class).watchForChanges();
 		}
+
 	}
 
 	@Override

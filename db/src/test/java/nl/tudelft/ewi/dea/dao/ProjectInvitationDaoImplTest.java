@@ -9,8 +9,6 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
-import javassist.NotFoundException;
-
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 
@@ -20,7 +18,6 @@ import nl.tudelft.ewi.dea.model.ProjectInvitation;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.model.UserRole;
 
-import org.hamcrest.core.IsNull;
 import org.junit.Before;
 import org.junit.Test;
 

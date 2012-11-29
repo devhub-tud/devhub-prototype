@@ -30,6 +30,7 @@ import com.google.inject.persist.PersistFilter;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
+import com.yammer.metrics.jersey.InstrumentedResourceMethodDispatchAdapter;
 
 /**
  * This module configures the web settings for the application. Some settings
@@ -65,6 +66,9 @@ public class WebModule extends ServletModule {
 	protected void configureServlets() {
 		bind(BuildInfo.class).toInstance(buildInfo);
 		bind(ServerConfig.class).toInstance(serverConfig);
+
+		// For metrics
+		bind(InstrumentedResourceMethodDispatchAdapter.class).in(Singleton.class);
 
 		install(new SecurityModule(servletContext));
 		install(new PersistenceModule(serverConfig.getDbConfig(), ""));

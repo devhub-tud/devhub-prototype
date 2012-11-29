@@ -9,6 +9,9 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.yammer.metrics.Metrics;
+import com.yammer.metrics.core.MetricsRegistry;
+import com.yammer.metrics.core.VirtualMachineMetrics;
 
 public class CommonModule extends AbstractModule {
 
@@ -16,6 +19,9 @@ public class CommonModule extends AbstractModule {
 	protected void configure() {
 		bind(ExecutorService.class).to(ScheduledExecutorService.class);
 		bind(ScheduledExecutorService.class).toInstance(Executors.newScheduledThreadPool(3));
+
+		bind(MetricsRegistry.class).toInstance(Metrics.defaultRegistry());
+		bind(VirtualMachineMetrics.class).toInstance(VirtualMachineMetrics.getInstance());
 	}
 
 	/**
