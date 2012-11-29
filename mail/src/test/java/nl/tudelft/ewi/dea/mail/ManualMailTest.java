@@ -2,6 +2,8 @@ package nl.tudelft.ewi.dea.mail;
 
 import java.util.concurrent.TimeUnit;
 
+import nl.tudelft.ewi.dea.mail.internals.CommonTestData;
+
 import org.junit.Ignore;
 import org.junit.Test;
 

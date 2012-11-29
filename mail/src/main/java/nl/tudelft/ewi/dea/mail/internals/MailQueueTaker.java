@@ -2,12 +2,14 @@ package nl.tudelft.ewi.dea.mail.internals;
 
 import static com.google.common.collect.ImmutableList.copyOf;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.mail.MessagingException;
 import javax.mail.SendFailedException;
@@ -15,16 +17,19 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
 
+import nl.tudelft.ewi.dea.dao.UnsentMailDao;
 import nl.tudelft.ewi.dea.mail.MailException;
 import nl.tudelft.ewi.dea.mail.MailModule.MailQueue;
 import nl.tudelft.ewi.dea.mail.MailModule.SMTP;
 import nl.tudelft.ewi.dea.mail.MailProperties;
 import nl.tudelft.ewi.dea.mail.SimpleMessage;
 import nl.tudelft.ewi.dea.metrics.MetricGroup;
+import nl.tudelft.ewi.dea.model.UnsentMailAsJson;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.yammer.metrics.core.Counter;
@@ -38,35 +43,37 @@ import com.yammer.metrics.core.MetricsRegistry;
 class MailQueueTaker implements Runnable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MailQueueTaker.class);
-
 	private static final int TIME_OUT_IN_MIN = 5;
 
-	private final BlockingQueue<SimpleMessage> mailQueue;
-
+	private final BlockingQueue<UnsentMail> mailQueue;
 	private final MailProperties mailProps;
-
 	private final Transport transport;
+	private final Session session;
+	private final Provider<UnsentMailDao> unsentMailDao;
+	private final Provider<ObjectMapper> mapper;
 
-	private Session session;
-
-	private Counter mailCounter;
+	private final Counter mailCounter;
 
 	@Inject
-	MailQueueTaker(@MailQueue BlockingQueue<SimpleMessage> mailQueue, @SMTP Transport transport,
-			MailProperties mailProps, Session session, MetricsRegistry metrics) {
+	MailQueueTaker(@MailQueue BlockingQueue<UnsentMail> mailQueue, @SMTP Transport transport,
+			MailProperties mailProps, Session session, Provider<UnsentMailDao> unsentMailDao, Provider<ObjectMapper> mapper, MetricsRegistry metrics) {
 		this.mailQueue = mailQueue;
 		this.transport = transport;
 		this.mailProps = mailProps;
 		this.session = session;
+		this.unsentMailDao = unsentMailDao;
+		this.mapper = mapper;
 		this.mailCounter = metrics.newCounter(MetricGroup.Mail.newName("Mails sent"));
 	}
 
 	@Override
 	public void run() {
 		try {
+			testConnection();
+			checkForUnsentMails();
 			while (!Thread.interrupted()) {
 				LOG.debug("Waiting for messages to send");
-				List<SimpleMessage> messagesToSend = new LinkedList<>();
+				List<UnsentMail> messagesToSend = new LinkedList<>();
 				messagesToSend.add(mailQueue.take());
 				mailQueue.drainTo(messagesToSend);
 				sendMessages(copyOf(messagesToSend));
@@ -75,21 +82,41 @@ class MailQueueTaker implements Runnable {
 		} catch (InterruptedException e) {
 			LOG.info("Mail sending queue was stopped. Unsent mails: {}. These are lost forever.", mailQueue.size());
 		} catch (Throwable throwable) {
-			LOG.error("Mail sending thread was stopped. This is a severe warning!");
+			LOG.error("Mail sending thread was stopped. This is a severe warning!", throwable);
 			throw new MailException("Unexpected stop of the Mail queue taker", throwable);
 		}
 	}
 
-	void testConnection() {
+	private void checkForUnsentMails() throws InterruptedException {
+		// Wait for the DB to have an activate connection.
+		List<UnsentMailAsJson> unsentMails = unsentMailDao.get().getUnsentMails();
+		LOG.info("Found {} unsent mails to send.", unsentMails.size());
+		ObjectMapper jsonMapper = mapper.get();
+		for (UnsentMailAsJson unsentMail : unsentMails) {
+			try {
+				SimpleMessage message = jsonMapper.readValue(unsentMail.getMail(), SimpleMessage.class);
+				mailQueue.add(new UnsentMail(unsentMail.getId(), message));
+			} catch (IOException e) {
+				LOG.warn("Could not deserialized a message. It will be lost forever: {}", unsentMail);
+				unsentMailDao.get().remove(unsentMail.getId());
+			}
+		}
+	}
+
+	@VisibleForTesting
+	protected void testConnection() {
+		LOG.info("Testing SMTP connection");
 		try {
 			transport.connect(mailProps.getHost(), mailProps.getUser(), mailProps.getPassword());
 			transport.close();
+			LOG.info("SMTP connection successful");
 		} catch (MessagingException e) {
 			throw new MailException("Error while trying to connect to the SMTP service", e);
 		}
 	}
 
-	private void sendMessages(ImmutableList<SimpleMessage> messagesToSend) throws MessagingException {
+	@VisibleForTesting
+	void sendMessages(ImmutableList<UnsentMail> messagesToSend) throws MessagingException {
 		try {
 			tryToSendMessages(messagesToSend);
 		} catch (SendFailedException e) {
@@ -99,21 +126,23 @@ class MailQueueTaker implements Runnable {
 		}
 	}
 
-	private void tryToSendMessages(ImmutableList<SimpleMessage> messagesToSend) throws MessagingException {
+	private void tryToSendMessages(ImmutableList<UnsentMail> messagesToSend) throws MessagingException {
 		LOG.debug("Connecting to SMTP server");
 		transport.connect(mailProps.getHost(), mailProps.getUser(), mailProps.getPassword());
 		LOG.debug("Connected, sending messages");
-		for (SimpleMessage message : messagesToSend) {
-			MimeMessage mimeMessage = message.asMimeMessage(session);
-			transport.sendMessage(message.asMimeMessage(session), mimeMessage.getAllRecipients());
+		for (UnsentMail message : messagesToSend) {
+			MimeMessage mimeMessage = message.getMessage().asMimeMessage(session);
+			transport.sendMessage(message.getMessage().asMimeMessage(session), mimeMessage.getAllRecipients());
+			unsentMailDao.get().remove(message.getId());
 			mailCounter.inc();
 		}
+
 		LOG.debug("Closing SMTP server");
 		transport.close();
 	}
 
 	@VisibleForTesting
-	void tryAgainAfterDelay(ImmutableList<SimpleMessage> messagesToSend, SendFailedException e)
+	void tryAgainAfterDelay(ImmutableList<UnsentMail> messagesToSend, SendFailedException e)
 			throws MessagingException {
 		LOG.warn("Sending mail failed. Trying again in {} minutes. The error was: {}", TIME_OUT_IN_MIN, e.getMessage());
 		LOG.debug("Full error print for debug: ", e);

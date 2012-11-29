@@ -36,13 +36,6 @@ And then browsing to the web module and running:
 You can deploy the application into any servlet container compatible with Servlet API 2.5 or later. You can also rund it using the [Jetty-runner](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22jetty-runner%22). You can find an example start-stop script in `web/scripts/`.
 
 
-## Test
-All tests are run by Maven except for the Jasmine Javascript tests. They are started by running
-
-	$ mvn jasmine:bdd
-	
-This will be automated sometime in the furute, when the Jasmine plugin is functioning properly.
-
 ## Develop
 Make sure you use the codestile you can find in the root folder. The best way is to enable this as a post-save action in Eclipse.
 

@@ -2,7 +2,7 @@ package nl.tudelft.ewi.dea.jaxrs.api.projects.provisioner;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -42,7 +42,7 @@ public class Provisioner {
 
 	public static final Logger LOG = LoggerFactory.getLogger(Provisioner.class);
 
-	private final ScheduledThreadPoolExecutor executor;
+	private final ScheduledExecutorService executor;
 	private final Cache<Long, State> stateCache;
 	private final Provider<CourseDao> courseDao;
 	private final Provider<ProjectDao> projectDao;
@@ -56,7 +56,7 @@ public class Provisioner {
 	@Inject
 	public Provisioner(Provider<UnitOfWork> units, Provider<CourseDao> courseDao, Provider<ProjectDao> projectDao,
 			Provider<ProjectMembershipDao> membershipDao, Provider<ProjectInvitationDao> invitationDao,
-			InviteManager inviteMngr) {
+			InviteManager inviteMngr, ScheduledExecutorService executor) {
 
 		this.units = units;
 		this.courseDao = courseDao;
@@ -64,10 +64,9 @@ public class Provisioner {
 		this.membershipDao = membershipDao;
 		this.invitationDao = invitationDao;
 		this.inviteMngr = inviteMngr;
+		this.executor = executor;
 
 		stateCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).maximumSize(500).build();
-		executor = new ScheduledThreadPoolExecutor(0);
-		executor.setMaximumPoolSize(1);
 	}
 
 	@Transactional

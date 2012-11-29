@@ -38,7 +38,7 @@ public class Renderer {
 	}
 
 	@Transactional
-	void addDefaultParameters() {
+	final void addDefaultParameters() {
 		if (securityProvider.getSubject().isAuthenticated()) {
 			setValue("user", securityProvider.getUser());
 		}

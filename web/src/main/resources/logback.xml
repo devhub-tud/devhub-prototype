@@ -10,7 +10,7 @@
 
 	<logger name="nl.tudelft" level="INFO" />
 
-	<root level="INFO">
+	<root level="WARN">
 		<appender-ref ref="STDOUT" />
 	</root>
 

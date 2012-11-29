@@ -1,6 +1,6 @@
 package nl.tudelft.ewi.dea.mail.templates;
 
-import static nl.tudelft.ewi.dea.mail.CommonTestData.MAIL_PROPS;
+import static nl.tudelft.ewi.dea.mail.internals.CommonTestData.MAIL_PROPS;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertThat;
@@ -32,8 +32,8 @@ public class PasswordResetMailFactoryTest {
 
 		String expextedTemplate = Resources.toString(Resources.getResource("passwordResetMailSample.txt"), Charsets.UTF_8);
 
-		assertThat(generatedMessage.body, is(expextedTemplate));
-		assertThat(generatedMessage.from, is(MAIL_PROPS.getFrom()));
+		assertThat(generatedMessage.getBody(), is(expextedTemplate));
+		assertThat(generatedMessage.getFrom(), is(MAIL_PROPS.getFrom()));
 		assertThat(generatedMessage.to.size(), is(1));
 		assertThat(generatedMessage.to, hasItem(mailAddress));
 	}

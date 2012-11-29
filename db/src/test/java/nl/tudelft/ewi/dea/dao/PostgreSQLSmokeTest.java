@@ -17,12 +17,20 @@ import nl.tudelft.ewi.dea.ConfigurationException;
 import nl.tudelft.ewi.dea.liquibase.DatabaseStructure;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.persist.PersistService;
+
+@RunWith(MockitoJUnitRunner.class)
 public class PostgreSQLSmokeTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PostgreSQLSmokeTest.class);
+
+	@Mock private PersistService persistService;
 
 	/**
 	 * Make sure that you have postgresql installed on localhost, with db
@@ -50,7 +58,7 @@ public class PostgreSQLSmokeTest {
 		} catch (IOException e) {
 			throw new ConfigurationException("Could not read test config", e);
 		}
-		new DatabaseStructure(props, "");
+		new DatabaseStructure(props, "", persistService);
 
 		LOG.debug("Verifying database structure...");
 		Persistence.createEntityManagerFactory("test-postgresql", props.asJpaProperties()).close();
