@@ -1,8 +1,6 @@
 package nl.tudelft.ewi.dea.jaxrs.html;
 
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
@@ -15,9 +13,6 @@ import javax.ws.rs.core.MediaType;
 
 import nl.tudelft.ewi.dea.jaxrs.html.utils.Renderer;
 import nl.tudelft.ewi.dea.metrics.HtmlMetricProcessor;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.persist.Transactional;
@@ -32,14 +27,12 @@ import com.yammer.metrics.core.VirtualMachineMetrics;
 @Produces(MediaType.TEXT_HTML)
 public class MetricPage {
 
-	private static final Logger LOG = LoggerFactory.getLogger(MetricPage.class);
-
 	private static final DecimalFormat DECIMALS = new DecimalFormat("#.##");
 
 	private final Renderer renderer;
-	private MetricsRegistry registry;
+	private final MetricsRegistry registry;
 
-	private VirtualMachineMetrics vmMetrics;
+	private final VirtualMachineMetrics vmMetrics;
 
 	@Inject
 	MetricPage(Renderer renderer, MetricsRegistry registry, VirtualMachineMetrics vmMetrics) {
@@ -95,7 +88,7 @@ public class MetricPage {
 		sb.append(hours);
 		sb.append(" Hours, ");
 		sb.append(minutes);
-		sb.append(" Minutes and ");
+		sb.append(" Minutes");
 
 		return (sb.toString());
 	}

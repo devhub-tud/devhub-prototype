@@ -31,19 +31,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.collect.ImmutableList;
 import com.yammer.metrics.Metrics;
-import com.yammer.metrics.core.MetricsRegistry;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MailQueueTakerTest {
 
 	@Spy private LinkedBlockingQueue<SimpleMessage> mailQueue;
-	private MailProperties mailProps = CommonTestData.MAIL_PROPS;
+	private final MailProperties mailProps = CommonTestData.MAIL_PROPS;
 	private final Session session = Session.getDefaultInstance(new Properties());
 	@Mock private Transport transport;
 
@@ -82,7 +82,7 @@ public class MailQueueTakerTest {
 
 		InOrder order = inOrder(mailQueue, transport);
 		order.verify(mailQueue).take();
-		order.verify(mailQueue).drainTo(any(Collection.class));
+		order.verify(mailQueue).drainTo(Matchers.<Collection<SimpleMessage>> any());
 
 		order.verify(transport).connect(anyString(), anyString(), anyString());
 		order.verify(transport).sendMessage(m1.asMimeMessage(session), null);
@@ -120,11 +120,11 @@ public class MailQueueTakerTest {
 		mQueueTaker = spy(new MailQueueTaker(mailQueue, transport, mailProps, session, Metrics.defaultRegistry()));
 		SendFailedException exc = new SendFailedException();
 		doThrow(exc).when(transport).connect(anyString(), anyString(), anyString());
-		doNothing().when(mQueueTaker).tryAgainAfterDelay(any(ImmutableList.class), eq(exc));
+		doNothing().when(mQueueTaker).tryAgainAfterDelay(Matchers.<ImmutableList<SimpleMessage>> any(), eq(exc));
 		when(mailQueue.take()).thenReturn(message).thenThrow(new InterruptedException());
 
 		mQueueTaker.run();
 
-		verify(mQueueTaker).tryAgainAfterDelay(any(ImmutableList.class), eq(exc));
+		verify(mQueueTaker).tryAgainAfterDelay(Matchers.<ImmutableList<SimpleMessage>> any(), eq(exc));
 	}
 }
