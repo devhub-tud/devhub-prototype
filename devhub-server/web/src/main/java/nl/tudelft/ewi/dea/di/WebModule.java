@@ -26,7 +26,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.inject.Provides;
 import com.google.inject.Scopes;
-import com.google.inject.persist.PersistFilter;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
@@ -55,6 +54,11 @@ public class WebModule extends ServletModule {
 	private BuildInfo readBuildInfo() {
 		InputStream src = WebModule.class.getResourceAsStream("/buildinfo.json");
 		Preconditions.checkNotNull(src, "Could not find build info");
+
+		if (src != null) {
+			throw new IllegalArgumentException("Test");
+		}
+
 		try {
 			return new CommonModule().objectMapper().readValue(src, BuildInfo.class);
 		} catch (IOException e) {
@@ -72,8 +76,6 @@ public class WebModule extends ServletModule {
 
 		install(new SecurityModule(servletContext));
 		install(new PersistenceModule(serverConfig.getDbConfig(), ""));
-		filter("/*").through(PersistFilter.class);
-
 		install(new MailModule(serverConfig.getMailConfig()));
 
 		LOG.debug("Configuring servlets and URLs");
