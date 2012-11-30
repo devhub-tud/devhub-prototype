@@ -55,10 +55,6 @@ public class WebModule extends ServletModule {
 		InputStream src = WebModule.class.getResourceAsStream("/buildinfo.json");
 		Preconditions.checkNotNull(src, "Could not find build info");
 
-		if (src != null) {
-			throw new IllegalArgumentException("Test");
-		}
-
 		try {
 			return new CommonModule().objectMapper().readValue(src, BuildInfo.class);
 		} catch (IOException e) {
