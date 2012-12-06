@@ -2,12 +2,10 @@ package nl.tudelft.ewi.devhub.services.versioncontrol;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
-import nl.minicom.gitolite.manager.git.PassphraseCredentialsProvider;
 import nl.tudelft.ewi.dea.DevHubException;
 import nl.tudelft.ewi.devhub.services.Service;
 import nl.tudelft.ewi.devhub.services.models.ServiceResponse;
@@ -24,9 +22,7 @@ import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.PushResult;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,14 +68,10 @@ public abstract class VersionControlService implements Service {
 			config.setString("remote", "origin", "url", repositoryUrl);
 			config.unset("remote", "origin", "fetch");
 			config.save();
-			try {
-				Iterable<PushResult> result = git.push().setPushAll().setRemote("origin").call();
-				LOG.info("Push result {}", Joiner.on('\n').join(result));
-			} catch (JGitInternalException | InvalidRemoteException e) {
-				throw new DevHubException("Could not clone from template " + cloneRepo, e);
-			}
+			Iterable<PushResult> result = git.push().setPushAll().setRemote("origin").call();
+			LOG.info("Push result {}", Joiner.on('\n').join(result));
 
-		} catch (IOException e) {
+		} catch (IOException | JGitInternalException | InvalidRemoteException e) {
 			LOG.error("Could not instantiate repo", e);
 			throw new DevHubException("Could not instantiate repo", e);
 		}
