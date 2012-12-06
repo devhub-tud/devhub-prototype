@@ -1,7 +1,14 @@
 package nl.tudelft.ewi.devhub.services.versioncontrol;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
+import nl.minicom.gitolite.manager.git.PassphraseCredentialsProvider;
+import nl.tudelft.ewi.dea.DevHubException;
 import nl.tudelft.ewi.devhub.services.Service;
 import nl.tudelft.ewi.devhub.services.models.ServiceResponse;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.CreatedRepositoryResponse;
@@ -10,14 +17,86 @@ import nl.tudelft.ewi.devhub.services.versioncontrol.models.RepositoryRepresenta
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.SshKeyIdentifier;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.SshKeyRepresentation;
 
-public interface VersionControlService extends Service {
+import org.eclipse.jgit.api.CloneCommand;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.api.errors.JGitInternalException;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.StoredConfig;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.transport.PushResult;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-	Future<CreatedRepositoryResponse> createRepository(RepositoryRepresentation repository);
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Joiner;
+import com.google.common.io.Files;
 
-	Future<ServiceResponse> removeRepository(RepositoryIdentifier repository);
+public abstract class VersionControlService implements Service {
 
-	Future<ServiceResponse> addSshKey(SshKeyRepresentation sshKey);
+	private static final Logger LOG = LoggerFactory.getLogger(VersionControlService.class);
 
-	Future<ServiceResponse> removeSshKeys(SshKeyIdentifier... sshKeys);
+	public Future<CreatedRepositoryResponse> createRepository(final RepositoryRepresentation repository, final String cloneRepo) {
+		return submit(new Callable<CreatedRepositoryResponse>() {
 
+			@Override
+			public CreatedRepositoryResponse call() throws Exception {
+				CreatedRepositoryResponse createdRepository = createRepository(repository).get();
+				setTemplateInRepo(createdRepository.getRepositoryUrl(), cloneRepo);
+				return createdRepository;
+			}
+		});
+	}
+
+	@VisibleForTesting
+	void setTemplateInRepo(String repositoryUrl, String cloneRepo) {
+		File tmpDir = Files.createTempDir();
+		LOG.info("Creating clone in {}", tmpDir.getPath());
+		try {
+			FileRepositoryBuilder builder = new FileRepositoryBuilder();
+			Repository repository = builder.setGitDir(tmpDir).readEnvironment().findGitDir().build();
+
+			Git git = new Git(repository);
+			CloneCommand clone = Git.cloneRepository();
+			clone.setBare(true);
+			clone.setCloneAllBranches(true);
+			clone.setDirectory(tmpDir).setURI(cloneRepo);
+
+			LOG.info("Cloning {}", cloneRepo);
+			clone.call();
+
+			LOG.info("Changing remote to {}", repositoryUrl);
+			StoredConfig config = git.getRepository().getConfig();
+			config.setString("remote", "origin", "url", repositoryUrl);
+			config.unset("remote", "origin", "fetch");
+			config.save();
+			try {
+				Iterable<PushResult> result = git.push().setPushAll().setRemote("origin").call();
+				LOG.info("Push result {}", Joiner.on('\n').join(result));
+			} catch (JGitInternalException | InvalidRemoteException e) {
+				throw new DevHubException("Could not clone from template " + cloneRepo, e);
+			}
+
+		} catch (IOException e) {
+			LOG.error("Could not instantiate repo", e);
+			throw new DevHubException("Could not instantiate repo", e);
+		}
+
+	}
+
+	protected <T> Future<T> submit(Callable<T> callable) {
+		FutureTask<T> task = new FutureTask<T>(callable);
+		task.run();
+		return task;
+	}
+
+	public abstract Future<CreatedRepositoryResponse> createRepository(RepositoryRepresentation repository);
+
+	public abstract Future<ServiceResponse> removeRepository(RepositoryIdentifier repository);
+
+	public abstract Future<ServiceResponse> addSshKey(SshKeyRepresentation sshKey);
+
+	public abstract Future<ServiceResponse> removeSshKeys(SshKeyIdentifier... sshKeys);
 }

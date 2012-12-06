@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 
-public class GitoliteService implements VersionControlService {
+public class GitoliteService extends VersionControlService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GitoliteService.class);
 
@@ -143,12 +143,6 @@ public class GitoliteService implements VersionControlService {
 				}
 			}
 		});
-	}
-
-	private <T> Future<T> submit(Callable<T> callable) {
-		FutureTask<T> task = new FutureTask<T>(callable);
-		task.run();
-		return task;
 	}
 
 	@Override
