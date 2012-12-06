@@ -4,7 +4,7 @@
 				<a style="padding: 4px;" href="/">Home</a> - 
 				<a style="padding: 4px;" href="/support">Support</a> - 
 				<a style="padding: 4px;" href="/api">API</a> - 
-				<a style="padding: 4px;" href="/bug-reports">Bug reports</a> - 
+				<a style="padding: 4px;" href="/feedback">Feedback</a> - 
 				<a style="padding: 4px;" href="/about">About</a>
 			</div> 
 		</footer>

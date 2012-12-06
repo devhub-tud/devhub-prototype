@@ -22,6 +22,7 @@ import com.google.common.base.Preconditions;
 public final class ServerConfig extends JsonConfigFile {
 
 	private String webUrl;
+	private String feedbackEmailAddress;
 	private MailProperties mailConfig;
 	private DatabaseProperties dbConfig;
 	private Map<String, Map<String, Properties>> services;
