@@ -24,10 +24,6 @@
 					<td class="attribute">Jenkins job URL</td>
 					<td><a href="${jenkins-path}">${jenkins-path}</a></td>
 				</tr>
-				<tr>
-					<td class="attribute">Sonar URL</td>
-					<td>TODO</td>
-				</tr>
 			</tbody>
 		</table>
 
