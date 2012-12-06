@@ -1,5 +1,7 @@
 {
 	"webUrl" : "http://localhost:8080",
+	
+	"feedbackEmailAddress" : "dea@hartveld.com", 
 
 	"mailConfig" : {
 		"host" : "localhost",

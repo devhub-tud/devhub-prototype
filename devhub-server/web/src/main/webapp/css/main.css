@@ -125,6 +125,10 @@ table .btn-panel {
 	width: 515px;
 }
 
+.input-fullwidth {
+	width: 100%;
+}
+
 form label {
 	font-weight: bold;
 }

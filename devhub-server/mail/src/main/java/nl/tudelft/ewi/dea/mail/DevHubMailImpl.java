@@ -17,6 +17,8 @@ import com.google.inject.Provider;
  */
 class DevHubMailImpl implements DevHubMail {
 
+	private static final String USER_FEEDBACK_SUBJECT_PREFIX = "[DevHub user feedback]";
+
 	private static final Logger LOG = LoggerFactory.getLogger(DevHubMailImpl.class);
 
 	private final Provider<VerifyRegistrationMailFactory> verifyRegMailFactory;
@@ -59,6 +61,13 @@ class DevHubMailImpl implements DevHubMail {
 	public void sendDevHubInvite(String email, String fromDisplayName, String projectName, String publicUrl) {
 		LOG.debug("Sending DevHub invite to addres {}", email);
 		SimpleMessage mail = inviteProjectFac.get().sendDevHubInvite(email, fromDisplayName, projectName, publicUrl);
+		sender.deliver(mail);
+	}
+
+	@Override
+	public void sendFeedbackEmail(String from, String to, String title, String content) {
+		LOG.debug("Sending feedback email from address: {}", from);
+		SimpleMessage mail = new SimpleMessage(to, USER_FEEDBACK_SUBJECT_PREFIX + title, content, from);
 		sender.deliver(mail);
 	}
 }
