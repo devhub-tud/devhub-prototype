@@ -30,11 +30,7 @@ public class UserFactory {
 		final SimpleByteSource totalSalt = SaltTool.getFullSalt(userSalt);
 		final int iterations = SecurityModule.NUMBER_OF_HASH_ITERATIONS;
 		Sha256Hash hash = new Sha256Hash(plainPassword, totalSalt, iterations);
-		// Loop starts at 1 because it has already been hashed once in the
-		// constructor.
-		for (int i = 1; i < SecurityModule.NUMBER_OF_HASH_ITERATIONS; i++) {
-			hash = new Sha256Hash(plainPassword, totalSalt, iterations);
-		}
 		return hash.toHex();
 	}
+
 }
