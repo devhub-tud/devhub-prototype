@@ -51,7 +51,7 @@ public class Provisioner {
 
 	private final Provider<UnitOfWork> units;
 
-	private InviteManager inviteMngr;
+	private final InviteManager inviteMngr;
 
 	@Inject
 	public Provisioner(Provider<UnitOfWork> units, Provider<CourseDao> courseDao, Provider<ProjectDao> projectDao,
@@ -211,6 +211,9 @@ public class Provisioner {
 				User member = membership.getUser();
 				request.addMember(new ServiceUser(member.getNetId(), member.getEmail()));
 			}
+
+			// Grant access to the git user.
+			request.addMember(new ServiceUser("git", "git@devhub.nl"));
 
 			try {
 				Future<CreatedRepositoryResponse> createRepository = versioningService.createRepository(request);
