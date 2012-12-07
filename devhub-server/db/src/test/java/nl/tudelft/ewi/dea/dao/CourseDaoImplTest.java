@@ -35,12 +35,12 @@ public class CourseDaoImplTest extends DatabaseTest {
 		final String courseName0 = "AAA BBB CCC";
 		final String user0 = "f-b-n-1@example.com";
 		final User owner0 = new User(user0, user0, user0, 0, salt, user0, UserRole.ADMIN);
-		final Course c0 = new Course(courseName0, owner0);
+		final Course c0 = new Course(courseName0, owner0, null);
 
 		final String courseName1 = "AAA BBB DDD";
 		final String user1 = "f-b-n-2@example.com";
 		final User owner1 = new User(user1, user1, user1, 0, salt, user1, UserRole.ADMIN);
-		final Course c1 = new Course(courseName1, owner1);
+		final Course c1 = new Course(courseName1, owner1, null);
 
 		persistAll(owner0, owner1, c0, c1);
 
@@ -62,17 +62,17 @@ public class CourseDaoImplTest extends DatabaseTest {
 		final String courseName0 = "AAA BBB CCC";
 		final String user0 = "f-b-ss-1@example.com";
 		final User owner0 = new User(user0, user0, user0, 0, salt, user0, UserRole.ADMIN);
-		final Course c0 = new Course(courseName0, owner0);
+		final Course c0 = new Course(courseName0, owner0, null);
 
 		final String courseName1 = "AAA BBB DDD";
 		final String user1 = "f-b-ss-2@example.com";
 		final User owner1 = new User(user1, user1, user1, 0, salt, user1, UserRole.ADMIN);
-		final Course c1 = new Course(courseName1, owner1);
+		final Course c1 = new Course(courseName1, owner1, null);
 
 		final String courseName2 = "AAA EEE";
 		final String user2 = "f-b-ss-3@example.com";
 		final User owner2 = new User(user2, user2, user2, 0, salt, user2, UserRole.ADMIN);
-		final Course c2 = new Course(courseName2, owner2);
+		final Course c2 = new Course(courseName2, owner2, null);
 
 		persistAll(owner0, owner1, owner2, c0, c1, c2);
 
@@ -82,6 +82,11 @@ public class CourseDaoImplTest extends DatabaseTest {
 		// Then
 		assertThat(courses.size(), is(2));
 
+	}
+
+	@Test
+	public void testFindAll() {
+		dao.findAll();
 	}
 
 }

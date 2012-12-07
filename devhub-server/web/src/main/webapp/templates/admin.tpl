@@ -52,6 +52,13 @@
 							<input type="text" id="course-code" placeholder="IN1234" class="input-mini" />
 							<input type="text" id="course-name" placeholder="Software Quality and Test Engineering" class="input-xlarge" />
 							<div class="hide help-block"></div>
+						</div>						
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="template-url">Template URL</label>
+						<div class="controls">
+							<input type="text" id="template-url" placeholder="git://github.com/octocat/Spoon-Knife.git" class="input-xlarge" />
+							<span class="help-block">You can specify a Git repository that will be used as a template for this project. Note that the repository must be readable by DevHub. If you don't want to use a template leave this box empty.</span>
 						</div>
 					</div>
 				</form>

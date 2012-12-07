@@ -5,6 +5,9 @@ import java.util.concurrent.Future;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import nl.tudelft.ewi.dea.dao.ProjectDao;
 import nl.tudelft.ewi.dea.dao.ProjectMembershipDao;
 import nl.tudelft.ewi.dea.model.Project;
@@ -24,6 +27,8 @@ import com.google.inject.assistedinject.Assisted;
 import com.google.inject.persist.Transactional;
 
 public class ProvisionTask implements Runnable {
+
+	private static final Logger LOG = LoggerFactory.getLogger(ProvisionTask.class);
 
 	private final long projectId;
 	private final VersionControlService versioningService;
@@ -59,7 +64,7 @@ public class ProvisionTask implements Runnable {
 			project = projectDao.findById(projectId);
 			creator = membershipDao.findByProjectId(projectId).get(0);
 		} catch (Throwable e) {
-			Provisioner.LOG.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 			if (project != null) {
 				projectDao.remove(project);
 			}
@@ -76,7 +81,7 @@ public class ProvisionTask implements Runnable {
 			}
 
 		} catch (Throwable e) {
-			Provisioner.LOG.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 			removeVersionControlRepository(project, creator);
 			projectDao.remove(project);
 			provisioner.updateProjectState(projectId, new State(true, true, "Could not provision source code repository!"));
@@ -84,18 +89,21 @@ public class ProvisionTask implements Runnable {
 		}
 
 		try {
-			provisioner.updateProjectState(projectId, new State(false, false, "Configuring build server project..."));
-			ServiceResponse response = createContinuousIntegrationJob(project, creator);
+			provisioner.updateProjectState(projectId, new State(false, false,
+					"Configuring build server project..."));
+			ServiceResponse response = createContinuousIntegrationJob(project,
+					creator);
 
 			if (!response.isSuccess()) {
 				throw new ProvisioningException(response.getMessage());
 			}
 		} catch (Throwable e) {
-			Provisioner.LOG.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 			removeContinuousIntegrationJob(project, creator);
 			removeVersionControlRepository(project, creator);
 			projectDao.remove(project);
-			provisioner.updateProjectState(projectId, new State(true, true, "Could not configure build server project!"));
+			provisioner.updateProjectState(projectId, new State(true, true,
+					"Could not configure build server project!"));
 			return;
 		}
 
@@ -115,11 +123,11 @@ public class ProvisionTask implements Runnable {
 		request.addMember(new ServiceUser("git", null));
 
 		try {
-			Future<CreatedRepositoryResponse> createRepository = versioningService.createRepository(request);
+			Future<CreatedRepositoryResponse> createRepository = versioningService.createRepository(request, project.getCourse().getTemplateUrl());
 			CreatedRepositoryResponse serviceResponse = createRepository.get();
 			if (serviceResponse.isSuccess()) {
 				project.setSourceCodeUrl(serviceResponse.getRepositoryUrl());
-				projectDao.merge(project);
+				projectDao.persist(project);
 			}
 
 			return serviceResponse;

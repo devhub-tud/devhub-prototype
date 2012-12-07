@@ -4,6 +4,7 @@ $(document).ready(function() {
 	
 	var courseCodeField = $('#course-code');
 	var courseNameField = $('#course-name');
+	var templateUrlField = $('#template-url');
 	var newCourseButton = $('#create-new-course');
 	var cancelCourseButton = $('#cancel-create-new-course-modal');
 	var provisionNewCourseButton = $('#provision-new-course');
@@ -86,13 +87,13 @@ $(document).ready(function() {
 		
 		var courseName = courseCodeField.val() + " " + courseNameField.val();
 		console.log(JSON.stringify({ "name": courseName }));
-		
+		var templateUrl = templateUrlField.val();
 		$.ajax({
 				type: "post",
 				dataType: "text",
 				contentType: "application/json",
 				url: "/api/courses/create", 
-				data: JSON.stringify({ "name": courseName }), 
+				data: JSON.stringify({ "name": courseName , "templateUrl": templateUrl }), 
 				success: function() {
 					close();
 					window.location.reload();

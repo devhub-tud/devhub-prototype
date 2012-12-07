@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.google.common.base.Preconditions;
+
 @Entity
 public class Course {
 
@@ -26,12 +28,15 @@ public class Course {
 
 	@OneToMany(mappedBy = "course") private Set<Project> projects = new HashSet<>();
 
+	@Column(name = "template_url") private String templateUrl;
+
 	@SuppressWarnings("unused")
 	private Course() {}
 
-	public Course(final String name, final User owner) {
-		this.owner = owner;
-		this.name = name;
+	public Course(final String name, final User owner, String templateUrl) {
+		this.owner = Preconditions.checkNotNull(owner);
+		this.name = Preconditions.checkNotNull(name);
+		this.templateUrl = templateUrl;
 	}
 
 	public long getId() {
@@ -44,6 +49,14 @@ public class Course {
 
 	public User getOwner() {
 		return owner;
+	}
+
+	public String getTemplateUrl() {
+		return templateUrl;
+	}
+
+	public boolean hasTemplateUrl() {
+		return templateUrl != null;
 	}
 
 	public Set<Project> getProjects() {
@@ -63,6 +76,7 @@ public class Course {
 		builder.append("name", getName());
 		builder.append("owner.id", getOwner().getId());
 		builder.append("owner.email", getOwner().getEmail());
+		builder.append("templateUrl", templateUrl);
 		return builder.toString();
 	}
 

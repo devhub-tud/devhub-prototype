@@ -43,7 +43,7 @@ public class ProjectInvitationDaoImplTest extends DatabaseTest {
 		super.setUp();
 		user = new User(name, mail, name, 0, name, name, UserRole.USER);
 		otherUser = new User(otherName, otherMail, otherName, 1, otherName, otherName, UserRole.USER);
-		course = new Course("Course", user);
+		course = new Course("Course", user, null);
 		project = new Project("Other", course);
 		invitationDao = getInstance(ProjectInvitationDao.class);
 	}

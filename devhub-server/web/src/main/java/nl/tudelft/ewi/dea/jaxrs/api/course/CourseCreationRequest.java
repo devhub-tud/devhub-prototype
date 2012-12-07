@@ -8,5 +8,6 @@ import lombok.ToString;
 public class CourseCreationRequest {
 
 	private String name;
+	private String templateUrl;
 
 }
