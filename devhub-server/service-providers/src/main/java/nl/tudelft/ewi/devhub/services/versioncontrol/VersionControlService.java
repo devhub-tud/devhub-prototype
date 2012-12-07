@@ -15,19 +15,15 @@ import nl.tudelft.ewi.devhub.services.versioncontrol.models.RepositoryRepresenta
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.SshKeyIdentifier;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.SshKeyRepresentation;
 
-import org.eclipse.jgit.api.CloneCommand;
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
-import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.StoredConfig;
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.jgit.transport.PushResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 
 public abstract class VersionControlService implements Service {
@@ -51,31 +47,38 @@ public abstract class VersionControlService implements Service {
 		File tmpDir = Files.createTempDir();
 		LOG.info("Creating clone in {}", tmpDir.getPath());
 		try {
-			FileRepositoryBuilder builder = new FileRepositoryBuilder();
-			Repository repository = builder.setGitDir(tmpDir).readEnvironment().findGitDir().build();
+			LOG.debug("Cloning {}", cloneRepo);
+			Git git = Git.cloneRepository()
+					.setBare(true)
+					.setCloneAllBranches(true)
+					.setDirectory(tmpDir).setURI(cloneRepo)
+					.call();
 
-			Git git = new Git(repository);
-			CloneCommand clone = Git.cloneRepository();
-			clone.setBare(true);
-			clone.setCloneAllBranches(true);
-			clone.setDirectory(tmpDir).setURI(cloneRepo);
-
-			LOG.info("Cloning {}", cloneRepo);
-			clone.call();
-
-			LOG.info("Changing remote to {}", repositoryUrl);
-			StoredConfig config = git.getRepository().getConfig();
-			config.setString("remote", "origin", "url", repositoryUrl);
-			config.unset("remote", "origin", "fetch");
-			config.save();
-			Iterable<PushResult> result = git.push().setPushAll().setRemote("origin").call();
-			LOG.info("Push result {}", Joiner.on('\n').join(result));
+			pushClonedRepoToOurRepository(repositoryUrl, git);
 
 		} catch (IOException | JGitInternalException | InvalidRemoteException e) {
 			LOG.error("Could not instantiate repo", e);
 			throw new DevHubException("Could not instantiate repo", e);
+		} finally {
+			try {
+				if (tmpDir.exists()) {
+					FileUtils.deleteDirectory(tmpDir);
+				}
+			} catch (IOException e) {
+				LOG.warn("Could not delete temporary directory " + tmpDir.getPath());
+			}
 		}
 
+	}
+
+	private void pushClonedRepoToOurRepository(String repositoryUrl, Git git) throws IOException, InvalidRemoteException {
+		LOG.debug("Changing remote to {}", repositoryUrl);
+		StoredConfig config = git.getRepository().getConfig();
+		config.setString("remote", "origin", "url", repositoryUrl);
+		config.unset("remote", "origin", "fetch");
+		config.save();
+		git.push().setPushAll().setRemote("origin").call();
+		LOG.debug("Push complete");
 	}
 
 	protected <T> Future<T> submit(Callable<T> callable) {
