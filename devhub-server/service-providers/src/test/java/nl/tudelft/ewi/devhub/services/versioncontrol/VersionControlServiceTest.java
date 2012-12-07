@@ -43,6 +43,10 @@ public class VersionControlServiceTest {
 	private void setupRepoToClone() throws Exception {
 		repoDirToClone = Files.createTempDir();
 		repoToClone = Git.init().setDirectory(repoDirToClone).call();
+		// repoToClone = Git.cloneRepository()
+		// .setCloneAllBranches(true)
+		// .setDirectory(repoDirToClone).setURI("git://github.com/octocat/Spoon-Knife.git")
+		// .call();
 		Files.write("Test file".getBytes(), new File(repoDirToClone, "testFile"));
 		repoToClone.add().addFilepattern("testFile").call();
 		repoToClone.commit().setAuthor("JUnit", "test@example.com").setMessage("Setting test file").call();

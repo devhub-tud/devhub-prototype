@@ -52,7 +52,6 @@ public abstract class VersionControlService implements Service {
 		try {
 			LOG.debug("Cloning {}", cloneRepo);
 			Git git = Git.cloneRepository()
-					.setBare(true)
 					.setCloneAllBranches(true)
 					.setDirectory(tmpDir).setURI(cloneRepo)
 					.call();

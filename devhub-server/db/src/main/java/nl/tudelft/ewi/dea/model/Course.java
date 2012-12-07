@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.google.common.base.Preconditions;
+
 @Entity
 public class Course {
 
@@ -26,14 +28,14 @@ public class Course {
 
 	@OneToMany(mappedBy = "course") private Set<Project> projects = new HashSet<>();
 
-	private String templateUrl;
+	@Column(name = "template_url") private String templateUrl;
 
 	@SuppressWarnings("unused")
 	private Course() {}
 
 	public Course(final String name, final User owner, String templateUrl) {
-		this.owner = owner;
-		this.name = name;
+		this.owner = Preconditions.checkNotNull(owner);
+		this.name = Preconditions.checkNotNull(name);
 		this.templateUrl = templateUrl;
 	}
 

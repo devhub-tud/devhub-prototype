@@ -84,4 +84,9 @@ public class CourseDaoImplTest extends DatabaseTest {
 
 	}
 
+	@Test
+	public void testFindAll() {
+		dao.findAll();
+	}
+
 }

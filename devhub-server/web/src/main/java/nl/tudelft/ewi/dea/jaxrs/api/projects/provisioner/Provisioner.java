@@ -70,7 +70,6 @@ public class Provisioner {
 		return projectId;
 	}
 
-	@Transactional
 	Project prepareProvisioning(CourseProjectRequest courseProject, User owner) {
 		if (alreadyMemberOfCourseProject(owner, courseProject.getCourse())) {
 			throw new ProvisioningException("You're already a member of a project for this course!");

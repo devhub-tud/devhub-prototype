@@ -4,7 +4,7 @@ $(document).ready(function() {
 	
 	var courseCodeField = $('#course-code');
 	var courseNameField = $('#course-name');
-	var templateUrlField = $('template-url');
+	var templateUrlField = $('#template-url');
 	var newCourseButton = $('#create-new-course');
 	var cancelCourseButton = $('#cancel-create-new-course-modal');
 	var provisionNewCourseButton = $('#provision-new-course');

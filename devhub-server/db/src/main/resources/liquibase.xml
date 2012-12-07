@@ -245,10 +245,14 @@
 			</column>
 		</createTable>
 	</changeSet>
-	
+
 	<changeSet id="16" author="alexnederlof">
 		<addColumn tableName="course">
 			<column name="templateUrl" type="varchar(255)"/>
 		</addColumn>
+	</changeSet>
+
+	<changeSet id="17" author="alexnederlof">
+		<renameColumn tableName="course" newColumnName="template_url" oldColumnName="templateUrl"/>
 	</changeSet>
 </databaseChangeLog>
