@@ -26,12 +26,15 @@ public class Course {
 
 	@OneToMany(mappedBy = "course") private Set<Project> projects = new HashSet<>();
 
+	private String templateUrl;
+
 	@SuppressWarnings("unused")
 	private Course() {}
 
-	public Course(final String name, final User owner) {
+	public Course(final String name, final User owner, String templateUrl) {
 		this.owner = owner;
 		this.name = name;
+		this.templateUrl = templateUrl;
 	}
 
 	public long getId() {
@@ -44,6 +47,10 @@ public class Course {
 
 	public User getOwner() {
 		return owner;
+	}
+
+	public String getTemplateUrl() {
+		return templateUrl;
 	}
 
 	public Set<Project> getProjects() {
@@ -63,6 +70,7 @@ public class Course {
 		builder.append("name", getName());
 		builder.append("owner.id", getOwner().getId());
 		builder.append("owner.email", getOwner().getEmail());
+		builder.append("templateUrl", templateUrl);
 		return builder.toString();
 	}
 

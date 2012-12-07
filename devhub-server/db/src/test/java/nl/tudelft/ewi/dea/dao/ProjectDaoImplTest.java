@@ -38,7 +38,7 @@ public class ProjectDaoImplTest extends DatabaseTest {
 		final User student = new User("Student", "student@example.com", "student", 12345, "salt", "hash", UserRole.USER);
 		final User otherStudent = new User("OtherStudent", "other@example.com", "other", 67890, "salt", "hash", UserRole.USER);
 
-		final Course course = new Course("Some course", owner);
+		final Course course = new Course("Some course", owner, null);
 		final Project project = new Project("My first project", course);
 		final Project otherProject = new Project("Other Project", course);
 
@@ -69,8 +69,8 @@ public class ProjectDaoImplTest extends DatabaseTest {
 
 		// Given
 		final User owner = new User("Teacher", "teacher@example.com", "teacher", 0, "salt", "hash", UserRole.ADMIN);
-		final Course course = new Course("MyFirstCourse", owner);
-		final Course otherCourse = new Course("OtherCourse", owner);
+		final Course course = new Course("MyFirstCourse", owner, null);
+		final Course otherCourse = new Course("OtherCourse", owner, null);
 
 		final Project p0 = new Project("P0", course);
 		final Project p1 = new Project("P1", course);

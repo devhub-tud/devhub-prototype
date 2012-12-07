@@ -67,7 +67,7 @@ public class CoursesResources {
 	public Course create(CourseCreationRequest request) {
 		String email = (String) SecurityUtils.getSubject().getPrincipal();
 		User owner = userDao.findByEmail(email);
-		Course course = new Course(request.getName(), owner);
+		Course course = new Course(request.getName(), owner, request.getTemplateUrl());
 
 		courseDao.persist(course);
 		return course;

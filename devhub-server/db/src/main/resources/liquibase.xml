@@ -183,11 +183,8 @@
 
 	<changeSet id="8" author="michaelj">
 		<addForeignKeyConstraint constraintName="project_projectinvitation" referencedTableName="project" baseColumnNames="project_id" baseTableName="projectinvitation"
-	referencedColumnNames="id" onDelete="CASCADE"/>
-		<addForeignKeyConstraint constraintName="project_projectmembership" 
-			referencedTableName="project" 
-			baseColumnNames="project_id" 
-			baseTableName="projectmembership"
+			referencedColumnNames="id" onDelete="CASCADE"/>
+		<addForeignKeyConstraint constraintName="project_projectmembership" referencedTableName="project" baseColumnNames="project_id" baseTableName="projectmembership"
 			referencedColumnNames="id" onDelete="CASCADE"/>
 	</changeSet>
 
@@ -225,17 +222,6 @@
 		<addForeignKeyConstraint constraintName="sshkey_user" referencedTableName="users" baseColumnNames="user_id" baseTableName="ssh_keys"
 			referencedColumnNames="id" onDelete="CASCADE"/>
 	</changeSet>
-	
-	<changeSet id="15" author="alexnederlof">
-		<createTable tableName="unsent_mails">
-			<column name="id" type="bigint" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false" />
-			</column>
-			<column name="mail" type="text">
-				<constraints nullable="false" />
-			</column>
-		</createTable>
-	</changeSet>
 
 	<changeSet id="13" author="alexnederlof">
 		<addColumn tableName="projectinvitation">
@@ -247,5 +233,22 @@
 		<addUniqueConstraint tableName="projectinvitation" columnNames="email,project_id" constraintName="project_email_unique"/>
 
 		<dropNotNullConstraint tableName="projectinvitation" columnName="user_id" columnDataType="bigint"/>
+	</changeSet>
+
+	<changeSet id="15" author="alexnederlof">
+		<createTable tableName="unsent_mails">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="mail" type="text">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="16" author="alexnederlof">
+		<addColumn tableName="course">
+			<column name="templateUrl" type="varchar(255)"/>
+		</addColumn>
 	</changeSet>
 </databaseChangeLog>
