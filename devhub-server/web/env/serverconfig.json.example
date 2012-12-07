@@ -1,5 +1,7 @@
 {
 	"webUrl" : "http://localhost:8080",
+	
+	"feedbackEmailAddress" : "dea@hartveld.com", 
 
 	"mailConfig" : {
 		"host" : "localhost",
@@ -28,8 +30,7 @@
 		},
 		"continuousIntegration" : {
 			"Jenkins" : {
-				"url" : "http://example.com/jenkins/",
-				"sonar" : "http://example.com/sonar/"
+				"url" : "http://example.com/jenkins/"
 			}
 		}
 	}

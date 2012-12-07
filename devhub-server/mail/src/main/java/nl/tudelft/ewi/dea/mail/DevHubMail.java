@@ -28,4 +28,12 @@ public interface DevHubMail {
 	 */
 	void sendDevHubInvite(String email, String fromDisplayName, String projectName, String publicUrl);
 
+	/**
+	 * @param from The address the email should be sent from.
+	 * @param to The address to send the email to.
+	 * @param title The title of the email.
+	 * @param content The contents of the email.
+	 */
+	void sendFeedbackEmail(String from, String to, String title, String content);
+
 }

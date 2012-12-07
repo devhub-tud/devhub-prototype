@@ -78,6 +78,10 @@ public class AccountsResource {
 		checkArgument(isNotEmpty(token), "token must be a non-empty string");
 		checkNotNull(request, "request must be non-null");
 
+		if ("git".equals(request.getNetId())) {
+			return Response.status(Status.BAD_REQUEST).entity("You cannot use a NetID 'git'.").build();
+		}
+
 		RegistrationToken registrationToken;
 		try {
 			registrationToken = registrationTokenDao.findByToken(token);
