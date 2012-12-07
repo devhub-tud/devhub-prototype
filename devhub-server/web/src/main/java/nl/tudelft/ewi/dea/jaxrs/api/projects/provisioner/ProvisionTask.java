@@ -111,6 +111,9 @@ public class ProvisionTask implements Runnable {
 			request.addMember(new ServiceUser(member.getNetId(), member.getEmail()));
 		}
 
+		// Grant access to the Git user.
+		request.addMember(new ServiceUser("git", null));
+
 		try {
 			Future<CreatedRepositoryResponse> createRepository = versioningService.createRepository(request);
 			CreatedRepositoryResponse serviceResponse = createRepository.get();
