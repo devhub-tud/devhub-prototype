@@ -27,6 +27,7 @@ import org.eclipse.jgit.transport.CredentialsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 
@@ -43,6 +44,10 @@ public class GitoliteService extends VersionControlService {
 	}
 
 	public GitoliteService(String user, String gitHost, String adminRepo, CredentialsProvider credentials) {
+		Preconditions.checkNotNull(user);
+		Preconditions.checkNotNull(gitHost);
+		Preconditions.checkNotNull(adminRepo);
+
 		this.gitAddress = user + "@" + gitHost;
 		this.configManager = ConfigManager.create(gitAddress + ":" + adminRepo, Files.createTempDir(), credentials);
 	}

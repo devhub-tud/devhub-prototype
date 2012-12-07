@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import nl.tudelft.ewi.dea.jaxrs.api.projects.provisioner.Provisioner;
-import nl.tudelft.ewi.dea.jaxrs.api.projects.provisioner.Provisioner.State;
+import nl.tudelft.ewi.dea.jaxrs.api.projects.provisioner.State;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.security.SecurityProvider;
 import nl.tudelft.ewi.devhub.services.ServiceProvider;

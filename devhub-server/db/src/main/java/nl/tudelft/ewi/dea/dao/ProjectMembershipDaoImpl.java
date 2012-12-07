@@ -2,6 +2,8 @@ package nl.tudelft.ewi.dea.dao;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -12,6 +14,7 @@ import nl.tudelft.ewi.dea.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
 import com.google.inject.persist.Transactional;
 
 public class ProjectMembershipDaoImpl extends AbstractDaoBase<ProjectMembership> implements ProjectMembershipDao {
@@ -37,6 +40,23 @@ public class ProjectMembershipDaoImpl extends AbstractDaoBase<ProjectMembership>
 		tq.setParameter("userId", user.getId());
 
 		return !tq.getResultList().isEmpty();
+	}
+
+	@Override
+	@Transactional
+	public List<User> findByProjectId(long projectId) {
+		final String query = "SELECT p FROM ProjectMembership p WHERE p.project.id = :projectId";
+
+		final TypedQuery<ProjectMembership> tq = createQuery(query);
+		tq.setParameter("projectId", projectId);
+
+		List<ProjectMembership> resultList = tq.getResultList();
+		List<User> users = Lists.newArrayList();
+		for (ProjectMembership membership : resultList) {
+			users.add(membership.getUser());
+		}
+
+		return users;
 	}
 
 }
