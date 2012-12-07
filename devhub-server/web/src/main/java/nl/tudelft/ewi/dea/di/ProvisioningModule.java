@@ -3,9 +3,12 @@ package nl.tudelft.ewi.dea.di;
 import java.util.Map;
 import java.util.Properties;
 
+import nl.tudelft.ewi.dea.jaxrs.api.projects.provisioner.ProvisionTask;
+import nl.tudelft.ewi.dea.jaxrs.api.projects.provisioner.ProvisionTaskFactory;
 import nl.tudelft.ewi.devhub.services.ServiceModule;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 public class ProvisioningModule extends AbstractModule {
 
@@ -18,6 +21,10 @@ public class ProvisioningModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		install(new ServiceModule(servicesConfiguration));
+
+		install(new FactoryModuleBuilder()
+				.implement(ProvisionTask.class, ProvisionTask.class)
+				.build(ProvisionTaskFactory.class));
 	}
 
 }
