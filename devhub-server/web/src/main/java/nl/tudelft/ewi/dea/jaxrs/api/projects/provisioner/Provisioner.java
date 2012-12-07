@@ -216,7 +216,12 @@ public class Provisioner {
 			request.addMember(new ServiceUser("git", "git@devhub.nl"));
 
 			try {
-				Future<CreatedRepositoryResponse> createRepository = versioningService.createRepository(request);
+				Future<CreatedRepositoryResponse> createRepository;
+				if (project.getCourse().hasTemplateUrl()) {
+					createRepository = versioningService.createRepository(request, project.getCourse().getTemplateUrl());
+				} else {
+					createRepository = versioningService.createRepository(request);
+				}
 				CreatedRepositoryResponse serviceResponse = createRepository.get();
 				if (serviceResponse.isSuccess()) {
 					project.setSourceCodeUrl(serviceResponse.getRepositoryUrl());

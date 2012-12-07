@@ -31,6 +31,9 @@ public abstract class VersionControlService implements Service {
 	private static final Logger LOG = LoggerFactory.getLogger(VersionControlService.class);
 
 	public Future<CreatedRepositoryResponse> createRepository(final RepositoryRepresentation repository, final String cloneRepo) {
+		if (cloneRepo == null) {
+			return createRepository(repository);
+		}
 		return submit(new Callable<CreatedRepositoryResponse>() {
 
 			@Override

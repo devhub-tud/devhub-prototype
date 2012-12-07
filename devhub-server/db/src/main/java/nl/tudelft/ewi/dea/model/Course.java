@@ -53,6 +53,10 @@ public class Course {
 		return templateUrl;
 	}
 
+	public boolean hasTemplateUrl() {
+		return templateUrl != null;
+	}
+
 	public Set<Project> getProjects() {
 		return Collections.unmodifiableSet(projects);
 	}
