@@ -4,7 +4,9 @@ import javax.inject.Inject;
 
 import nl.tudelft.ewi.dea.dao.ProjectDao;
 import nl.tudelft.ewi.dea.dao.ProjectMembershipDao;
+import nl.tudelft.ewi.dea.jaxrs.api.projects.InviteManager;
 import nl.tudelft.ewi.dea.model.Project;
+import nl.tudelft.ewi.dea.model.ProjectInvitation;
 import nl.tudelft.ewi.dea.model.ProjectMembership;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.devhub.services.ServiceException;
@@ -32,10 +34,12 @@ public class ProvisionTask implements Runnable {
 	private final Provisioner provisioner;
 	private final ProjectDao projectDao;
 	private final ProjectMembershipDao membershipDao;
+	private final InviteManager inviteManager;
 
 	@Inject
 	public ProvisionTask(ProjectDao projectDao,
 			ProjectMembershipDao membershipDao,
+			InviteManager inviteManager,
 			@Assisted Provisioner provisioner,
 			@Assisted VersionControlService versioningService,
 			@Assisted ContinuousIntegrationService buildService,
@@ -43,6 +47,7 @@ public class ProvisionTask implements Runnable {
 
 		this.projectDao = projectDao;
 		this.membershipDao = membershipDao;
+		this.inviteManager = inviteManager;
 		this.provisioner = provisioner;
 		this.versioningService = versioningService;
 		this.buildService = buildService;
@@ -91,6 +96,21 @@ public class ProvisionTask implements Runnable {
 			projectDao.remove(project);
 			provisioner.updateProjectState(projectId, new State(true, true, "Could not configure build server project!"));
 			return;
+		}
+
+		project.setDeployed(true);
+		projectDao.persist(project);
+
+		if (project.getInvitations().size() > 0) {
+			provisioner.updateProjectState(projectId, new State(false, false, "Inviting project members..."));
+
+			try {
+				for (ProjectInvitation invite : project.getInvitations()) {
+					inviteManager.inviteUser(creator, invite.getEmail(), project);
+				}
+			} catch (Throwable e) {
+				LOG.warn(e.getMessage(), e);
+			}
 		}
 
 		provisioner.updateProjectState(projectId, new State(true, false, "Successfully provisioned project!"));

@@ -24,6 +24,8 @@ public class Project {
 
 	@Column(name = "source_code_url", nullable = false, unique = true) private String sourceCodeUrl;
 
+	private boolean deployed;
+
 	@ManyToOne(optional = false) private Course course;
 
 	@OneToMany(mappedBy = "project") private final Set<ProjectInvitation> invitations = new HashSet<>();
@@ -36,6 +38,7 @@ public class Project {
 	public Project(final String name, final Course course) {
 		this.name = name;
 		this.course = course;
+		this.deployed = false;
 	}
 
 	public long getId() {
@@ -56,6 +59,14 @@ public class Project {
 
 	public void setSourceCodeUrl(String newUrl) {
 		this.sourceCodeUrl = newUrl;
+	}
+
+	public boolean isDeployed() {
+		return deployed;
+	}
+
+	public void setDeployed(boolean deployed) {
+		this.deployed = deployed;
 	}
 
 	public Set<ProjectMembership> getMembers() {

@@ -11,7 +11,6 @@ import nl.tudelft.ewi.dea.dao.ProjectDao;
 import nl.tudelft.ewi.dea.dao.ProjectInvitationDao;
 import nl.tudelft.ewi.dea.dao.ProjectMembershipDao;
 import nl.tudelft.ewi.dea.jaxrs.api.projects.CourseProjectRequest;
-import nl.tudelft.ewi.dea.jaxrs.api.projects.InviteManager;
 import nl.tudelft.ewi.dea.model.Course;
 import nl.tudelft.ewi.dea.model.Project;
 import nl.tudelft.ewi.dea.model.ProjectMembership;
@@ -38,21 +37,18 @@ public class Provisioner {
 	private final Provider<ProjectMembershipDao> membershipDao;
 	private final Provider<ProjectInvitationDao> invitationDao;
 
-	private final InviteManager inviteMngr;
 	private final ProvisionTaskFactory factory;
 
 	@Inject
 	public Provisioner(ProvisionTaskFactory factory, Provider<CourseDao> courseDao,
 			Provider<ProjectDao> projectDao, Provider<ProjectMembershipDao> membershipDao,
-			Provider<ProjectInvitationDao> invitationDao, InviteManager inviteMngr,
-			ScheduledExecutorService executor) {
+			Provider<ProjectInvitationDao> invitationDao, ScheduledExecutorService executor) {
 
 		this.factory = factory;
 		this.courseDao = courseDao;
 		this.projectDao = projectDao;
 		this.membershipDao = membershipDao;
 		this.invitationDao = invitationDao;
-		this.inviteMngr = inviteMngr;
 		this.executor = executor;
 
 		stateCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).maximumSize(500).build();
@@ -83,15 +79,6 @@ public class Provisioner {
 			throw new ProvisioningException("Could not create project!");
 		}
 
-		try {
-			for (String invite : courseProject.getInvites()) {
-				inviteMngr.inviteUser(owner, invite, project);
-			}
-		} catch (Throwable e) {
-			LOG.error(e.getMessage(), e);
-			removeProjectFromDb(project);
-			throw new ProvisioningException("Could not invite users!");
-		}
 		return project;
 	}
 

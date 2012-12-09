@@ -126,7 +126,7 @@
 		</div>
 		<div class="modal-footer">
 			<a href="#" id="close-btn" class="btn" data-dismiss="modal">Close</a>
-			<a href="#" id="done-btn" class="btn btn-primary">See project details</a>
+			<a href="#" id="done-btn" class="btn btn-primary hide">See project details</a>
 		</div>
 	</div>
 </div>

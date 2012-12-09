@@ -42,6 +42,8 @@ public class ProjectDaoImplTest extends DatabaseTest {
 		final Project project = new Project("My first project", course);
 		final Project otherProject = new Project("Other Project", course);
 
+		project.setDeployed(true);
+
 		final ProjectMembership membership = new ProjectMembership(student, project);
 		final ProjectMembership otherMembership = new ProjectMembership(otherStudent, otherProject);
 
@@ -75,6 +77,10 @@ public class ProjectDaoImplTest extends DatabaseTest {
 		final Project p0 = new Project("P0", course);
 		final Project p1 = new Project("P1", course);
 		final Project p2 = new Project("P2", otherCourse);
+
+		p0.setDeployed(true);
+		p1.setDeployed(true);
+		p2.setDeployed(true);
 
 		persistAll(owner, course, otherCourse, p0, p1, p2);
 
