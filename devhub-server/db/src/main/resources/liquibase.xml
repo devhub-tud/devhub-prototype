@@ -258,7 +258,7 @@
 	
 	<changeSet id="18" author="michaelj">
 		<addColumn tableName="project">
-			<column name="deployed" type="tinyint(1)">
+			<column name="deployed" type="boolean" defaultValue="true">
 				<constraints nullable="false" />
 			</column>
 		</addColumn>
