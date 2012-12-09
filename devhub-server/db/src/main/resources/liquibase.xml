@@ -255,4 +255,13 @@
 	<changeSet id="17" author="alexnederlof">
 		<renameColumn tableName="course" newColumnName="template_url" oldColumnName="templateUrl"/>
 	</changeSet>
+	
+	<changeSet id="18" author="michaelj">
+		<addColumn tableName="project">
+			<column name="deployed" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+	</changeSet>
+	
 </databaseChangeLog>

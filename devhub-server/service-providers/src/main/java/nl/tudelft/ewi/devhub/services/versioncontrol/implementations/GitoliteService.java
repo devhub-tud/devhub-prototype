@@ -5,7 +5,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 import nl.minicom.gitolite.manager.ConfigManager;
 import nl.minicom.gitolite.manager.exceptions.ServiceUnavailable;

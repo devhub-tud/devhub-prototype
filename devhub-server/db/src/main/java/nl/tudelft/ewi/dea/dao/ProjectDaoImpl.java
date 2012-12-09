@@ -34,7 +34,7 @@ public class ProjectDaoImpl extends AbstractDaoBase<Project> implements ProjectD
 
 		checkNotNull(user, "user must be non-null");
 
-		final String query = "SELECT p FROM Project p WHERE p.id IN (SELECT pm.project FROM ProjectMembership pm WHERE pm.user.id = :id) ORDER BY p.name ASC";
+		final String query = "SELECT p FROM Project p WHERE p.deployed = 1 AND p.id IN (SELECT pm.project FROM ProjectMembership pm WHERE pm.user.id = :id) ORDER BY p.name ASC";
 
 		final TypedQuery<Project> tq = createQuery(query);
 		tq.setParameter("id", user.getId());
@@ -50,7 +50,7 @@ public class ProjectDaoImpl extends AbstractDaoBase<Project> implements ProjectD
 
 		checkNotNull(course, "course must be non-null");
 
-		final String query = "SELECT p FROM Project p WHERE p.course.id = :id";
+		final String query = "SELECT p FROM Project p WHERE p.deployed = 1 AND p.course.id = :id";
 
 		final TypedQuery<Project> tq = createQuery(query);
 		tq.setParameter("id", course.getId());
