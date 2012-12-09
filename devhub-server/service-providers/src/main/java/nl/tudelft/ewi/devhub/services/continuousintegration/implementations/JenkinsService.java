@@ -2,14 +2,11 @@ package nl.tudelft.ewi.devhub.services.continuousintegration.implementations;
 
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
+import nl.tudelft.ewi.devhub.services.ServiceException;
 import nl.tudelft.ewi.devhub.services.continuousintegration.ContinuousIntegrationService;
 import nl.tudelft.ewi.devhub.services.continuousintegration.models.BuildIdentifier;
 import nl.tudelft.ewi.devhub.services.continuousintegration.models.BuildProject;
-import nl.tudelft.ewi.devhub.services.models.ServiceResponse;
 import nl.tudelft.ewi.devhub.services.models.ServiceUser;
 import nl.tudelft.jenkins.auth.User;
 import nl.tudelft.jenkins.auth.UserImpl;
@@ -40,44 +37,26 @@ public class JenkinsService implements ContinuousIntegrationService {
 	}
 
 	@Override
-	public Future<ServiceResponse> createBuildProject(final BuildProject project) {
-		return execute(new Callable<ServiceResponse>() {
-			@Override
-			public ServiceResponse call() throws Exception {
-				List<User> users = Lists.newArrayList();
-				for (ServiceUser member : project.getMembers()) {
-					users.add(new UserImpl(member.getIdentifier(), member.getEmail()));
-				}
+	public void createBuildProject(BuildProject project) throws ServiceException {
+		List<User> users = Lists.newArrayList();
+		for (ServiceUser member : project.getMembers()) {
+			users.add(new UserImpl(member.getIdentifier(), member.getEmail()));
+		}
 
-				try {
-					jenkinsClient.createJob(project.getName(), project.getSourceCodeUrl(), users);
-					return new ServiceResponse(true, "Successfully created continuous integration job!");
-				} catch (Throwable e) {
-					return new ServiceResponse(false, "Failed to create continuous integration job!");
-				}
-			}
-		});
+		try {
+			jenkinsClient.createJob(project.getName(), project.getSourceCodeUrl(), users);
+		} catch (Throwable e) {
+			throw new ServiceException("Could not create the defined Jenkins job!");
+		}
 	}
 
 	@Override
-	public Future<ServiceResponse> removeBuildProject(final BuildIdentifier buildId) {
-		return execute(new Callable<ServiceResponse>() {
-			@Override
-			public ServiceResponse call() throws Exception {
-				try {
-					jenkinsClient.deleteJob(jenkinsClient.retrieveJob(buildId.getName()));
-					return new ServiceResponse(true, "Successfully removed continuous integration job!");
-				} catch (Throwable e) {
-					return new ServiceResponse(false, "Failed to remove continuous integration job!");
-				}
-			}
-		});
-	}
-
-	private Future<ServiceResponse> execute(Callable<ServiceResponse> callable) {
-		FutureTask<ServiceResponse> task = new FutureTask<ServiceResponse>(callable);
-		task.run();
-		return task;
+	public void removeBuildProject(BuildIdentifier buildId) throws ServiceException {
+		try {
+			jenkinsClient.deleteJob(jenkinsClient.retrieveJob(buildId.getName()));
+		} catch (Throwable e) {
+			throw new ServiceException("Could not remove the specified Jenkins job!");
+		}
 	}
 
 	@Override

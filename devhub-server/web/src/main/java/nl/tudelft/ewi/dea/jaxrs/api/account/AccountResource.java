@@ -1,7 +1,6 @@
 package nl.tudelft.ewi.dea.jaxrs.api.account;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -21,7 +20,7 @@ import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.model.UserRole;
 import nl.tudelft.ewi.dea.security.SecurityProvider;
 import nl.tudelft.ewi.dea.security.UserFactory;
-import nl.tudelft.ewi.devhub.services.models.ServiceResponse;
+import nl.tudelft.ewi.devhub.services.ServiceException;
 import nl.tudelft.ewi.devhub.services.models.ServiceUser;
 import nl.tudelft.ewi.devhub.services.versioncontrol.VersionControlService;
 import nl.tudelft.ewi.devhub.services.versioncontrol.implementations.GitoliteService;
@@ -121,16 +120,11 @@ public class AccountResource {
 		SshKeyIdentifier keyId = new SshKeyIdentifier(sshKey.getKeyName(), serviceUser);
 		SshKeyRepresentation key = new SshKeyRepresentation(keyId, sshKey.getKeyContents());
 
-		ServiceResponse response;
 		try {
-			response = localVersioningService.addSshKey(key).get();
-		} catch (ExecutionException | InterruptedException e) {
+			localVersioningService.addSshKey(key);
+		} catch (ServiceException e) {
 			LOG.error(e.getMessage(), e);
 			return Response.status(Status.CONFLICT).entity("Could not add your SSH key!").build();
-		}
-
-		if (!response.isSuccess()) {
-			return Response.status(Status.CONFLICT).entity(response.getMessage()).build();
 		}
 
 		keyDao.persist(sshKey);
@@ -161,16 +155,11 @@ public class AccountResource {
 			keyArray[i] = new SshKeyIdentifier(key.getKeyName(), serviceUser);
 		}
 
-		ServiceResponse response;
 		try {
-			response = localVersioningService.removeSshKeys(keyArray).get();
-		} catch (ExecutionException | InterruptedException e) {
+			localVersioningService.removeSshKeys(keyArray);
+		} catch (ServiceException e) {
 			LOG.error(e.getMessage(), e);
 			return Response.status(Status.CONFLICT).entity("Could not remove your SSH key(s)!").build();
-		}
-
-		if (!response.isSuccess()) {
-			return Response.status(Status.CONFLICT).entity(response.getMessage()).build();
 		}
 
 		keyDao.remove(remove.toArray());
