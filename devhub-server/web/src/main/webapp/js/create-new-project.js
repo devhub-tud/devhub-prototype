@@ -7,6 +7,7 @@ $(document).ready(function() {
 	var newProjectForm = $('#create-new-project-form');
 	var newProjectProgress = $('#create-new-project-progress');
 	var newProjectMessage = $('#create-new-project-message');
+	var doneBtn = $('#done-btn');
 	
 	var step1 = newProjectModal.find('.step-1');
 	var step2 = newProjectModal.find('.step-2');
@@ -112,6 +113,7 @@ $(document).ready(function() {
 				success: function() {
 					step2.hide();
 					step3.show();
+					doneBtn.show();
 					
 					newProjectMessage.find('strong').text("Project successfully created!");
 					newProjectMessage.find('.bar').addClass("bar-success");
