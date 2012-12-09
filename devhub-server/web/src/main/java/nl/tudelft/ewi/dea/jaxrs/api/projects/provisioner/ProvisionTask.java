@@ -1,8 +1,5 @@
 package nl.tudelft.ewi.dea.jaxrs.api.projects.provisioner;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
 import javax.inject.Inject;
 
 import nl.tudelft.ewi.dea.dao.ProjectDao;
@@ -12,13 +9,12 @@ import nl.tudelft.ewi.dea.model.Project;
 import nl.tudelft.ewi.dea.model.ProjectInvitation;
 import nl.tudelft.ewi.dea.model.ProjectMembership;
 import nl.tudelft.ewi.dea.model.User;
+import nl.tudelft.ewi.devhub.services.ServiceException;
 import nl.tudelft.ewi.devhub.services.continuousintegration.ContinuousIntegrationService;
 import nl.tudelft.ewi.devhub.services.continuousintegration.models.BuildIdentifier;
 import nl.tudelft.ewi.devhub.services.continuousintegration.models.BuildProject;
-import nl.tudelft.ewi.devhub.services.models.ServiceResponse;
 import nl.tudelft.ewi.devhub.services.models.ServiceUser;
 import nl.tudelft.ewi.devhub.services.versioncontrol.VersionControlService;
-import nl.tudelft.ewi.devhub.services.versioncontrol.models.CreatedRepositoryResponse;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.RepositoryIdentifier;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.RepositoryRepresentation;
 
@@ -79,12 +75,9 @@ public class ProvisionTask implements Runnable {
 
 		try {
 			provisioner.updateProjectState(projectId, new State(false, false, "Provisioning source code repository..."));
-			ServiceResponse response = createVersionControlRepository(project, creator);
-
-			if (!response.isSuccess()) {
-				throw new ProvisioningException(response.getMessage());
-			}
-
+			String repositoryUrl = createVersionControlRepository(project, creator);
+			project.setSourceCodeUrl(repositoryUrl);
+			projectDao.persist(project);
 		} catch (Throwable e) {
 			LOG.error(e.getMessage(), e);
 			removeVersionControlRepository(project, creator);
@@ -94,21 +87,14 @@ public class ProvisionTask implements Runnable {
 		}
 
 		try {
-			provisioner.updateProjectState(projectId, new State(false, false,
-					"Configuring build server project..."));
-			ServiceResponse response = createContinuousIntegrationJob(project,
-					creator);
-
-			if (!response.isSuccess()) {
-				throw new ProvisioningException(response.getMessage());
-			}
+			provisioner.updateProjectState(projectId, new State(false, false, "Configuring build server project..."));
+			createContinuousIntegrationJob(project, creator);
 		} catch (Throwable e) {
 			LOG.error(e.getMessage(), e);
 			removeContinuousIntegrationJob(project, creator);
 			removeVersionControlRepository(project, creator);
 			projectDao.remove(project);
-			provisioner.updateProjectState(projectId, new State(true, true,
-					"Could not configure build server project!"));
+			provisioner.updateProjectState(projectId, new State(true, true, "Could not configure build server project!"));
 			return;
 		}
 
@@ -130,7 +116,7 @@ public class ProvisionTask implements Runnable {
 		provisioner.updateProjectState(projectId, new State(true, false, "Successfully provisioned project!"));
 	}
 
-	private ServiceResponse createVersionControlRepository(Project project, User creator) {
+	private String createVersionControlRepository(Project project, User creator) throws ServiceException {
 		ServiceUser serviceUser = new ServiceUser(creator.getNetId(), creator.getEmail());
 		RepositoryIdentifier repositoryId = new RepositoryIdentifier(project.getSafeName(), serviceUser);
 		RepositoryRepresentation request = new RepositoryRepresentation(repositoryId, project.getSafeName());
@@ -142,33 +128,20 @@ public class ProvisionTask implements Runnable {
 		// Grant access to the Git user.
 		request.addMember(new ServiceUser("git", null));
 
-		try {
-			Future<CreatedRepositoryResponse> createRepository = versioningService.createRepository(request, project.getCourse().getTemplateUrl());
-			CreatedRepositoryResponse serviceResponse = createRepository.get();
-			if (serviceResponse.isSuccess()) {
-				project.setSourceCodeUrl(serviceResponse.getRepositoryUrl());
-				projectDao.persist(project);
-			}
+		return versioningService.createRepository(request);
+	}
 
-			return serviceResponse;
-		} catch (ExecutionException | InterruptedException e) {
-			throw new ProvisioningException("Failed to provision new source code repository", e);
+	private void removeVersionControlRepository(Project project, User creator) {
+		try {
+			ServiceUser serviceUser = new ServiceUser(creator.getNetId(), creator.getEmail());
+			RepositoryIdentifier repositoryId = new RepositoryIdentifier(project.getSafeName(), serviceUser);
+			versioningService.removeRepository(repositoryId);
+		} catch (Throwable e) {
+			LOG.error(e.getMessage(), e);
 		}
 	}
 
-	private ServiceResponse removeVersionControlRepository(Project project, User creator) {
-		ServiceUser serviceUser = new ServiceUser(creator.getNetId(), creator.getEmail());
-		RepositoryIdentifier repositoryId = new RepositoryIdentifier(project.getSafeName(), serviceUser);
-
-		try {
-			Future<ServiceResponse> removeRepository = versioningService.removeRepository(repositoryId);
-			return removeRepository.get();
-		} catch (ExecutionException | InterruptedException e) {
-			return new ServiceResponse(false, "Uknown error occurred when removing source code repository!");
-		}
-	}
-
-	private ServiceResponse createContinuousIntegrationJob(Project project, User creator) {
+	private void createContinuousIntegrationJob(Project project, User creator) throws ServiceException {
 		ServiceUser serviceUser = new ServiceUser(creator.getNetId(), creator.getEmail());
 		BuildIdentifier buildId = new BuildIdentifier(project.getSafeName(), serviceUser);
 		BuildProject request = new BuildProject(buildId, project.getSourceCodeUrl());
@@ -176,24 +149,16 @@ public class ProvisionTask implements Runnable {
 			User member = membership.getUser();
 			request.addMember(new ServiceUser(member.getNetId(), member.getEmail()));
 		}
-
-		try {
-			Future<ServiceResponse> createBuildProject = buildService.createBuildProject(request);
-			return createBuildProject.get();
-		} catch (ExecutionException | InterruptedException e) {
-			return new ServiceResponse(false, "Uknown error occurred when creating continuous integration job!");
-		}
+		buildService.createBuildProject(request);
 	}
 
-	private ServiceResponse removeContinuousIntegrationJob(Project project, User creator) {
-		ServiceUser serviceUser = new ServiceUser(creator.getNetId(), creator.getEmail());
-		BuildIdentifier buildId = new BuildIdentifier(project.getSafeName(), serviceUser);
-
+	private void removeContinuousIntegrationJob(Project project, User creator) {
 		try {
-			Future<ServiceResponse> removeBuildProject = buildService.removeBuildProject(buildId);
-			return removeBuildProject.get();
-		} catch (ExecutionException | InterruptedException e) {
-			return new ServiceResponse(false, "Uknown error occurred when removing continuous integration job!");
+			ServiceUser serviceUser = new ServiceUser(creator.getNetId(), creator.getEmail());
+			BuildIdentifier buildId = new BuildIdentifier(project.getSafeName(), serviceUser);
+			buildService.removeBuildProject(buildId);
+		} catch (Throwable e) {
+			LOG.error(e.getMessage(), e);
 		}
 	}
 }

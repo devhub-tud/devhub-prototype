@@ -2,14 +2,10 @@ package nl.tudelft.ewi.devhub.services.versioncontrol;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 import nl.tudelft.ewi.dea.DevHubException;
 import nl.tudelft.ewi.devhub.services.Service;
-import nl.tudelft.ewi.devhub.services.models.ServiceResponse;
-import nl.tudelft.ewi.devhub.services.versioncontrol.models.CreatedRepositoryResponse;
+import nl.tudelft.ewi.devhub.services.ServiceException;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.RepositoryIdentifier;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.RepositoryRepresentation;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.SshKeyIdentifier;
@@ -30,19 +26,13 @@ public abstract class VersionControlService implements Service {
 
 	private static final Logger LOG = LoggerFactory.getLogger(VersionControlService.class);
 
-	public Future<CreatedRepositoryResponse> createRepository(final RepositoryRepresentation repository, final String cloneRepo) {
+	public String createRepository(RepositoryRepresentation repository, String cloneRepo) throws ServiceException {
 		if (cloneRepo == null) {
 			return createRepository(repository);
 		}
-		return submit(new Callable<CreatedRepositoryResponse>() {
-
-			@Override
-			public CreatedRepositoryResponse call() throws Exception {
-				CreatedRepositoryResponse createdRepository = createRepository(repository).get();
-				setTemplateInRepo(createdRepository.getRepositoryUrl(), cloneRepo);
-				return createdRepository;
-			}
-		});
+		String repositoryUrl = createRepository(repository);
+		setTemplateInRepo(repositoryUrl, cloneRepo);
+		return repositoryUrl;
 	}
 
 	@VisibleForTesting
@@ -83,17 +73,11 @@ public abstract class VersionControlService implements Service {
 		LOG.debug("Push complete");
 	}
 
-	protected <T> Future<T> submit(Callable<T> callable) {
-		FutureTask<T> task = new FutureTask<T>(callable);
-		task.run();
-		return task;
-	}
+	public abstract String createRepository(RepositoryRepresentation repository) throws ServiceException;
 
-	public abstract Future<CreatedRepositoryResponse> createRepository(RepositoryRepresentation repository);
+	public abstract void removeRepository(RepositoryIdentifier repository) throws ServiceException;
 
-	public abstract Future<ServiceResponse> removeRepository(RepositoryIdentifier repository);
+	public abstract void addSshKey(SshKeyRepresentation sshKey) throws ServiceException;
 
-	public abstract Future<ServiceResponse> addSshKey(SshKeyRepresentation sshKey);
-
-	public abstract Future<ServiceResponse> removeSshKeys(SshKeyIdentifier... sshKeys);
+	public abstract void removeSshKeys(SshKeyIdentifier... sshKeys) throws ServiceException;
 }
