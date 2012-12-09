@@ -3,9 +3,6 @@ package nl.tudelft.ewi.devhub.services.versioncontrol.implementations;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 import nl.minicom.gitolite.manager.ConfigManager;
 import nl.minicom.gitolite.manager.exceptions.ServiceUnavailable;
@@ -14,10 +11,9 @@ import nl.minicom.gitolite.manager.models.Config;
 import nl.minicom.gitolite.manager.models.Permission;
 import nl.minicom.gitolite.manager.models.Repository;
 import nl.minicom.gitolite.manager.models.User;
-import nl.tudelft.ewi.devhub.services.models.ServiceResponse;
+import nl.tudelft.ewi.devhub.services.ServiceException;
 import nl.tudelft.ewi.devhub.services.models.ServiceUser;
 import nl.tudelft.ewi.devhub.services.versioncontrol.VersionControlService;
-import nl.tudelft.ewi.devhub.services.versioncontrol.models.CreatedRepositoryResponse;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.RepositoryIdentifier;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.RepositoryRepresentation;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.SshKeyIdentifier;
@@ -53,101 +49,79 @@ public class GitoliteService extends VersionControlService {
 	}
 
 	@Override
-	public Future<CreatedRepositoryResponse> createRepository(final RepositoryRepresentation repository) {
-		return submit(new Callable<CreatedRepositoryResponse>() {
-			@Override
-			public CreatedRepositoryResponse call() throws Exception {
-				try {
-					Config config = configManager.getConfig();
-					if (config.hasRepository(repository.getName())) {
-						return new CreatedRepositoryResponse(false, "Repository already exists!", null);
-					}
+	public String createRepository(RepositoryRepresentation repository) throws ServiceException {
+		try {
+			Config config = configManager.getConfig();
+			String repositoryName = repository.getName();
 
-					Set<User> users = Sets.newHashSet();
-					for (ServiceUser member : repository.getMembers()) {
-						User user = config.ensureUserExists(member.getIdentifier());
-						users.add(user);
-					}
-
-					Repository repo = config.createRepository(repository.getName());
-					for (User user : users) {
-						repo.setPermission(user, Permission.ALL);
-					}
-
-					configManager.applyConfig();
-
-					return new CreatedRepositoryResponse(true, "Successfully provisioned new repository!", gitAddress + ":" + repo.getName());
-				} catch (IOException e) {
-					LOG.error(e.getMessage(), e);
-					return new CreatedRepositoryResponse(false, "The Gitolite service seems to be offline.", null);
-				} catch (Throwable e) {
-					LOG.error(e.getMessage(), e);
-					return new CreatedRepositoryResponse(false, "Failed to provision your new repository!", null);
-				}
+			if (config.hasRepository(repositoryName)) {
+				throw new ServiceException("The repository '" + repositoryName + "' already exists!");
 			}
-		});
+
+			Set<User> users = Sets.newHashSet();
+			for (ServiceUser member : repository.getMembers()) {
+				User user = config.ensureUserExists(member.getIdentifier());
+				users.add(user);
+			}
+
+			Repository repo = config.createRepository(repositoryName);
+			for (User user : users) {
+				repo.setPermission(user, Permission.ALL);
+			}
+
+			configManager.applyConfig();
+			return gitAddress + ":" + repo.getName();
+
+		} catch (IOException | ServiceUnavailable e) {
+			LOG.error(e.getMessage(), e);
+			throw new ServiceException("The Gitolite service seems to be offline.");
+		} catch (Throwable e) {
+			LOG.error(e.getMessage(), e);
+			throw new ServiceException("Failed to create the specified repository!");
+		}
 	}
 
 	@Override
-	public Future<ServiceResponse> removeRepository(RepositoryIdentifier repository) {
-		return submit(new Callable<ServiceResponse>() {
-			@Override
-			public ServiceResponse call() {
-				return new ServiceResponse(false, "Removing repositories is not yet supported!");
-			}
-		});
+	public void removeRepository(RepositoryIdentifier repository) throws ServiceException {
+		throw new ServiceException("Removing repositories is not yet supported!");
 	}
 
 	@Override
-	public Future<ServiceResponse> addSshKey(final SshKeyRepresentation sshKey) {
-		return submit(new Callable<ServiceResponse>() {
-			@Override
-			public ServiceResponse call() {
-				try {
-					Config config = configManager.getConfig();
-					ServiceUser user = sshKey.getCreator();
-					User gitUser = config.ensureUserExists(user.getIdentifier());
+	public void addSshKey(SshKeyRepresentation sshKey) throws ServiceException {
+		try {
+			Config config = configManager.getConfig();
+			ServiceUser user = sshKey.getCreator();
+			User gitUser = config.ensureUserExists(user.getIdentifier());
 
-					gitUser.defineKey(sshKey.getName(), sshKey.getKey());
-					configManager.applyConfig();
-
-					return new ServiceResponse(true, "Successfully added your new SSH key!");
-				} catch (IOException | ServiceUnavailable e) {
-					LOG.error(e.getMessage(), e);
-					return new ServiceResponse(false, "The Gitolite service seems to be offline.");
-				} catch (Throwable e) {
-					LOG.error(e.getMessage(), e);
-					return new ServiceResponse(false, "Failed to add your SSH key!");
-				}
-			}
-		});
+			gitUser.defineKey(sshKey.getName(), sshKey.getKey());
+			configManager.applyConfig();
+		} catch (IOException | ServiceUnavailable e) {
+			LOG.error(e.getMessage(), e);
+			throw new ServiceException("The Gitolite service seems to be offline.");
+		} catch (Throwable e) {
+			LOG.error(e.getMessage(), e);
+			throw new ServiceException("Failed to add your SSH key!");
+		}
 	}
 
 	@Override
-	public Future<ServiceResponse> removeSshKeys(final SshKeyIdentifier... sshKeys) {
-		return submit(new Callable<ServiceResponse>() {
-			@Override
-			public ServiceResponse call() {
-				try {
-					Config config = configManager.getConfig();
-					for (SshKeyIdentifier sshKey : sshKeys) {
-						ServiceUser user = sshKey.getCreator();
-						User gitUser = config.ensureUserExists(user.getIdentifier());
-						gitUser.removeKey(sshKey.getName());
-					}
-
-					configManager.applyConfig();
-
-					return new ServiceResponse(true, "Successfully removed your SSH key(s)!");
-				} catch (IOException | ServiceUnavailable e) {
-					LOG.error(e.getMessage(), e);
-					return new ServiceResponse(false, "The Gitolite service seems to be unavailable...");
-				} catch (Throwable e) {
-					LOG.error(e.getMessage(), e);
-					return new ServiceResponse(false, "Failed to remove your SSH key(s)!");
-				}
+	public void removeSshKeys(SshKeyIdentifier... sshKeys) throws ServiceException {
+		try {
+			Config config = configManager.getConfig();
+			for (SshKeyIdentifier sshKey : sshKeys) {
+				ServiceUser user = sshKey.getCreator();
+				User gitUser = config.ensureUserExists(user.getIdentifier());
+				gitUser.removeKey(sshKey.getName());
 			}
-		});
+
+			configManager.applyConfig();
+		} catch (IOException | ServiceUnavailable e) {
+			LOG.error(e.getMessage(), e);
+			throw new ServiceException("The Gitolite service seems to be unavailable...");
+		} catch (Throwable e) {
+			LOG.error(e.getMessage(), e);
+			throw new ServiceException("Failed to remove your SSH key(s)!");
+		}
 	}
 
 	@Override
