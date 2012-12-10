@@ -47,7 +47,7 @@ $(document).ready(function() {
 			$(".contents .linux").hide();
 			$(".contents .mac").show();
 		}
-		else if (os == "lin") {
+		else if (os == "linux") {
 			$(".contents .win").hide();
 			$(".contents .mac").hide();
 			$(".contents .linux").show();
@@ -65,7 +65,7 @@ $(document).ready(function() {
 			$(".page-header .linux").fadeTo(500, 0.3);
 			$(".page-header .mac").fadeTo(500, 1.0);
 		}
-		else if (os == "lin") {
+		else if (os == "linux") {
 			$(".page-header .win").fadeTo(500, 0.3);
 			$(".page-header .mac").fadeTo(500, 0.3);
 			$(".page-header .linux").fadeTo(500, 1.0);
