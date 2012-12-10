@@ -1,6 +1,7 @@
 package nl.tudelft.ewi.dea;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -14,14 +15,11 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.eclipse.jetty.server.Server;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Ignore("Fix this test case after merging changes to architecture - problems with missing bindings")
 public class DevHubServerTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DevHubServerTest.class);
@@ -32,7 +30,7 @@ public class DevHubServerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Assert.assertThat("Port is available", available(PORT), is(true));
+		assertThat("Port is available", available(PORT), is(true));
 		server = new Server(PORT);
 		server.setHandler(DevHubServer.buildWebAppContext());
 		server.start();

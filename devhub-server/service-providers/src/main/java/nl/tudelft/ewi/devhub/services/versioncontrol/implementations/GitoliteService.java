@@ -44,8 +44,8 @@ public class GitoliteService extends VersionControlService {
 		Preconditions.checkNotNull(gitHost);
 		Preconditions.checkNotNull(adminRepo);
 
-		this.gitAddress = user + "@" + gitHost;
-		this.configManager = ConfigManager.create(gitAddress + ":" + adminRepo, Files.createTempDir(), credentials);
+		gitAddress = user + "@" + gitHost;
+		configManager = ConfigManager.create(gitAddress + ":" + adminRepo, Files.createTempDir(), credentials);
 	}
 
 	@Override
@@ -74,10 +74,10 @@ public class GitoliteService extends VersionControlService {
 
 		} catch (IOException | ServiceUnavailable e) {
 			LOG.error(e.getMessage(), e);
-			throw new ServiceException("The Gitolite service seems to be offline.");
+			throw new ServiceException("The Gitolite service seems to be offline.", e);
 		} catch (Throwable e) {
 			LOG.error(e.getMessage(), e);
-			throw new ServiceException("Failed to create the specified repository!");
+			throw new ServiceException("Failed to create the specified repository!", e);
 		}
 	}
 
@@ -97,10 +97,10 @@ public class GitoliteService extends VersionControlService {
 			configManager.applyConfig();
 		} catch (IOException | ServiceUnavailable e) {
 			LOG.error(e.getMessage(), e);
-			throw new ServiceException("The Gitolite service seems to be offline.");
+			throw new ServiceException("The Gitolite service seems to be offline.", e);
 		} catch (Throwable e) {
 			LOG.error(e.getMessage(), e);
-			throw new ServiceException("Failed to add your SSH key!");
+			throw new ServiceException("Failed to add your SSH key!", e);
 		}
 	}
 
@@ -117,10 +117,10 @@ public class GitoliteService extends VersionControlService {
 			configManager.applyConfig();
 		} catch (IOException | ServiceUnavailable e) {
 			LOG.error(e.getMessage(), e);
-			throw new ServiceException("The Gitolite service seems to be unavailable...");
+			throw new ServiceException("The Gitolite service seems to be unavailable...", e);
 		} catch (Throwable e) {
 			LOG.error(e.getMessage(), e);
-			throw new ServiceException("Failed to remove your SSH key(s)!");
+			throw new ServiceException("Failed to remove your SSH key(s)!", e);
 		}
 	}
 

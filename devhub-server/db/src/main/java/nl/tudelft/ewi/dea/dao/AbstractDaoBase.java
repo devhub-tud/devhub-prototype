@@ -67,7 +67,7 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 	@Transactional
 	public final void persist(final T object) {
 
-		LOG.debug("{}: Persist: {}", getEntityName(), object);
+		LOG.trace("{}: Persist: {}", getEntityName(), object);
 
 		checkNotNull(object, "object must be non-null");
 
