@@ -212,29 +212,4 @@
 		</addColumn>
 	</changeSet>
 	
-	<changeSet id="19" author="alexnederlof">
-		<insert tableName="project">
-			<column name="id">2</column>
-			<column name="name">Git cloned project 1</column>
-			<column name="course_id">1</column>
-			<column name="source_code_url">git://github.com/octocat/Hello-World.git</column>
-		</insert>
-		<insert tableName="project">
-			<column name="id">3</column>
-			<column name="name">Git cloned project 2</column>
-			<column name="course_id">1</column>
-			<column name="source_code_url">git://github.com/octocat/Spoon-Knife.git</column>
-		</insert>
-		<insert tableName="projectmembership">
-			<column name="id">2</column>
-			<column name="user_id">3</column>
-			<column name="project_id">2</column>
-		</insert>
-		<insert tableName="projectmembership">
-			<column name="id">3</column>
-			<column name="user_id">3</column>
-			<column name="project_id">3</column>
-		</insert>		
-	</changeSet>
-	
 </databaseChangeLog>
