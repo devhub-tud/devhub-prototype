@@ -88,7 +88,7 @@ public class CoursesResources {
 	}
 
 	private void checkTemplateUrl(String templateUrl) {
-		if (templateUrl == null) {
+		if (templateUrl == null || templateUrl.trim().isEmpty()) {
 			return;
 		} else {
 			LOG.info("Checking if {} is valid Git repo", templateUrl);
