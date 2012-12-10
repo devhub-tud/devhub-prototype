@@ -83,67 +83,15 @@
 		</createTable>
 	</changeSet>
 
-	<changeSet id="2" author="team" context="test">
+	<changeSet id="2" author="team">
 		<insert tableName="users">
-			<column name="id">1</column>
-			<column name="displayname">Administrator</column>
+			<column name="displayname">DevHub Administrator</column>
 			<column name="email">test@tudelft.nl</column>
-			<column name="netid">test-admin</column>
+			<column name="netid">devhub-admin</column>
 			<column name="studentnumber">0</column>
 			<column name="salt">cafc393e</column>
 			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c</column>
 			<column name="role">ADMIN</column>
-		</insert>
-	</changeSet>
-
-	<changeSet id="3" author="david" context="test">
-		<insert tableName="users">
-			<column name="id">2</column>
-			<column name="displayname">John Doe (Teacher)</column>
-			<column name="email">john.doe@example.com</column>
-			<column name="netid">jdoe</column>
-			<column name="studentnumber">0</column>
-			<column name="salt">cafc393e</column>
-			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c</column>
-			<column name="role">ADMIN</column>
-		</insert>
-		<insert tableName="users">
-			<column name="id">3</column>
-			<column name="displayname">Jane X (Student)</column>
-			<column name="email">jane.x@student.example.com</column>
-			<column name="netid">jx</column>
-			<column name="studentnumber">12345</column>
-			<column name="salt">cafc393e</column>
-			<column name="password">b5a28df48accd2e8117d27e574e1cb513e5ac3a8814303777eeee5e09e913f9c</column>
-			<column name="role">ADMIN</column>
-		</insert>
-		<insert tableName="course">
-			<column name="id">1</column>
-			<column name="name">IN1234 Software Engineering</column>
-			<column name="owner_id">2</column>
-		</insert>
-		<insert tableName="project">
-			<column name="id">1</column>
-			<column name="name">My first project</column>
-			<column name="course_id">1</column>
-		</insert>
-		<insert tableName="projectmembership">
-			<column name="id">1</column>
-			<column name="user_id">3</column>
-			<column name="project_id">1</column>
-		</insert>
-	</changeSet>
-
-	<changeSet id="4" author="david" context="test">
-		<insert tableName="course">
-			<column name="id">2</column>
-			<column name="name">IN5678 TDD for geeks</column>
-			<column name="owner_id">2</column>
-		</insert>
-		<insert tableName="course">
-			<column name="id">3</column>
-			<column name="name">IN9101 AFP</column>
-			<column name="owner_id">2</column>
 		</insert>
 	</changeSet>
 
