@@ -13,10 +13,12 @@
 							<td>Net ID</td>
 							<td>${user.getNetId()}</td>
 						</tr>
+	#if (${user.getStudentNumber()} > 0) 
 						<tr>
 							<td>Student number</td>
 							<td>${user.getStudentNumber()}</td>
 						</tr>
+	#end
 					</tbody>
 				</table>
 			</section>
