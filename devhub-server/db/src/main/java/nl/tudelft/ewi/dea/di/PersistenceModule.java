@@ -33,10 +33,8 @@ public class PersistenceModule extends AbstractModule {
 		bind(String.class).annotatedWith(Names.named("liquibaseContext")).toInstance(liquibaseContext);
 
 		JpaPersistModule jpaModule = new JpaPersistModule(config.getPersistanceUnit());
-		if (!config.getPersistanceUnit().endsWith("-h2")) {
-			// We don't want to overwrite the url for h2.
-			jpaModule.properties(config.asJpaProperties());
-		}
+		jpaModule.properties(config.asJpaProperties());
+
 		install(jpaModule);
 		bind(DatabaseStructure.class).asEagerSingleton();
 		bind(StatisticDao.class).asEagerSingleton();
