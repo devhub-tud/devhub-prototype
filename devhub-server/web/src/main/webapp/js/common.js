@@ -27,6 +27,26 @@ function verify(field, regex, callback) {
 	return setInterval(checker, 100);
 }
 
+function verifyCheckbox(box, field, regex) {
+	var checker = function() {
+		var value = $(field).val();
+		var isChecked = $(box).is(":checked");
+		if (isChecked) {
+			if (value != undefined && value.match(regex)) {
+				setInputState(field, true);
+			}
+			else {
+				setInputState(field, false);
+			}
+		}
+		else {
+			setInputState(field, true);
+		}
+	};
+	
+	return setInterval(checker, 100);
+}
+
 function synchronize(btn, inputs) {
 	var checker = function() {
 		var valid = true;
@@ -69,6 +89,18 @@ function setButtonState(button, valid) {
 	} else {
 		button.attr("disabled", "disabled");
 	}
+}
+
+function displayProcessor() {
+	$("body").append("<div class='preloader' style='z-index: 2000;'><div class='processing'><img src='/img/processing.gif'></div><div class='modal-backdrop fade in' style='opacity: 0.2;'></div></div>")
+}
+
+function removeProcessor() {
+	$(".preloader").remove();
+}
+
+function clearAlerts() {
+	$('.alerts').empty();
 }
 
 function showAlert(type, title, message) {

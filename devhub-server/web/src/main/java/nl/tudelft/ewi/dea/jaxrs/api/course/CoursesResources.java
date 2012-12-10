@@ -57,32 +57,32 @@ public class CoursesResources {
 		return Response.ok(entity).build();
 	}
 
-	@GET
-	@Produces(MediaType.TEXT_PLAIN)
-	@Path("checkName")
-	@Transactional
-	public Response checkCourseName(@QueryParam("name") String name) {
-		try {
-			courseDao.findByName(name);
-			return Response.status(Status.CONFLICT).entity("already-taken").build();
-		} catch (NoResultException e) {
-			return Response.ok("ok").build();
-		}
-	}
-
 	@POST
 	@Path("create")
 	@Transactional
 	public Response create(CourseCreationRequest request) {
+		if (!request.getName().matches("^[a-zA-Z0-9]{6,}\\s.{6,}$")) {
+			return Response.status(Status.CONFLICT).entity("invalid-name").build();
+		}
+
+		try {
+			courseDao.findByName(request.getName());
+			return Response.status(Status.CONFLICT).entity("already-taken").build();
+		} catch (NoResultException e) {
+			// Proceed to next step.
+		}
+
 		String email = (String) SecurityUtils.getSubject().getPrincipal();
 		User owner = userDao.findByEmail(email);
 		Course course = new Course(request.getName(), owner, request.getTemplateUrl());
+
 		try {
 			checkTemplateUrl(request.getTemplateUrl());
 		} catch (JGitInternalException e) {
 			LOG.debug("Could not clone template git repo " + request.getTemplateUrl(), e);
 			return Response.status(Status.CONFLICT).entity("could-not-clone-repo").build();
 		}
+
 		courseDao.persist(course);
 		return Response.ok(course).build();
 	}
