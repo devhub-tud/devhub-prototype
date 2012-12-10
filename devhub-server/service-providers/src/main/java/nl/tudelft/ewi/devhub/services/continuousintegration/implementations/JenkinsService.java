@@ -1,6 +1,7 @@
 package nl.tudelft.ewi.devhub.services.continuousintegration.implementations;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.util.List;
@@ -15,11 +16,15 @@ import nl.tudelft.jenkins.auth.User;
 import nl.tudelft.jenkins.auth.UserImpl;
 import nl.tudelft.jenkins.client.JenkinsClient;
 import nl.tudelft.jenkins.client.JenkinsClientFactory;
-import nl.tudelft.jenkins.client.exceptions.NoSuchUserException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 
 public class JenkinsService implements ContinuousIntegrationService {
+
+	private static final Logger LOG = LoggerFactory.getLogger(JenkinsService.class);
 
 	private final JenkinsClient jenkinsClient;
 
@@ -28,7 +33,6 @@ public class JenkinsService implements ContinuousIntegrationService {
 	}
 
 	public JenkinsService(String hostname, int port, String context, String username, String password) {
-
 		checkArgument(isNotEmpty(hostname), "hostname must be non-empty");
 		checkArgument(port > 0, "port must be > 0");
 
@@ -40,6 +44,15 @@ public class JenkinsService implements ContinuousIntegrationService {
 	}
 
 	@Override
+	public void registerUser(nl.tudelft.ewi.dea.model.User user, String plainTextPassword) {
+		LOG.trace("Registering user: {}" + user);
+
+		checkNotNull(user, "user must be non-null");
+
+		jenkinsClient.createUser(user.getNetId(), plainTextPassword, user.getEmail(), user.getDisplayName());
+	}
+
+	@Override
 	public void createBuildProject(BuildProject project) throws ServiceException {
 		List<User> users = Lists.newArrayList();
 		for (ServiceUser member : project.getMembers()) {
@@ -47,27 +60,18 @@ public class JenkinsService implements ContinuousIntegrationService {
 		}
 
 		try {
-			for (User user : users) {
-				if (userDoesNotExist(user)) {
-					jenkinsClient.createUser(user.getName(), "1", user.getEmail(), "x");
-				}
-			}
+			checkExistenceOfUsers(users);
 
 			jenkinsClient.createJob(project.getName(), project.getSourceCodeUrl(), users);
 		} catch (Throwable e) {
 			throw new ServiceException("Could not create the defined Jenkins job!", e);
 		}
-
 	}
 
-	private boolean userDoesNotExist(User user) {
-		try {
+	private void checkExistenceOfUsers(List<User> users) throws ServiceException {
+		for (User user : users) {
 			jenkinsClient.retrieveUser(user.getName());
-		} catch (NoSuchUserException e) {
-			return true;
 		}
-
-		return false;
 	}
 
 	@Override
