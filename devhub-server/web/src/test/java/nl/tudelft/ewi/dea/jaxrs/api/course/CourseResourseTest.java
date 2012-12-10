@@ -18,16 +18,14 @@ import nl.tudelft.ewi.dea.model.Project;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.security.SecurityProvider;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CourseResourseTest {
-
-	private CourseResource resource;
 
 	@Mock private Provider<Renderer> renderers;
 	@Mock private Renderer renderer;
@@ -38,14 +36,12 @@ public class CourseResourseTest {
 	@Mock private ProjectMembershipDao membershipDao;
 
 	@Mock private SecurityProvider securityProvider;
+	@Mock private RepositoryDownloader repoDownloader;
 
 	@Mock private Course course;
 	@Mock private User currentUser;
 
-	@Before
-	public void setUp() {
-		resource = new CourseResource(courseDao, projectDao, membershipDao, securityProvider);
-	}
+	@InjectMocks private CourseResource resource;
 
 	@Test
 	public void testThatEnrollWorks() throws Exception {
