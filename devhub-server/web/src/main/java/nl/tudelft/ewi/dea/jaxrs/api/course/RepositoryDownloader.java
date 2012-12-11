@@ -2,13 +2,15 @@ package nl.tudelft.ewi.dea.jaxrs.api.course;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.security.DigestOutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.CRC32;
+import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -17,6 +19,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import nl.tudelft.ewi.dea.DevHubException;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.slf4j.Logger;
@@ -26,8 +29,6 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
-import com.google.common.hash.HashCode;
-import com.google.common.hash.Hashing;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 import com.google.inject.Singleton;
@@ -67,21 +68,24 @@ class RepositoryDownloader {
 		LOG.trace("Preparing to download repos {}", repositories);
 		File zippedFile;
 		ZipOutputStream zipOut;
+		String hash;
 		try {
+			MessageDigest complete = MessageDigest.getInstance("MD5");
 			zippedFile = File.createTempFile("zipped-repos", ".zip");
-			zipOut = new ZipOutputStream(new FileOutputStream(zippedFile));
+			DigestOutputStream md5Stream = new DigestOutputStream(new FileOutputStream(zippedFile), complete);
+			zipOut = new ZipOutputStream(md5Stream);
 			for (String repoUrl : repositories) {
 				cloneRepoInFolder(repoUrl, zipOut);
 			}
 			zipOut.close();
-		} catch (IOException e) {
+			hash = Hex.encodeHexString(md5Stream.getMessageDigest().digest());
+
+		} catch (IOException | NoSuchAlgorithmException e) {
 			throw new DevHubException("Error while creating zipfile " + e.getLocalizedMessage(), e);
 		}
-		String md5 = generateMd5(zippedFile);
-		cache.invalidate(md5);
-		cache.put(md5, zippedFile);
-		LOG.debug("Created zipped repos in folder {} with MD5 hash {}", zippedFile.getAbsolutePath(), md5);
-		return md5;
+		cache.put(hash, zippedFile);
+		LOG.debug("Created zipped repos in folder {} with MD5 hash {}", zippedFile.getAbsolutePath(), hash);
+		return hash;
 	}
 
 	private void cloneRepoInFolder(String repoUrl, ZipOutputStream zipOut) throws IOException {
@@ -108,29 +112,13 @@ class RepositoryDownloader {
 				LOG.debug("Name {} derived vrom {}", name, baseName);
 				ZipEntry entry = new ZipEntry(name);
 				zip.putNextEntry(entry);
-				InputStream in = new FileInputStream(file);
+				crc.reset();
+				CheckedInputStream in = new CheckedInputStream(new FileInputStream(file), crc);
 				ByteStreams.copy(in, zip);
 				in.close();
-				entry.setCrc(calculateCrc(crc, file));
+				entry.setCrc(in.getChecksum().getValue());
 				zip.closeEntry();
 			}
-		}
-	}
-
-	private long calculateCrc(CRC32 crc, File file) throws FileNotFoundException, IOException {
-		crc.reset();
-		InputStream in = new FileInputStream(file);
-		crc.update(ByteStreams.toByteArray(in));
-		in.close();
-		return crc.getValue();
-	}
-
-	private String generateMd5(File tmpFolder) {
-		try (FileInputStream in = new FileInputStream(tmpFolder)) {
-			HashCode hash = Hashing.md5().hashBytes(ByteStreams.toByteArray(in));
-			return hash.toString();
-		} catch (IOException e) {
-			throw new DevHubException("Could not generate hash for file " + tmpFolder.getAbsolutePath());
 		}
 	}
 
