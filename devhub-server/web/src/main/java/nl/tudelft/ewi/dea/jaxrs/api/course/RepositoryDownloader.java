@@ -2,11 +2,13 @@ package nl.tudelft.ewi.dea.jaxrs.api.course;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -97,19 +99,30 @@ class RepositoryDownloader {
 	private void writeFolderToZip(File folder, ZipOutputStream zip, String baseName, String repoName)
 			throws IOException {
 		File[] files = folder.listFiles();
+		CRC32 crc = new CRC32();
 		for (File file : files) {
 			if (file.isDirectory()) {
 				writeFolderToZip(file, zip, baseName, repoName);
 			} else {
 				String name = repoName + file.getAbsolutePath().substring(baseName.length());
 				LOG.debug("Name {} derived vrom {}", name, baseName);
-				zip.putNextEntry(new ZipEntry(name));
+				ZipEntry entry = new ZipEntry(name);
+				zip.putNextEntry(entry);
 				InputStream in = new FileInputStream(file);
 				ByteStreams.copy(in, zip);
 				in.close();
+				entry.setCrc(calculateCrc(crc, file));
 				zip.closeEntry();
 			}
 		}
+	}
+
+	private long calculateCrc(CRC32 crc, File file) throws FileNotFoundException, IOException {
+		crc.reset();
+		InputStream in = new FileInputStream(file);
+		crc.update(ByteStreams.toByteArray(in));
+		in.close();
+		return crc.getValue();
 	}
 
 	private String generateMd5(File tmpFolder) {
