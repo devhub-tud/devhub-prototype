@@ -5,16 +5,18 @@
 			<div class="content">
 
 				<div class="page-head">
-					<h3>Administrator dashboard</h3>
-					<div class="btn-group">
-						<a class="btn dropdown-toggle" data-toggle="dropdown" href="#"> Actions
-							<span class="caret"></span>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a href="#" id="create-new-course">Create new course</a></li>
-							<li class="divider"></li>
-							<li><a href="#" id="promote-user-to-teacher">Promote or demote users</a></li>
-						</ul>
+					<div style="display: block;">
+						<h3 style="float: left; width: 310px;">Administrator dashboard</h3>
+						<div class="btn-group right" style="float: right; padding-top: 15px;">
+							<a class="btn dropdown-toggle" data-toggle="dropdown" href="#"> Actions
+								<span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu" style="left: -123px; width: 210px;">
+								<li><a href="#" id="create-new-course">Create new course</a></li>
+								<li class="divider"></li>
+								<li><a href="#" id="promote-user-to-teacher">Promote or demote users</a></li>
+							</ul>
+						</div> 
 					</div>
 				</div>
 				<table class="table table-striped table-bordered table-hover" style="margin-top: 15px;">
@@ -46,7 +48,6 @@
 			<div class="alerts"></div>
 				<form id="create-new-course-form" class="form-horizontal">
 					<div class="control-group">
-						<!-- TODO: Fix alignment of input boxes: pop-up should have some free space on the right of the course name box. -->
 						<label class="control-label" for="course-code">Course</label>
 						<div class="controls">
 							<input type="text" id="course-code" placeholder="IN1234" class="input-mini" />
@@ -54,17 +55,24 @@
 							<div class="hide help-block"></div>
 						</div>						
 					</div>
-					<div class="control-group">
+					<div class="control-group condensed">
+						<div class="controls">
+							<label class="checkbox">
+								<input type="checkbox" id="base-on-template" value="yes" /> Specify a template Git repository for students.
+							</label>
+						</div>
+					</div>
+					<div class="control-group hide" id="template-url-panel">
 						<label class="control-label" for="template-url">Template URL</label>
 						<div class="controls">
-							<input type="text" id="template-url" placeholder="git://github.com/octocat/Spoon-Knife.git" class="input-xlarge" />
-							<span class="help-block">You can specify a Git repository that will be used as a template for this project. Note that the repository must be readable by DevHub. If you don't want to use a template leave this box empty.</span>
+							<input type="text" id="template-url" placeholder="git://github.com/octocat/Spoon-Knife.git" class="input-wide" />
+							<span class="help-block">You can specify a Git repository that will be used as a template for this project. Note that the repository must be readable by DevHub.</span>
 						</div>
 					</div>
 				</form>
 			</div>
 			<div class="modal-footer">
-				<a href="#" id="cancel-create-new-course-modal" class="btn">Cancel</a>
+				<a href="#" class="btn" data-dismiss="modal">Cancel</a>
 				<a href="#" id="provision-new-course" class="btn btn-primary">Create course</a>
 			</div>
 		</div>

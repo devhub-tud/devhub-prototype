@@ -2,119 +2,106 @@ $(document).ready(function() {
 
 	var newCourseModal = $('#create-new-course-modal');
 	
-	var courseCodeField = $('#course-code');
-	var courseNameField = $('#course-name');
-	var templateUrlField = $('#template-url');
-	var newCourseButton = $('#create-new-course');
-	var cancelCourseButton = $('#cancel-create-new-course-modal');
+	var codeField = $('#course-code');
+	var nameField = $('#course-name');
+	var templateField = $('#template-url');
 	var provisionNewCourseButton = $('#provision-new-course');
+	var templateBox = $('#base-on-template');
+	var templatePanel = $('#template-url-panel');
 
-	var lastValue;
-
-	setInterval(function() {
-		setTimeout(function() {
-			var courseName = courseCodeField.val() + " " + courseNameField.val();
-			if (courseName != lastValue) {
-				lastValue = courseName;
-				startCourseNameCheck(courseName);
-			}
-		}, 250);
-	}, 100);
-
-	function startCourseNameCheck(courseName) {
-		
-		var currentCourseName = courseCodeField.val() + " " + courseNameField.val();
-		if (courseName != currentCourseName) {
-			return;
-		}
-		
-		var controlGroup = courseNameField.parentsUntil('.control-group').parent();
-		var helpBlock = controlGroup.find(".help-block");
-		
-		helpBlock.hide();
-		provisionNewCourseButton.attr("disabled", "disabled");
-		
-		checkCourseName(currentCourseName, function(result) {
-			var currentCourseName = courseCodeField.val() + " " + courseNameField.val();
-			if (courseName == currentCourseName) {
-				if (result == "ok") {
-					controlGroup.removeClass("error warning");
-					provisionNewCourseButton.removeAttr("disabled");
-				}
-				else if (result == "already-taken") {
-					helpBlock.html("The course name <strong>" + currentCourseName + "</strong> is taken!").show();
-					controlGroup.addClass("error");
-					provisionNewCourseButton.attr("disabled", "disabled");
-				}
-				else if (result == "invalid-name") {
-					helpBlock.html("Course names may only consist of letters and numbers, and must be at least 4 characters long!").show();
-					controlGroup.addClass("error");
-					provisionNewCourseButton.attr("disabled", "disabled");
-				} else {
-					helpBlock.html("Server error: " + result);
-					controlGroup.addClass("error");
-					provisionNewCourseButton.attr("disabled", "disabled");
-				}
-			}
-		});
-	}
-
-	function checkCourseName(courseName, callback) {
-		$.ajax({
-				type: "get",
-				url: "/api/courses/checkName?name=" + courseName,
-				success: function(data) {
-					callback.call(this, "ok");
-				},
-				error: function(jqXHR, textStatus, errorThrown) {
-					callback.call(this, jqXHR.responseText);
-				}
-		});
-	}
-
-	newCourseButton.click(function(e) {
+	var timers = [];
+	
+	$("#create-new-course").click(function(e) {
 		e.preventDefault();
-		newCourseModal.modal('show');
+		newCourseModal.modal("show");
 	});
 	
-	cancelCourseButton.click(function(e) {
-		e.preventDefault();
-		close();
+	function getFullCourseName() {
+		return codeField.val() + " " + nameField.val();
+	}
+	
+	setInterval(function() {
+		if (templateBox.is(":checked")) {
+			templatePanel.show();
+		}
+		else {
+			templatePanel.hide();
+		}
+	}, 100);
+
+	newCourseModal.on("show", function() {
+		nameField.val("");
+		codeField.val("");
+		templateBox.attr("checked", false);
+		templateField.val("");
+		enableVerification();
+	});
+	
+	newCourseModal.on("hide", function() {
+		stopTimers(timers);
+		nameField.val("");
+		codeField.val("");
+		templateBox.attr("checked", false);
+		templateField.val("");
 	});
 	
 	provisionNewCourseButton.click(function(e) {
 		e.preventDefault();
+		var name = nameField.val();
+		var code = codeField.val();
+		var courseName = code.trim() + " " + name.trim();
+		var template = templateField.val();
 		
-		var courseName = courseCodeField.val() + " " + courseNameField.val();
-		console.log(JSON.stringify({ "name": courseName }));
-		var templateUrl = templateUrlField.val();
+		stopTimers(timers);
+		setButtonState(provisionNewCourseButton, false);
+		
+		displayProcessor();
+		
 		$.ajax({
-				type: "post",
-				dataType: "text",
-				contentType: "application/json",
-				url: "/api/courses/create", 
-				data: JSON.stringify({ "name": courseName , "templateUrl": templateUrl }), 
-				success: function() {
-					close();
-					window.location.reload();
-				},
-				error: function(jqXHR, textStatus, errorThrown) {
-					showAlert("alert-error", jqXHR.responseText);
+			type: "post",
+			dataType: "text",
+			contentType: "application/json",
+			url: "/api/courses/create", 
+			data: JSON.stringify({ "name": courseName , "templateUrl": template }), 
+			success: function() {
+				window.location.replace("/admin");
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				removeProcessor();
+				var result = jqXHR.responseText;
+				if (result == "already-taken") {
+					showAlert("alert-error", "There's already a course with this code and name!");
 				}
+				else if (result == "invalid-name") {
+					showAlert("alert-error", "This is not a valid course code and/or name!");
+				}
+				else if (result == "could-not-clone-repo") {
+					showAlert("alert-error", "Could not clone from the template Git repository!");
+				}
+				else {
+					showAlert("alert-error", result);
+				}
+				
+				provisionNewCourseButton.attr("disabled", "disabled");
+				enableVerification();
+			}
 		});
 	});
 	
-	function close() {
-		newCourseModal.modal('hide');
-
-		courseCodeField.val("");
-		courseNameField.val("");
-	}
-	
-	function showAlert(type, message) {
-		var alerts = $('.alerts');
-		var alert = "<div class=\"alert " + type + "\"><a class=\"close\" data-dismiss=\"alert\" href=\"#\">&times;</a>" + message + "</div>";
-		alerts.empty().append(alert);
+	function enableVerification() {
+		timers.push(
+			verify(codeField, "^[a-zA-Z0-9]{6,}$", function(value, callback) { 
+				var value = nameField.val();
+				if (value != undefined && value.match("^.{6,}$")) {
+					callback.call(this, true);
+				}
+				else {
+					callback.call(this, false);
+				}
+			}),
+			verifyCheckbox(templateBox, templateField, "^.{1,}$"),
+			synchronize(provisionNewCourseButton, [ codeField, nameField, templateField ])
+		);
 	}
 	
 });

@@ -89,18 +89,10 @@ $(document).ready(function() {
 	
 	function enableVerification() {
 		timers.push(
-			verify(nameField, "^[a-zA-Z0-9]+([\.-][a-zA-Z0-9]+)*$"),
+			verify(nameField, "^[a-zA-Z0-9]+([-][a-zA-Z0-9]+)*$"),
 			verify(keyField, "^[ssh\-](.){64,}$"),
 			synchronize(addKeyBtn, [ nameField, keyField ])
 		);
-	}
-	
-	function displayProcessor() {
-		$("body").append("<div class='preloader'><div class='processing'><img src='/img/processing.gif'></div><div class='modal-backdrop fade in' style='opacity: 0.2;'></div></div>")
-	}
-	
-	function removeProcessor() {
-		$(".preloader").remove();
 	}
 	
 });

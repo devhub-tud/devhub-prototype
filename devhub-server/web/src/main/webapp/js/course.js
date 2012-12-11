@@ -10,7 +10,7 @@ $(document).ready(function() {
 	$("#download-btn").click(function() {
 		downloadModal.modal('show');
 		$.ajax({
-			url: "/api/course/" + courseId + "/download", 
+			url: "/api/courses/" + courseId + "/download", 
 			success: function(data) {
 				download(data);
 			},
@@ -23,7 +23,7 @@ $(document).ready(function() {
 	
 	function download(hash) {
 		downloadHash.text(hash);
-		downloadLink.attr('href','/api/course/download/' + hash)
+		downloadLink.attr('href','/api/courses/download/' + hash)
 		prepareDownloadDiv.hide();
 		downloadReadyDiv.show();
 	}
