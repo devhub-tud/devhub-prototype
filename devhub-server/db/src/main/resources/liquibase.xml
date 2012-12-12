@@ -222,7 +222,7 @@
 	</changeSet>
 	
 	<changeSet id="20" author="michaelj">
-		<modifyDataType tableName="users" columnName="studentnumber" newDataType="int(10)" />
+		<modifyDataType tableName="users" columnName="studentnumber" newDataType="int" />
 	</changeSet>
 	
 </databaseChangeLog>

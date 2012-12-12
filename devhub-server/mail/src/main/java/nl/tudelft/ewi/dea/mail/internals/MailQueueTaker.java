@@ -3,7 +3,6 @@ package nl.tudelft.ewi.dea.mail.internals;
 import static com.google.common.collect.ImmutableList.copyOf;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -32,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.yammer.metrics.core.Counter;
 import com.yammer.metrics.core.MetricsRegistry;
 
@@ -73,7 +73,7 @@ class MailQueueTaker implements Runnable {
 			checkForUnsentMails();
 			while (!Thread.interrupted()) {
 				LOG.debug("Waiting for messages to send");
-				List<UnsentMail> messagesToSend = new LinkedList<>();
+				List<UnsentMail> messagesToSend = Lists.newArrayList();
 				messagesToSend.add(mailQueue.take());
 				mailQueue.drainTo(messagesToSend);
 				sendMessages(copyOf(messagesToSend));

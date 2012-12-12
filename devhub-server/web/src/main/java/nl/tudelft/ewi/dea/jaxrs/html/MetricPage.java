@@ -2,7 +2,6 @@ package nl.tudelft.ewi.dea.jaxrs.html;
 
 import java.text.DecimalFormat;
 import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -15,6 +14,7 @@ import nl.tudelft.ewi.dea.jaxrs.html.utils.Renderer;
 import nl.tudelft.ewi.dea.metrics.HtmlMetricProcessor;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import com.yammer.metrics.core.Metric;
@@ -44,7 +44,7 @@ public class MetricPage {
 	@GET
 	@Transactional
 	public String servePage() {
-		SortedMap<String, String> customMetrics = new TreeMap<>();
+		SortedMap<String, String> customMetrics = Maps.newTreeMap();
 		HtmlMetricProcessor processor = new HtmlMetricProcessor();
 		for (SortedMap<MetricName, Metric> groupEntry : registry.groupedMetrics().values()) {
 			String key = groupEntry.firstKey().getGroup();

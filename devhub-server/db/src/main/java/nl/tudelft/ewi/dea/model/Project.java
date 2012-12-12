@@ -1,7 +1,6 @@
 package nl.tudelft.ewi.dea.model;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -14,6 +13,8 @@ import javax.persistence.OneToMany;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import com.google.common.collect.Sets;
 
 @Entity
 public class Project {
@@ -28,9 +29,9 @@ public class Project {
 
 	@ManyToOne(optional = false) private Course course;
 
-	@OneToMany(mappedBy = "project") private final Set<ProjectInvitation> invitations = new HashSet<>();
+	@OneToMany(mappedBy = "project") private final Set<ProjectInvitation> invitations = Sets.newHashSet();
 
-	@OneToMany(mappedBy = "project") private Set<ProjectMembership> members = new HashSet<>();
+	@OneToMany(mappedBy = "project") private Set<ProjectMembership> members = Sets.newHashSet();
 
 	@SuppressWarnings("unused")
 	private Project() {}
