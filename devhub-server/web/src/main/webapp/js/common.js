@@ -92,7 +92,7 @@ function setButtonState(button, valid) {
 }
 
 function displayProcessor() {
-	$("body").append("<div class='preloader' style='z-index: 2000;'><div class='processing'><img src='/img/processing.gif'></div><div class='modal-backdrop fade in' style='opacity: 0.2;'></div></div>")
+	$("body").append("<div class='preloader' style='z-index: 2000;'><div class='processing'><img src='/img/processing.gif'></div></div>")
 }
 
 function removeProcessor() {

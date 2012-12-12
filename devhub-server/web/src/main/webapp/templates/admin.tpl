@@ -5,7 +5,7 @@
 			<div class="content">
 
 				<div class="page-head">
-					<div style="display: block;">
+					<div>
 						<h3 style="float: left; width: 310px;">Administrator dashboard</h3>
 						<div class="btn-group right" style="float: right; padding-top: 15px;">
 							<a class="btn dropdown-toggle" data-toggle="dropdown" href="#"> Actions
@@ -39,7 +39,7 @@
 			</div>
 		</div>
 
-		<div id="create-new-course-modal" class="modal hide fade">
+		<div id="create-new-course-modal" class="modal hide">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				<h3>Create new course</h3>
@@ -77,7 +77,7 @@
 			</div>
 		</div>
 
-		<div id="promote-user-to-teacher-modal" class="modal hide fade">
+		<div id="promote-user-to-teacher-modal" class="modal hide">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				<h3>Promote or demote users</h3>

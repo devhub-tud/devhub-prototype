@@ -24,7 +24,7 @@
 				</div>
 #end
 				
-				<div id="add-new-ssh-key" class="modal hide fade">
+				<div id="add-new-ssh-key" class="modal hide">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 						<h3>Add a new public SSH key</h3>
