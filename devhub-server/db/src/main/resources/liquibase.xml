@@ -212,4 +212,17 @@
 		</addColumn>
 	</changeSet>
 	
+	<changeSet id="19" author="michaelj">
+		<update tableName="users">
+			<column name="studentnumber"></column>
+			<where>
+				<column name="studentnumber">0</column>
+			</where>
+		</update>
+	</changeSet>
+	
+	<changeSet id="20" author="michaelj">
+		<modifyDataType tableName="users" columnName="studentnumber" newDataType="int(10)" />
+	</changeSet>
+	
 </databaseChangeLog>

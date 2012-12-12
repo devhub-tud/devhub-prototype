@@ -39,12 +39,14 @@ input[name="email"] {
 						<input type="text" name="net-id" placeholder="Net ID"/>
 					</div>
 				</div>
+	#if ($isStudent)			
 				<div class="control-group">
 					<label for="student-number">Student number</label>
 					<div class="controls">
 						<input type="text" name="student-number" placeholder="Student number" />
 					</div>
 				</div>
+	#end
 				<div class="control-group">
 					<label for="name">Your name</label>
 					<div class="controls">
