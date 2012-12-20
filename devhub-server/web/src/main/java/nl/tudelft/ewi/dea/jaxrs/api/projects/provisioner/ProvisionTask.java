@@ -161,7 +161,7 @@ public class ProvisionTask implements Runnable {
 			request.addMember(new ServiceUser(member.getNetId(), member.getEmail()));
 		}
 		String url = buildService.createBuildProject(request);
-		project.setContinuesIntegrationUrl(url);
+		project.setContinuousIntegrationUrl(url);
 	}
 
 	private void removeContinuousIntegrationJob(Project project, User creator) {

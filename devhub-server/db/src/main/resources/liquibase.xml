@@ -228,7 +228,7 @@
 
 	<changeSet id="21" author="alexnederlof">
 		<addColumn tableName="project">
-			<column name="continues_integration_url" type="varchar(255)">
+			<column name="continuous_integration_url" type="varchar(255)">
 			</column>
 		</addColumn>
 	</changeSet>

@@ -25,7 +25,7 @@ public class Project {
 
 	@Column(name = "source_code_url") private String sourceCodeUrl;
 
-	@Column(name = "continues_integration_url") private String continuesIntegrationUrl;
+	@Column(name = "continuous_integration_url") private String continuousIntegrationUrl;
 
 	private boolean deployed;
 
@@ -84,12 +84,12 @@ public class Project {
 		this.members = members;
 	}
 
-	public String getContinuesIntegrationUrl() {
-		return continuesIntegrationUrl;
+	public String getContinuousIntegrationUrl() {
+		return continuousIntegrationUrl;
 	}
 
-	public void setContinuesIntegrationUrl(String continuesIntegrationUrl) {
-		this.continuesIntegrationUrl = continuesIntegrationUrl;
+	public void setContinuousIntegrationUrl(String continuesIntegrationUrl) {
+		this.continuousIntegrationUrl = continuesIntegrationUrl;
 	}
 
 	public String getSafeName() {
@@ -115,7 +115,7 @@ public class Project {
 		builder.append("course.id", getCourse().getId());
 		builder.append("course.name", getCourse().getName());
 		builder.append("SCM Url", getSourceCodeUrl());
-		builder.append("CI Url", getContinuesIntegrationUrl());
+		builder.append("CI Url", getContinuousIntegrationUrl());
 
 		return builder.toString();
 	}
