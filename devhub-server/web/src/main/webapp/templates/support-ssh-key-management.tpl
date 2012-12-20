@@ -50,9 +50,9 @@
 									<ol>
 										<li>You will be prompted to specify a filename for the key. Leave it blank to use the default <span class="label">id_rsa</span> and press Enter.</li>
 										<li>You will then be prompted for a passphrase. If you specify a passphrase, you will be prompted for that passphrase every time you try to 
-											push contents to the server. <i class="text-warning">If you do not specify a passphrase anybody on your computer account is capable of pushing contents to the server.</i> 
-											Once you have completed this step, you should have generated a public and a private SSH key.</li>
+											push contents to the server. Once you have completed this step, you should have generated a public and a private SSH key.</li>
 									</ol>
+									<div class="alert alert-error"><p>Using a key without a passphrase is basically the same as writing down that random password in a file on your computer. Anyone who gains access to your drive has gained access to every system you use that key with. This is also a Very Bad Thing&trade;.</p></div>
 								</p> 
 							</div>
 							<div class="step">
@@ -122,9 +122,9 @@
 									<ol>
 										<li>You will be prompted to specify a filename for the key. Leave it blank to use the default <span class="label">id_rsa</span> and press Enter.</li>
 										<li>You will then be prompted for a passphrase. If you specify a passphrase, you will be prompted for that passphrase every time you try to 
-											push contents to the server. <i class="text-warning">If you do not specify a passphrase anybody on your computer account is capable of pushing contents to the server.</i> 
-											Once you have completed this step, you should have generated a public and a private SSH key.</li>
+											push contents to the server. If you use command line, OS X Keychain will remember it for you. Once you have completed this step, you should have generated a public and a private SSH key.</li>
 									</ol>
+									<div class="alert alert-error"><p>Using a key without a passphrase is basically the same as writing down that random password in a file on your computer. Anyone who gains access to your drive has gained access to every system you use that key with. This is also a Very Bad Thing&trade;.</p></div>
 								</p> 
 							</div>
 							<div class="step">
@@ -195,9 +195,9 @@
 									<ol>
 										<li>You will be prompted to specify a filename for the key. Leave it blank to use the default <span class="label">id_rsa</span> and press Enter.</li>
 										<li>You will then be prompted for a passphrase. If you specify a passphrase, you will be prompted for that passphrase every time you try to 
-											push contents to the server. <i class="text-warning">If you do not specify a passphrase anybody on your computer account is capable of pushing contents to the server.</i> 
-											Once you have completed this step, you should have generated a public and a private SSH key.</li>
+											push contents to the server. Once you have completed this step, you should have generated a public and a private SSH key.</li>
 									</ol>
+									<div class="alert alert-error"><p>Using a key without a passphrase is basically the same as writing down that random password in a file on your computer. Anyone who gains access to your drive has gained access to every system you use that key with. This is also a Very Bad Thing&trade;.</p></div>
 								</p> 
 							</div>
 							<div class="step">
