@@ -71,8 +71,11 @@ public class AccountPage {
 			return renderer.render("activate-unknown-token.tpl");
 		}
 
+		String email = tokenObject.getEmail();
+
 		return renderer
-				.setValue("email", tokenObject.getEmail())
+				.setValue("email", email)
+				.setValue("isStudent", email.endsWith("@student.tudelft.nl"))
 				.render("activate.tpl");
 	}
 

@@ -82,9 +82,7 @@ public class GitoliteService extends VersionControlService {
 	}
 
 	@Override
-	public void removeRepository(RepositoryIdentifier repository) throws ServiceException {
-		throw new ServiceException("Removing repositories is not yet supported!");
-	}
+	public void removeRepository(RepositoryIdentifier repository) throws ServiceException {}
 
 	@Override
 	public void addSshKey(SshKeyRepresentation sshKey) throws ServiceException {

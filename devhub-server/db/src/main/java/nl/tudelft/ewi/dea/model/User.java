@@ -34,7 +34,7 @@ public class User {
 	@Column(unique = true, nullable = false) private String email;
 	@Column(nullable = false) private String displayName;
 	@Column(unique = true, nullable = false) private String netId;
-	private long studentNumber;
+	private Integer studentNumber;
 
 	@Column(nullable = false) private String salt;
 	@Column(nullable = false) private String password;
@@ -49,7 +49,7 @@ public class User {
 	@SuppressWarnings("unused")
 	private User() {}
 
-	public User(final String displayName, final String email, final String netId, final long studentNumber, final String salt, final String password, final UserRole role) {
+	public User(final String displayName, final String email, final String netId, final Integer studentNumber, final String salt, final String password, final UserRole role) {
 		checkArgument(!isNullOrEmpty(displayName));
 		checkArgument(!isNullOrEmpty(email));
 		checkArgument(!isNullOrEmpty(netId));
@@ -85,7 +85,7 @@ public class User {
 		return netId;
 	}
 
-	public long getStudentNumber() {
+	public Integer getStudentNumber() {
 		return studentNumber;
 	}
 

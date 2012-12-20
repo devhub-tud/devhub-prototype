@@ -13,13 +13,13 @@ public class ActivationRequest {
 	private final String password;
 	private final String displayName;
 	private final String netId;
-	private final int studentNumber;
+	private final Integer studentNumber;
 
 	public ActivationRequest() {
 		this.email = null;
 		this.password = null;
 		this.displayName = null;
 		this.netId = null;
-		this.studentNumber = 0;
+		this.studentNumber = null;
 	}
 }
