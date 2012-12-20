@@ -15,6 +15,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 
 @Entity
@@ -56,7 +57,7 @@ public class Course {
 	}
 
 	public boolean hasTemplateUrl() {
-		return templateUrl != null;
+		return !Strings.isNullOrEmpty(templateUrl);
 	}
 
 	public Set<Project> getProjects() {

@@ -23,7 +23,9 @@ public class Project {
 
 	@Column(unique = true) private String name;
 
-	@Column(name = "source_code_url", nullable = false, unique = true) private String sourceCodeUrl;
+	@Column(name = "source_code_url") private String sourceCodeUrl;
+
+	@Column(name = "continues_integration_url") private String continuesIntegrationUrl;
 
 	private boolean deployed;
 
@@ -82,6 +84,14 @@ public class Project {
 		this.members = members;
 	}
 
+	public String getContinuesIntegrationUrl() {
+		return continuesIntegrationUrl;
+	}
+
+	public void setContinuesIntegrationUrl(String continuesIntegrationUrl) {
+		this.continuesIntegrationUrl = continuesIntegrationUrl;
+	}
+
 	public String getSafeName() {
 		String makeSafe = name;
 		makeSafe = makeSafe.replace(" - ", "-");
@@ -104,6 +114,8 @@ public class Project {
 		builder.append("name", getName());
 		builder.append("course.id", getCourse().getId());
 		builder.append("course.name", getCourse().getName());
+		builder.append("SCM Url", getSourceCodeUrl());
+		builder.append("CI Url", getContinuesIntegrationUrl());
 
 		return builder.toString();
 	}

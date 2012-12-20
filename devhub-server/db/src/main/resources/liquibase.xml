@@ -203,15 +203,15 @@
 	<changeSet id="17" author="alexnederlof">
 		<renameColumn tableName="course" newColumnName="template_url" oldColumnName="templateUrl"/>
 	</changeSet>
-	
+
 	<changeSet id="18" author="michaelj">
 		<addColumn tableName="project">
 			<column name="deployed" type="boolean" defaultValue="true">
-				<constraints nullable="false" />
+				<constraints nullable="false"/>
 			</column>
 		</addColumn>
 	</changeSet>
-	
+
 	<changeSet id="19" author="michaelj">
 		<update tableName="users">
 			<column name="studentnumber"></column>
@@ -220,9 +220,16 @@
 			</where>
 		</update>
 	</changeSet>
-	
+
 	<changeSet id="20" author="michaelj">
-		<modifyDataType tableName="users" columnName="studentnumber" newDataType="int" />
+		<modifyDataType tableName="users" columnName="studentnumber" newDataType="int"/>
 	</changeSet>
-	
+
+
+	<changeSet id="21" author="alexnederlof">
+		<addColumn tableName="project">
+			<column name="continues_integration_url" type="varchar(255)">
+			</column>
+		</addColumn>
+	</changeSet>
 </databaseChangeLog>
