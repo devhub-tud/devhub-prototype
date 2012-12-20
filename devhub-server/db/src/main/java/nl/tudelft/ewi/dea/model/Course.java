@@ -1,7 +1,6 @@
 package nl.tudelft.ewi.dea.model;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -16,6 +15,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 
 @Entity
 public class Course {
@@ -26,7 +26,7 @@ public class Course {
 
 	@ManyToOne(optional = false) private User owner;
 
-	@OneToMany(mappedBy = "course") private Set<Project> projects = new HashSet<>();
+	@OneToMany(mappedBy = "course") private Set<Project> projects = Sets.newHashSet();
 
 	@Column(name = "template_url") private String templateUrl;
 

@@ -79,7 +79,7 @@
 	</div>
 </div>
 
-<div id="start-new-project-modal" class="modal hide fade">
+<div id="start-new-project-modal" class="modal hide">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 		<h3>Start a new project</h3>

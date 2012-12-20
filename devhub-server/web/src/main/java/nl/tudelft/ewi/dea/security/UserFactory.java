@@ -11,7 +11,7 @@ import com.google.common.annotations.VisibleForTesting;
 
 public class UserFactory {
 
-	public User createUser(final String mail, final String displayName, final String netid, final long studentNumber, final String plainPassword) {
+	public User createUser(final String mail, final String displayName, final String netid, final Integer studentNumber, final String plainPassword) {
 		final String userSalt = SaltTool.generateSalt();
 		final String hashedPassword = hashPassword(plainPassword, userSalt);
 		return new User(displayName, mail, netid, studentNumber, userSalt, hashedPassword, UserRole.USER);

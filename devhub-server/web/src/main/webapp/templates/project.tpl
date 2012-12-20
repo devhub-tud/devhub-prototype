@@ -67,7 +67,7 @@
 	</div>
 </div>
 
-<div id="invite-user-modal" class="modal hide fade">
+<div id="invite-user-modal" class="modal hide">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal"
 			aria-hidden="true">&times;</button>
