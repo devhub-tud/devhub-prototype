@@ -10,7 +10,10 @@ public interface ContinuousIntegrationService extends Service {
 
 	void registerUser(User user, String plainTextPassword) throws ServiceException;
 
-	void createBuildProject(BuildProject project) throws ServiceException;
+	/**
+	 * @return The URL for the project
+	 */
+	String createBuildProject(BuildProject project) throws ServiceException;
 
 	void removeBuildProject(BuildIdentifier buildId) throws ServiceException;
 

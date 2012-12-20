@@ -16,6 +16,7 @@ import nl.tudelft.jenkins.auth.User;
 import nl.tudelft.jenkins.auth.UserImpl;
 import nl.tudelft.jenkins.client.JenkinsClient;
 import nl.tudelft.jenkins.client.JenkinsClientFactory;
+import nl.tudelft.jenkins.jobs.Job;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ public class JenkinsService implements ContinuousIntegrationService {
 	private static final Logger LOG = LoggerFactory.getLogger(JenkinsService.class);
 
 	private final JenkinsClient jenkinsClient;
+	private final String baseUrl;
 
 	public JenkinsService(Properties props) {
 		this(props.getProperty("host"), Integer.parseInt(props.get("port").toString()), props.getProperty("context"), props.getProperty("username"), props.getProperty("password"));
@@ -40,7 +42,28 @@ public class JenkinsService implements ContinuousIntegrationService {
 		checkArgument(isNotEmpty(password), "password must be non-empty");
 
 		JenkinsClientFactory factory = new JenkinsClientFactory(hostname, port, context, username, password);
+
+		this.baseUrl = toUrl(hostname, port, context);
+
 		jenkinsClient = factory.getJenkinsClient();
+	}
+
+	private String toUrl(String hostname, int port, String context) {
+		final StringBuilder builder = new StringBuilder("http://");
+		builder.append(hostname);
+		if (port != 80) {
+			builder.append(':');
+			builder.append(port);
+		}
+		if (context == null || context.isEmpty()) {
+			builder.append('/');
+		} else {
+			builder.append(context);
+			if (!context.endsWith("/")) {
+				builder.append('/');
+			}
+		}
+		return builder.toString();
 	}
 
 	@Override
@@ -53,7 +76,7 @@ public class JenkinsService implements ContinuousIntegrationService {
 	}
 
 	@Override
-	public void createBuildProject(BuildProject project) throws ServiceException {
+	public String createBuildProject(BuildProject project) throws ServiceException {
 		List<User> users = Lists.newArrayList();
 		for (ServiceUser member : project.getMembers()) {
 			users.add(new UserImpl(member.getIdentifier(), member.getEmail()));
@@ -62,7 +85,8 @@ public class JenkinsService implements ContinuousIntegrationService {
 		try {
 			checkExistenceOfUsers(users);
 
-			jenkinsClient.createJob(project.getName(), project.getSourceCodeUrl(), users);
+			Job job = jenkinsClient.createJob(project.getName(), project.getSourceCodeUrl(), users);
+			return baseUrl + "job/" + job.getName();
 		} catch (Throwable e) {
 			throw new ServiceException("Could not create the defined Jenkins job!", e);
 		}

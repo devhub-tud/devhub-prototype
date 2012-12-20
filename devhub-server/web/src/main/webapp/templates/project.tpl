@@ -20,8 +20,8 @@
 					<td>${project.getSourceCodeUrl()}</td>
 				</tr>
 				<tr>
-					<td class="attribute">Jenkins job URL</td>
-					<td><a href="${jenkins-path}">${jenkins-path}</a></td>
+					<td class="attribute">Continuous Integration</td>
+					<td><a href="${project.getContinuousIntegrationUrl()}">${project.getContinuesIntegrationUrl()}</a></td>
 				</tr>
 			</tbody>
 		</table>

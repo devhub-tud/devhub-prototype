@@ -74,6 +74,7 @@ public class ProvisionTask implements Runnable {
 			provisioner.updateProjectState(projectId, new State(true, true, "Could not provision missing project!"));
 			return;
 		}
+
 		LOG.debug("Found project and creator");
 		try {
 			provisioner.updateProjectState(projectId, new State(false, false, "Provisioning source code repository..."));
@@ -87,7 +88,7 @@ public class ProvisionTask implements Runnable {
 			provisioner.updateProjectState(projectId, new State(true, true, "Could not provision source code repository!"));
 			return;
 		}
-		LOG.debug("Created a repository for project {}", project.getId());
+		LOG.debug("Created a repository for project {}", project);
 		try {
 			provisioner.updateProjectState(projectId, new State(false, false, "Configuring build server project..."));
 			createContinuousIntegrationJob(project, creator);
@@ -99,7 +100,7 @@ public class ProvisionTask implements Runnable {
 			provisioner.updateProjectState(projectId, new State(true, true, "Could not configure build server project!"));
 			return;
 		}
-		LOG.debug("Created a CI Job for project {}", project.getId());
+		LOG.debug("Created a CI Job for project {}", project);
 		project.setDeployed(true);
 		projectDao.persist(project);
 
@@ -159,7 +160,8 @@ public class ProvisionTask implements Runnable {
 			User member = membership.getUser();
 			request.addMember(new ServiceUser(member.getNetId(), member.getEmail()));
 		}
-		buildService.createBuildProject(request);
+		String url = buildService.createBuildProject(request);
+		project.setContinuousIntegrationUrl(url);
 	}
 
 	private void removeContinuousIntegrationJob(Project project, User creator) {
