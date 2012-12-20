@@ -80,6 +80,11 @@ $(document).ready(function() {
 		var password1 = password1Field.val();
 		var isValid = isPasswordOk(password1);
 		setInputState(password1Field, isValid);
+		if (isValid) {
+			$("#pwError").hide();
+		} else if (password1 !== ""){
+			$("#pwError").show();
+		}
 		return isValid;
 	}
 	

@@ -62,6 +62,7 @@ input[name="email"] {
 						<input type="password" name="password2" placeholder="Repeat password" />
 					</div>
 				</div>
+				<div id='pwError' class="alert alert-error" style="display: none;">Passwords don't match or aren't strong enough.</div>
 				<div class="control-group" style="margin-top: 32px;">
 					<input class="btn btn-primary" name="submit" type="submit" value="Reset password" />
 				</div>
@@ -70,6 +71,7 @@ input[name="email"] {
 	</div>
 	<script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
 	<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.0/js/bootstrap.min.js"></script>
+	<script src="/js/common.js"></script>
 	<script src="/js/reset-account-password.js"></script>
 </body>
 </html>
