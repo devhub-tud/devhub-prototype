@@ -52,5 +52,6 @@
 </div>
 <script>
 	var courseId = ${course.id};
+	var hasNoProjects = ${course.getProjects().isEmpty()};
 </script>
 #parse("footer.tpl")

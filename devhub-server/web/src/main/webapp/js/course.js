@@ -6,6 +6,10 @@ $(document).ready(function() {
 	var downloadHash = $('#download-hash');
 	var downloadLink = $('#download-link');
 	
+	if (hasNoProjects) {
+		$("#download-btn").attr("disabled", "disabled");
+	}
+	
 	downloadReadyDiv.hide();
 	$("#download-btn").click(function() {
 		downloadModal.modal('show');

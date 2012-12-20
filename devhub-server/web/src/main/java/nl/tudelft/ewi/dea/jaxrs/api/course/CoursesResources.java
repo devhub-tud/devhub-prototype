@@ -125,18 +125,22 @@ public class CoursesResources {
 	@Path("{id}/download")
 	@RequiresRoles(UserRole.ROLE_ADMIN)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String download(@PathParam("id") long id) {
+	public Response download(@PathParam("id") long id) {
 		Course course = courseDao.findById(id);
 		Builder<String> setBuilder = ImmutableSet.builder();
-		for (Project project : course.getProjects()) {
-			if (project.getSourceCodeUrl() == null) {
-				LOG.warn("This project doesnt have a source code URL: {}", project);
-			} else {
-				setBuilder.add(project.getSourceCodeUrl());
+		if (course.getProjects().isEmpty()) {
+			return Response.status(Status.NO_CONTENT).entity("This course doesn't have any projects").build();
+		} else {
+			for (Project project : course.getProjects()) {
+				if (project.getSourceCodeUrl() == null) {
+					LOG.warn("This project doesnt have a source code URL: {}", project);
+				} else {
+					setBuilder.add(project.getSourceCodeUrl());
+				}
 			}
+			Set<String> sourceCodeurls = setBuilder.build();
+			return Response.ok(repoDownloader.prepareDownload(sourceCodeurls)).build();
 		}
-		Set<String> sourceCodeurls = setBuilder.build();
-		return repoDownloader.prepareDownload(sourceCodeurls);
 	}
 
 	@GET
