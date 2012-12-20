@@ -21,7 +21,7 @@
 				</tr>
 				<tr>
 					<td class="attribute">Continuous Integration</td>
-					<td><a href="${project.getContinuousIntegrationUrl()}">${project.getContinuesIntegrationUrl()}</a></td>
+					<td><a href="${project.getContinuousIntegrationUrl()}">${project.getContinuousIntegrationUrl()}</a></td>
 				</tr>
 			</tbody>
 		</table>
