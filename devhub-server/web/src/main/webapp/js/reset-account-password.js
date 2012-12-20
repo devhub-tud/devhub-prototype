@@ -46,15 +46,20 @@ $(document).ready(function() {
 	
 	function checkPassword1Field() {
 		var password1 = password1Field.val();
-		var isValid = password1 != undefined && password1.length >= 6;
+		var isValid = isPasswordOk(password1);
 		setInputState(password1Field, isValid);
+		if (isValid) {
+			$("#pwError").hide();
+		} else if (password1 !== ""){
+			$("#pwError").show();
+		}
 		return isValid;
 	}
 	
 	function checkPassword2Field() {
 		var password1 = password1Field.val();
 		var password2 = password2Field.val();
-		var isValid = password2 != undefined && password1.length >= 6 && password2 == password1;
+		var isValid = isPasswordOk(password2) && password2 == password1;
 		setInputState(password2Field, isValid);
 		return isValid;
 	}
