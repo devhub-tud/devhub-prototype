@@ -20,7 +20,7 @@
 					<td>${project.getSourceCodeUrl()}</td>
 				</tr>
 				<tr>
-					<td class="attribute">Continues Integration</td>
+					<td class="attribute">Continuous Integration</td>
 					<td><a href="${project.getContinuousIntegrationUrl()}">${project.getContinuesIntegrationUrl()}</a></td>
 				</tr>
 			</tbody>
