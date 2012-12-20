@@ -60,6 +60,8 @@ public class ProvisionTask implements Runnable {
 		Project project = null;
 		User creator = null;
 
+		LOG.debug("Running Provision task for project id {}", projectId);
+
 		try {
 			provisioner.updateProjectState(projectId, new State(false, false, "Preparing to provision project..."));
 			project = projectDao.findById(projectId);
@@ -72,7 +74,7 @@ public class ProvisionTask implements Runnable {
 			provisioner.updateProjectState(projectId, new State(true, true, "Could not provision missing project!"));
 			return;
 		}
-
+		LOG.debug("Found project and creator");
 		try {
 			provisioner.updateProjectState(projectId, new State(false, false, "Provisioning source code repository..."));
 			String repositoryUrl = createVersionControlRepository(project, creator);
@@ -85,7 +87,7 @@ public class ProvisionTask implements Runnable {
 			provisioner.updateProjectState(projectId, new State(true, true, "Could not provision source code repository!"));
 			return;
 		}
-
+		LOG.debug("Created a repository for project {}", project.getId());
 		try {
 			provisioner.updateProjectState(projectId, new State(false, false, "Configuring build server project..."));
 			createContinuousIntegrationJob(project, creator);
@@ -97,11 +99,12 @@ public class ProvisionTask implements Runnable {
 			provisioner.updateProjectState(projectId, new State(true, true, "Could not configure build server project!"));
 			return;
 		}
-
+		LOG.debug("Created a CI Job for project {}", project.getId());
 		project.setDeployed(true);
 		projectDao.persist(project);
 
 		if (project.getInvitations().size() > 0) {
+			LOG.debug("Inviting project members");
 			provisioner.updateProjectState(projectId, new State(false, false, "Inviting project members..."));
 
 			try {
@@ -117,6 +120,7 @@ public class ProvisionTask implements Runnable {
 	}
 
 	private String createVersionControlRepository(Project project, User creator) throws ServiceException {
+		LOG.debug("Creating source code repository");
 		ServiceUser serviceUser = new ServiceUser(creator.getNetId(), creator.getEmail());
 		RepositoryIdentifier repositoryId = new RepositoryIdentifier(project.getSafeName(), serviceUser);
 		RepositoryRepresentation request = new RepositoryRepresentation(repositoryId, project.getSafeName());
@@ -127,11 +131,16 @@ public class ProvisionTask implements Runnable {
 
 		// Grant access to the Git user.
 		request.addMember(new ServiceUser("git", null));
-
-		return versioningService.createRepository(request);
+		if (project.getCourse().hasTemplateUrl()) {
+			String templateUrl = project.getCourse().getTemplateUrl();
+			return versioningService.createRepository(request, templateUrl);
+		} else {
+			return versioningService.createRepository(request);
+		}
 	}
 
 	private void removeVersionControlRepository(Project project, User creator) {
+		LOG.debug("Removing repository for project {}", project.getId());
 		try {
 			ServiceUser serviceUser = new ServiceUser(creator.getNetId(), creator.getEmail());
 			RepositoryIdentifier repositoryId = new RepositoryIdentifier(project.getSafeName(), serviceUser);
@@ -142,6 +151,7 @@ public class ProvisionTask implements Runnable {
 	}
 
 	private void createContinuousIntegrationJob(Project project, User creator) throws ServiceException {
+		LOG.debug("Creating CI job for project {}", project.getId());
 		ServiceUser serviceUser = new ServiceUser(creator.getNetId(), creator.getEmail());
 		BuildIdentifier buildId = new BuildIdentifier(project.getSafeName(), serviceUser);
 		BuildProject request = new BuildProject(buildId, project.getSourceCodeUrl());

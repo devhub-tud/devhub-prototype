@@ -46,7 +46,7 @@ public class ProjectMembershipDaoImpl extends AbstractDaoBase<ProjectMembership>
 	@Transactional
 	public List<User> findByProjectId(long projectId) {
 		final String query = "SELECT p FROM ProjectMembership p WHERE p.project.id = :projectId";
-
+		LOG.debug("Running {} with projectId={}", query, projectId);
 		final TypedQuery<ProjectMembership> tq = createQuery(query);
 		tq.setParameter("projectId", projectId);
 
