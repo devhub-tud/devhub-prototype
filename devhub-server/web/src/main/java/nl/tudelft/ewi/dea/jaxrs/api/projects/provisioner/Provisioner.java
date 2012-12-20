@@ -11,10 +11,12 @@ import nl.tudelft.ewi.dea.dao.ProjectDao;
 import nl.tudelft.ewi.dea.dao.ProjectInvitationDao;
 import nl.tudelft.ewi.dea.dao.ProjectMembershipDao;
 import nl.tudelft.ewi.dea.jaxrs.api.projects.CourseProjectRequest;
+import nl.tudelft.ewi.dea.jaxrs.api.projects.InviteManager;
 import nl.tudelft.ewi.dea.model.Course;
 import nl.tudelft.ewi.dea.model.Project;
 import nl.tudelft.ewi.dea.model.ProjectMembership;
 import nl.tudelft.ewi.dea.model.User;
+import nl.tudelft.ewi.dea.security.SecurityProvider;
 import nl.tudelft.ewi.devhub.services.continuousintegration.ContinuousIntegrationService;
 import nl.tudelft.ewi.devhub.services.versioncontrol.VersionControlService;
 
@@ -35,20 +37,25 @@ public class Provisioner {
 	private final Provider<CourseDao> courseDao;
 	private final Provider<ProjectDao> projectDao;
 	private final Provider<ProjectMembershipDao> membershipDao;
-	private final Provider<ProjectInvitationDao> invitationDao;
+	private final Provider<ProjectInvitationDao> inviteDao;
 
 	private final ProvisionTaskFactory factory;
+	private final InviteManager inviteManager;
+	private final SecurityProvider securityProvider;
 
 	@Inject
 	public Provisioner(ProvisionTaskFactory factory, Provider<CourseDao> courseDao,
 			Provider<ProjectDao> projectDao, Provider<ProjectMembershipDao> membershipDao,
-			Provider<ProjectInvitationDao> invitationDao, ScheduledExecutorService executor) {
+			Provider<ProjectInvitationDao> inviteDao, InviteManager inviteManager,
+			ScheduledExecutorService executor, SecurityProvider securityProvider) {
 
 		this.factory = factory;
 		this.courseDao = courseDao;
 		this.projectDao = projectDao;
 		this.membershipDao = membershipDao;
-		this.invitationDao = invitationDao;
+		this.inviteDao = inviteDao;
+		this.inviteManager = inviteManager;
+		this.securityProvider = securityProvider;
 		this.executor = executor;
 
 		stateCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).maximumSize(500).build();
@@ -86,13 +93,18 @@ public class Provisioner {
 	synchronized Project persistToDatabase(CourseProjectRequest courseProject, User owner) {
 		Course course = courseDao.get().findById(courseProject.getCourse());
 		int projectNumber = projectDao.get().findByCourse(course).size() + 1;
-		String projectName = course.getName() + " - Group " + projectNumber;
+		String projectName = course.getName() + "/Group " + projectNumber;
 
 		Project project = new Project(projectName, course);
 		ProjectMembership membership = new ProjectMembership(owner, project);
 
 		projectDao.get().persist(project);
 		membershipDao.get().persist(membership);
+
+		User inviter = securityProvider.getUser();
+		for (String invite : courseProject.getInvites()) {
+			inviteManager.inviteUser(inviter, invite, project);
+		}
 
 		return project;
 	}
@@ -104,7 +116,7 @@ public class Provisioner {
 		}
 
 		try {
-			invitationDao.get().findByProjectAndEMail(project, user.getEmail());
+			inviteDao.get().findByProjectAndEMail(project, user.getEmail());
 			return true;
 		} catch (NoResultException e) {
 			return false;
