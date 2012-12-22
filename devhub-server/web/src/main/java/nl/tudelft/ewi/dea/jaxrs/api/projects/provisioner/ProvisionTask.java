@@ -1,5 +1,7 @@
 package nl.tudelft.ewi.dea.jaxrs.api.projects.provisioner;
 
+import java.net.URL;
+
 import javax.inject.Inject;
 
 import nl.tudelft.ewi.dea.dao.ProjectDao;
@@ -160,7 +162,7 @@ public class ProvisionTask implements Runnable {
 			User member = membership.getUser();
 			request.addMember(new ServiceUser(member.getNetId(), member.getEmail()));
 		}
-		String url = buildService.createBuildProject(request);
+		URL url = buildService.createBuildProject(request);
 		project.setContinuousIntegrationUrl(url);
 	}
 
