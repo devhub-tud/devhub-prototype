@@ -30,9 +30,7 @@
 		},
 		"continuousIntegration" : {
 			"Jenkins" : {
-				"host"		: "example.com",
-				"port"		: 8080,
-				"context"	: "/jenkins",
+				"url"		: "http://example.com:8080/jenkins",
 				"username"	: "devhub",
 				"password"	: "$My$Password$"
 			}
