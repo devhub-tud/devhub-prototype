@@ -11,12 +11,10 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Ignore("Fails on Jenkins module. Fixed in the nest jenkins-ws-release")
 public class DevHubServerTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DevHubServerTest.class);
@@ -30,7 +28,7 @@ public class DevHubServerTest {
 		server = new Server(0);
 		server.setHandler(DevHubServer.buildWebAppContext());
 		server.start();
-		this.port = ((ServerConnector) server.getConnectors()[0]).getLocalPort();
+		port = ((ServerConnector) server.getConnectors()[0]).getLocalPort();
 	}
 
 	@After
