@@ -28,7 +28,7 @@ public class DevHubServerTest {
 		server = new Server(0);
 		server.setHandler(DevHubServer.buildWebAppContext());
 		server.start();
-		this.port = ((ServerConnector) server.getConnectors()[0]).getLocalPort();
+		port = ((ServerConnector) server.getConnectors()[0]).getLocalPort();
 	}
 
 	@After

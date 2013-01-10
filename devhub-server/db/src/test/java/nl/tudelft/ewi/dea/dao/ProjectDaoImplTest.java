@@ -3,6 +3,8 @@ package nl.tudelft.ewi.dea.dao;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import nl.tudelft.ewi.dea.model.Course;
@@ -31,7 +33,7 @@ public class ProjectDaoImplTest extends DatabaseTest {
 	}
 
 	@Test
-	public void testThatFindByUserWorks() {
+	public void testThatFindByUserWorks() throws MalformedURLException {
 
 		// Given
 		final User owner = new User("Teacher", "teacher@example.com", "teacher", 0, "salt", "hash", UserRole.ADMIN);
@@ -40,6 +42,8 @@ public class ProjectDaoImplTest extends DatabaseTest {
 
 		final Course course = new Course("Some course", owner, null);
 		final Project project = new Project("My first project", course);
+		project.setContinuousIntegrationUrl(new URL("http://some.jenkins.com/jenkins/job/my-job/"));
+		project.setSourceCodeUrl("git://github.com/octocat/Spoon-Knife.git");
 		final Project otherProject = new Project("Other Project", course);
 
 		project.setDeployed(true);
