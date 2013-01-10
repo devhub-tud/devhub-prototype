@@ -2,6 +2,7 @@ package nl.tudelft.ewi.devhub.services.versioncontrol;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import nl.tudelft.ewi.dea.DevHubException;
 import nl.tudelft.ewi.devhub.services.Service;
@@ -13,8 +14,15 @@ import nl.tudelft.ewi.devhub.services.versioncontrol.models.SshKeyRepresentation
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.ConcurrentRefUpdateException;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
+import org.eclipse.jgit.api.errors.NoFilepatternException;
+import org.eclipse.jgit.api.errors.NoHeadException;
+import org.eclipse.jgit.api.errors.NoMessageException;
+import org.eclipse.jgit.api.errors.WrongRepositoryStateException;
+import org.eclipse.jgit.errors.UnmergedPathException;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +36,9 @@ public abstract class VersionControlService implements Service {
 
 	public String createRepository(RepositoryRepresentation repository, String cloneRepo) throws ServiceException {
 		if (cloneRepo == null) {
-			return createRepository(repository);
+			return createRemoteRepository(repository);
 		}
-		String repositoryUrl = createRepository(repository);
+		String repositoryUrl = createRemoteRepository(repository);
 		setTemplateInRepo(repositoryUrl, cloneRepo);
 		return repositoryUrl;
 	}
@@ -40,27 +48,44 @@ public abstract class VersionControlService implements Service {
 		File tmpDir = Files.createTempDir();
 		LOG.info("Creating clone in {}", tmpDir.getPath());
 		try {
-			LOG.debug("Cloning {}", cloneRepo);
-			Git git = Git.cloneRepository()
-					.setCloneAllBranches(true)
-					.setDirectory(tmpDir).setURI(cloneRepo)
-					.call();
-
+			Git git;
+			if (cloneRepo == null) {
+				git = copyDefaultTemplate(tmpDir);
+			} else {
+				git = cloneRepo(cloneRepo, tmpDir);
+			}
 			pushClonedRepoToOurRepository(repositoryUrl, git);
 
-		} catch (IOException | JGitInternalException | InvalidRemoteException e) {
+		} catch (IOException | JGitInternalException | GitAPIException | URISyntaxException e) {
 			LOG.error("Could not instantiate repo", e);
 			throw new DevHubException("Could not instantiate repo", e);
 		} finally {
-			try {
-				if (tmpDir.exists()) {
-					FileUtils.deleteDirectory(tmpDir);
-				}
-			} catch (IOException e) {
-				LOG.warn("Could not delete temporary directory " + tmpDir.getPath());
-			}
+			boolean deleted = FileUtils.deleteQuietly(tmpDir);
+			LOG.debug("Temporary template deletion succes = {}", deleted);
 		}
 
+	}
+
+	private Git copyDefaultTemplate(File tmpDir) throws URISyntaxException, IOException, NoFilepatternException,
+			NoHeadException, NoMessageException, UnmergedPathException, ConcurrentRefUpdateException,
+			WrongRepositoryStateException {
+		Git git;
+		File srcDir = new File(VersionControlService.class.getResource("/project-skeleton").toURI());
+		FileUtils.copyDirectory(srcDir, tmpDir);
+		git = Git.init().setDirectory(tmpDir).call();
+		git.add().addFilepattern(".").call();
+		git.commit().setCommitter("DevHub", "devhub@devhub.nl").setMessage("Initial commit").call();
+		LOG.debug("Initialized git repo with default template");
+		return git;
+	}
+
+	private Git cloneRepo(String cloneRepo, File tmpDir) {
+		LOG.debug("Cloning {}", cloneRepo);
+		Git git = Git.cloneRepository()
+				.setCloneAllBranches(true)
+				.setDirectory(tmpDir).setURI(cloneRepo)
+				.call();
+		return git;
 	}
 
 	private void pushClonedRepoToOurRepository(String repositoryUrl, Git git) throws IOException, InvalidRemoteException {
@@ -73,7 +98,13 @@ public abstract class VersionControlService implements Service {
 		LOG.debug("Push complete");
 	}
 
-	public abstract String createRepository(RepositoryRepresentation repository) throws ServiceException;
+	public String createRepository(RepositoryRepresentation repository) throws ServiceException {
+		String repositoryUrl = createRemoteRepository(repository);
+		setTemplateInRepo(repositoryUrl, null);
+		return repositoryUrl;
+	}
+
+	protected abstract String createRemoteRepository(RepositoryRepresentation repository) throws ServiceException;
 
 	public abstract void removeRepository(RepositoryIdentifier repository) throws ServiceException;
 

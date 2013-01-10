@@ -49,7 +49,7 @@ public class GitoliteService extends VersionControlService {
 	}
 
 	@Override
-	public String createRepository(RepositoryRepresentation repository) throws ServiceException {
+	protected String createRemoteRepository(RepositoryRepresentation repository) throws ServiceException {
 		try {
 			Config config = configManager.getConfig();
 			String repositoryName = repository.getName();
