@@ -64,7 +64,7 @@ public class JenkinsService implements ContinuousIntegrationService {
 	}
 
 	@Override
-	public String createBuildProject(BuildProject project) throws ServiceException {
+	public URL createBuildProject(BuildProject project) throws ServiceException {
 		List<User> users = Lists.newArrayList();
 		for (ServiceUser member : project.getMembers()) {
 			users.add(new UserImpl(member.getIdentifier(), member.getEmail()));
@@ -74,7 +74,7 @@ public class JenkinsService implements ContinuousIntegrationService {
 			checkExistenceOfUsers(users);
 
 			Job job = jenkinsClient.createJob(project.getName(), project.getSourceCodeUrl(), users);
-			return baseUrl + "/job/" + job.getName();
+			return new URL(baseUrl.toExternalForm() + "/job/" + job.getName());
 		} catch (Throwable e) {
 			throw new ServiceException("Could not create the defined Jenkins job!", e);
 		}
