@@ -13,7 +13,7 @@ isProcessRunning() {
 waitForStop() {
   PID=`cat $PIDFILE`
   echo "Sending DevHub the stop signal"
-  echo -e "$HALT_KEY\nstop" > /dev/tcp/localhost/$STOPPORT
+  echo "$HALT_KEY\nstop" | nc localhost $STOPPORT
   sleep 3;
   if isProcessRunning $PID ; then
     echo "Process still running";
