@@ -15,8 +15,8 @@
 	
 	"dbConfig" : {
 		"persistanceUnit" : "production-h2",
-		"dburl" : "jdbc:postgresql://localhost/devhub-test",
-		"user" : "theuser",
+		"dburl" : "jdbc:h2:production;DB_CLOSE_DELAY=-1",
+		"user" : "",
 		"password" : ""
 	},
 	
