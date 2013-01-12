@@ -1,5 +1,6 @@
 package nl.tudelft.ewi.devhub.services.continuousintegration;
 
+import java.net.URL;
 import java.util.List;
 
 import nl.tudelft.ewi.devhub.services.Service;
@@ -17,7 +18,7 @@ public interface ContinuousIntegrationService extends Service {
 	/**
 	 * @return The URL for the project
 	 */
-	String createBuildProject(BuildProject project) throws ServiceException;
+	URL createBuildProject(BuildProject project) throws ServiceException;
 
 	void removeBuildProject(BuildIdentifier buildId) throws ServiceException;
 

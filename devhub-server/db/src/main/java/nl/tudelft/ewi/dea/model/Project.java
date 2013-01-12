@@ -1,5 +1,6 @@
 package nl.tudelft.ewi.dea.model;
 
+import java.net.URL;
 import java.util.Collections;
 import java.util.Set;
 
@@ -26,7 +27,7 @@ public class Project {
 	@Column(name = "source_code_url") private String sourceCodeUrl;
 	@Column(name = "version_control_service") private String versionControlService;
 
-	@Column(name = "continuous_integration_url") private String continuousIntegrationUrl;
+	@Column(name = "continuous_integration_url") private URL continuousIntegrationUrl;
 	@Column(name = "continuous_integration_service") private String continuousIntegrationService;
 
 	private boolean deployed;
@@ -94,11 +95,11 @@ public class Project {
 		this.members = members;
 	}
 
-	public String getContinuousIntegrationUrl() {
+	public URL getContinuousIntegrationUrl() {
 		return continuousIntegrationUrl;
 	}
 
-	public void setContinuousIntegrationUrl(String continuesIntegrationUrl) {
+	public void setContinuousIntegrationUrl(URL continuesIntegrationUrl) {
 		this.continuousIntegrationUrl = continuesIntegrationUrl;
 	}
 

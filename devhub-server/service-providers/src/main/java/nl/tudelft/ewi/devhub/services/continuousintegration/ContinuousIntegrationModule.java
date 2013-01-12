@@ -19,6 +19,6 @@ public class ContinuousIntegrationModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		Multibinder.newSetBinder(binder(), ContinuousIntegrationService.class)
-				.addBinding().toInstance(new JenkinsService(configuration.get("Jenkins")));
+				.addBinding().toInstance(JenkinsService.fromProperties(configuration.get("Jenkins")));
 	}
 }

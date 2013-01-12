@@ -12,7 +12,7 @@
 	<name>DevHub Server - Database module</name>
 
 	<properties>
-		<hibernate.version>4.1.8.Final</hibernate.version>
+		<hibernate.version>4.1.9.Final</hibernate.version>
 	</properties>
 	
 	<dependencies>
@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.3.168</version>
+			<version>1.3.170</version>
 		</dependency>
 		<dependency>
 			<groupId>postgresql</groupId>

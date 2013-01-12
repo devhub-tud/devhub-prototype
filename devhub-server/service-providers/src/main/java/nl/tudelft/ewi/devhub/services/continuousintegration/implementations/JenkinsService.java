@@ -4,9 +4,12 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 
+import nl.tudelft.ewi.dea.DevHubException;
 import nl.tudelft.ewi.devhub.services.ServiceException;
 import nl.tudelft.ewi.devhub.services.continuousintegration.ContinuousIntegrationService;
 import nl.tudelft.ewi.devhub.services.continuousintegration.models.BuildIdentifier;
@@ -30,42 +33,27 @@ public class JenkinsService implements ContinuousIntegrationService {
 	private static final Logger LOG = LoggerFactory.getLogger(JenkinsService.class);
 
 	private final JenkinsClient jenkinsClient;
-	private final String baseUrl;
+	private final URL baseUrl;
 
-	public JenkinsService(Properties props) {
-		this(props.getProperty("host"), Integer.parseInt(props.get("port").toString()), props.getProperty("context"), props.getProperty("username"), props.getProperty("password"));
+	public static JenkinsService fromProperties(Properties props) {
+		URL url;
+		try {
+			url = new URL(props.getProperty("url"));
+		} catch (MalformedURLException e) {
+			throw new DevHubException("Invalid Jenkins URL in " + props);
+		}
+		return new JenkinsService(url, props.getProperty("username"), props.getProperty("password"));
 	}
 
-	public JenkinsService(String hostname, int port, String context, String username, String password) {
-		checkArgument(isNotEmpty(hostname), "hostname must be non-empty");
-		checkArgument(port > 0, "port must be > 0");
-
+	public JenkinsService(URL url, String username, String password) {
+		checkNotNull(url);
 		checkArgument(isNotEmpty(username), "username must be non-empty");
 		checkArgument(isNotEmpty(password), "password must be non-empty");
 
-		JenkinsClientFactory factory = new JenkinsClientFactory(hostname, port, context, username, password);
-
-		this.baseUrl = toUrl(hostname, port, context);
+		this.baseUrl = url;
+		JenkinsClientFactory factory = new JenkinsClientFactory(baseUrl, username, password);
 
 		jenkinsClient = factory.getJenkinsClient();
-	}
-
-	private String toUrl(String hostname, int port, String context) {
-		final StringBuilder builder = new StringBuilder("http://");
-		builder.append(hostname);
-		if (port != 80) {
-			builder.append(':');
-			builder.append(port);
-		}
-		if (context == null || context.isEmpty()) {
-			builder.append('/');
-		} else {
-			builder.append(context);
-			if (!context.endsWith("/")) {
-				builder.append('/');
-			}
-		}
-		return builder.toString();
 	}
 
 	@Override
@@ -78,7 +66,7 @@ public class JenkinsService implements ContinuousIntegrationService {
 	}
 
 	@Override
-	public String createBuildProject(BuildProject project) throws ServiceException {
+	public URL createBuildProject(BuildProject project) throws ServiceException {
 		List<User> users = Lists.newArrayList();
 		for (ServiceUser member : project.getMembers()) {
 			users.add(new UserImpl(member.getIdentifier(), member.getEmail()));
@@ -88,7 +76,7 @@ public class JenkinsService implements ContinuousIntegrationService {
 			checkExistenceOfUsers(users);
 
 			Job job = jenkinsClient.createJob(project.getName(), project.getSourceCodeUrl(), users);
-			return baseUrl + "job/" + job.getName();
+			return new URL(baseUrl.toExternalForm() + "/job/" + job.getName());
 		} catch (Throwable e) {
 			throw new ServiceException("Could not create the defined Jenkins job!", e);
 		}

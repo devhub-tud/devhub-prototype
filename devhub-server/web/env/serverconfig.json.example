@@ -15,8 +15,8 @@
 	
 	"dbConfig" : {
 		"persistanceUnit" : "production-h2",
-		"dburl" : "jdbc:postgresql://localhost/devhub-test",
-		"user" : "theuser",
+		"dburl" : "jdbc:h2:production;DB_CLOSE_DELAY=-1",
+		"user" : "",
 		"password" : ""
 	},
 	
@@ -30,9 +30,7 @@
 		},
 		"continuousIntegration" : {
 			"Jenkins" : {
-				"host"		: "example.com",
-				"port"		: 8080,
-				"context"	: "/jenkins",
+				"url"		: "http://example.com:8080/jenkins",
 				"username"	: "devhub",
 				"password"	: "$My$Password$"
 			}

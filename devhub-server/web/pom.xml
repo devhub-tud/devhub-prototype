@@ -42,7 +42,7 @@
 		<dependency>
 			<groupId>com.sun.jersey.contribs</groupId>
 			<artifactId>jersey-guice</artifactId>
-			<version>1.15</version>
+			<version>1.16</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
@@ -83,7 +83,7 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-webapp</artifactId>
-			<version>9.0.0.M3</version>
+			<version>9.0.0.M4</version>
 		</dependency>
 		<dependency>
 			<groupId>nl.tudelft.ewi</groupId>
