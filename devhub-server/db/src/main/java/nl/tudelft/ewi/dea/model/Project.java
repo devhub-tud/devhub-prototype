@@ -24,8 +24,10 @@ public class Project {
 	@Column(unique = true) private String name;
 
 	@Column(name = "source_code_url") private String sourceCodeUrl;
+	@Column(name = "version_control_service") private String versionControlService;
 
 	@Column(name = "continuous_integration_url") private String continuousIntegrationUrl;
+	@Column(name = "continuous_integration_service") private String continuousIntegrationService;
 
 	private boolean deployed;
 
@@ -64,6 +66,14 @@ public class Project {
 		this.sourceCodeUrl = newUrl;
 	}
 
+	public String getVersionControlService() {
+		return versionControlService;
+	}
+
+	public void setVersionControlService(String versionControlService) {
+		this.versionControlService = versionControlService;
+	}
+
 	public boolean isDeployed() {
 		return deployed;
 	}
@@ -92,7 +102,15 @@ public class Project {
 		this.continuousIntegrationUrl = continuesIntegrationUrl;
 	}
 
-	public String getSafeName() {
+	public String getContinuousIntegrationService() {
+		return continuousIntegrationService;
+	}
+
+	public void setContinuousIntegrationService(String continuousIntegrationService) {
+		this.continuousIntegrationService = continuousIntegrationService;
+	}
+
+	public String getProjectId() {
 		String makeSafe = name;
 		makeSafe = makeSafe.replace(" - ", "-");
 		makeSafe = makeSafe.replace(" -", "-");

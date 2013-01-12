@@ -14,11 +14,13 @@ import javax.ws.rs.core.Response.Status;
 import nl.tudelft.ewi.dea.dao.ProjectDao;
 import nl.tudelft.ewi.dea.dao.ProjectInvitationDao;
 import nl.tudelft.ewi.dea.dao.ProjectMembershipDao;
+import nl.tudelft.ewi.dea.jaxrs.api.projects.services.ServicesBackend;
 import nl.tudelft.ewi.dea.model.Project;
 import nl.tudelft.ewi.dea.model.ProjectInvitation;
 import nl.tudelft.ewi.dea.model.ProjectMembership;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.security.SecurityProvider;
+import nl.tudelft.ewi.devhub.services.models.ServiceUser;
 
 import org.slf4j.Logger;
 
@@ -36,18 +38,20 @@ public class ProjectResource {
 	private final ProjectDao projectDao;
 	private final ProjectInvitationDao invitationDao;
 	private final ProjectMembershipDao membershipDao;
-
 	private final InviteManager invateMngr;
+	private final ServicesBackend backend;
 
 	@Inject
 	public ProjectResource(SecurityProvider securityProvider, ProjectDao projectDao,
-			ProjectInvitationDao invitationDao, ProjectMembershipDao membershipDao, InviteManager invateMngr) {
+			ProjectInvitationDao invitationDao, ProjectMembershipDao membershipDao,
+			ServicesBackend backend, InviteManager invateMngr) {
 
 		this.projectDao = projectDao;
 		this.invitationDao = invitationDao;
 		this.membershipDao = membershipDao;
 		this.securityProvider = securityProvider;
 		this.invateMngr = invateMngr;
+		this.backend = backend;
 	}
 
 	@GET
@@ -77,13 +81,16 @@ public class ProjectResource {
 
 		LOG.trace("Answering invitation for project: {} - accept? {}", id, accept);
 
-		final User currentUser = securityProvider.getUser();
+		final User user = securityProvider.getUser();
 		final Project project = projectDao.findById(id);
 
-		final ProjectInvitation invitation = invitationDao.findByProjectAndEMail(project, currentUser.getEmail());
+		final ProjectInvitation invitation = invitationDao.findByProjectAndEMail(project, user.getEmail());
 
 		if (accept) {
-			final ProjectMembership membership = new ProjectMembership(currentUser, project);
+			ServiceUser serviceUser = new ServiceUser(user.getNetId(), user.getDisplayName(), user.getEmail());
+			backend.addMembers(project.getId(), serviceUser);
+
+			final ProjectMembership membership = new ProjectMembership(user, project);
 			membershipDao.persist(membership);
 		}
 
@@ -92,5 +99,4 @@ public class ProjectResource {
 		return Response.ok().build();
 
 	}
-
 }

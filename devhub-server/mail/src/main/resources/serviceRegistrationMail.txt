@@ -1,0 +1,9 @@
+Hi there!
+
+One of the projects you are participating in, uses ${serviceName}. In order for you to access that service, we've created a new user account which you can use. 
+
+Username: ${userName}
+Password: ${password}
+
+Kind regards,
+The DevHub team

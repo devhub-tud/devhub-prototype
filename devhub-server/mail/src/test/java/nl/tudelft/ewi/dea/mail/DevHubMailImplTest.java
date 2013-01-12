@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import nl.tudelft.ewi.dea.mail.internals.MailSender;
 import nl.tudelft.ewi.dea.mail.templates.InviteProjectFactory;
 import nl.tudelft.ewi.dea.mail.templates.PasswordResetMailFactory;
+import nl.tudelft.ewi.dea.mail.templates.ServiceRegistrationMailFactory;
 import nl.tudelft.ewi.dea.mail.templates.VerifyRegistrationMailFactory;
 
 import org.junit.Before;
@@ -23,6 +24,7 @@ public class DevHubMailImplTest {
 	@Mock private VerifyRegistrationMailFactory verifyRegMailFact;
 	@Mock private Provider<VerifyRegistrationMailFactory> verifyRegMailFactProv;
 	@Mock private Provider<PasswordResetMailFactory> passwResetFactoryProv;
+	@Mock private Provider<ServiceRegistrationMailFactory> serviceRegistrationFac;
 	@Mock private Provider<InviteProjectFactory> inviteProjectFac;
 	@Mock private PasswordResetMailFactory passwResetFactory;
 
@@ -33,7 +35,7 @@ public class DevHubMailImplTest {
 		when(verifyRegMailFactProv.get()).thenReturn(verifyRegMailFact);
 		when(passwResetFactoryProv.get()).thenReturn(passwResetFactory);
 		devHubMail = new DevHubMailImpl(verifyRegMailFactProv, passwResetFactoryProv, mailSender,
-				inviteProjectFac);
+				serviceRegistrationFac, inviteProjectFac);
 	}
 
 	@Test

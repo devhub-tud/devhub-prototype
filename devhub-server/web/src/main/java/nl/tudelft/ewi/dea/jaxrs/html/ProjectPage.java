@@ -60,9 +60,6 @@ public class ProjectPage {
 
 		return renderer
 				.setValue("project", project)
-				.setValue("sourceCodeUrl", project.getSourceCodeUrl())
-				// .setValue("jenkins-path", jenkinsHost + "job/" +
-				// project.getSafeName() + "/")
 				.setValue("members", members)
 				.setValue("invitations", invitations)
 				.addJS("invite-user.js")

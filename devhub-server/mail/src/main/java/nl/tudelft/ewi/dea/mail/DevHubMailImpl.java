@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import nl.tudelft.ewi.dea.mail.internals.MailSender;
 import nl.tudelft.ewi.dea.mail.templates.InviteProjectFactory;
 import nl.tudelft.ewi.dea.mail.templates.PasswordResetMailFactory;
+import nl.tudelft.ewi.dea.mail.templates.ServiceRegistrationMailFactory;
 import nl.tudelft.ewi.dea.mail.templates.VerifyRegistrationMailFactory;
 
 import org.slf4j.Logger;
@@ -24,14 +25,19 @@ class DevHubMailImpl implements DevHubMail {
 	private final Provider<VerifyRegistrationMailFactory> verifyRegMailFactory;
 	private final Provider<PasswordResetMailFactory> passwordResetFac;
 	private final Provider<InviteProjectFactory> inviteProjectFac;
+	private final Provider<ServiceRegistrationMailFactory> serviceRegistrationFac;
 	private final MailSender sender;
 
 	@Inject
-	public DevHubMailImpl(Provider<VerifyRegistrationMailFactory> verifyRegMailFactory, Provider<PasswordResetMailFactory> passwordResetFac, MailSender sender,
+	public DevHubMailImpl(Provider<VerifyRegistrationMailFactory> verifyRegMailFactory,
+			Provider<PasswordResetMailFactory> passwordResetFac, MailSender sender,
+			Provider<ServiceRegistrationMailFactory> serviceRegistrationMailFactory,
 			Provider<InviteProjectFactory> inviteProjectFac) {
+
+		this.sender = sender;
 		this.verifyRegMailFactory = verifyRegMailFactory;
 		this.passwordResetFac = passwordResetFac;
-		this.sender = sender;
+		this.serviceRegistrationFac = serviceRegistrationMailFactory;
 		this.inviteProjectFac = inviteProjectFac;
 	}
 
@@ -68,6 +74,13 @@ class DevHubMailImpl implements DevHubMail {
 	public void sendFeedbackEmail(String from, String to, String title, String content) {
 		LOG.debug("Sending feedback email from address: {}", from);
 		SimpleMessage mail = new SimpleMessage(to, USER_FEEDBACK_SUBJECT_PREFIX + title, content, from);
+		sender.deliver(mail);
+	}
+
+	@Override
+	public void sendServiceRegistrationEmail(String serviceName, String userName, String password, String email) {
+		LOG.debug("Sending service registration email to address: {}", email);
+		SimpleMessage mail = serviceRegistrationFac.get().sendServiceRegistrationMail(email, userName, password, serviceName);
 		sender.deliver(mail);
 	}
 }

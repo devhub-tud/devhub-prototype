@@ -16,11 +16,13 @@ import nl.tudelft.jenkins.auth.User;
 import nl.tudelft.jenkins.auth.UserImpl;
 import nl.tudelft.jenkins.client.JenkinsClient;
 import nl.tudelft.jenkins.client.JenkinsClientFactory;
+import nl.tudelft.jenkins.client.exceptions.JenkinsException;
 import nl.tudelft.jenkins.jobs.Job;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
 public class JenkinsService implements ContinuousIntegrationService {
@@ -67,12 +69,12 @@ public class JenkinsService implements ContinuousIntegrationService {
 	}
 
 	@Override
-	public void registerUser(nl.tudelft.ewi.dea.model.User user, String plainTextPassword) {
+	public void registerUser(ServiceUser user, String plainTextPassword) {
 		LOG.trace("Registering user: {}" + user);
 
 		checkNotNull(user, "user must be non-null");
 
-		jenkinsClient.createUser(user.getNetId(), plainTextPassword, user.getEmail(), user.getDisplayName());
+		jenkinsClient.createUser(user.getIdentifier(), plainTextPassword, user.getEmail(), user.getFullName());
 	}
 
 	@Override
@@ -92,9 +94,37 @@ public class JenkinsService implements ContinuousIntegrationService {
 		}
 	}
 
+	@Override
+	public boolean userAlreadyRegistered(ServiceUser user) throws ServiceException {
+		try {
+			User jenkinsUser = new UserImpl(user.getIdentifier(), user.getEmail());
+			checkExistenceOfUsers(Lists.newArrayList(jenkinsUser));
+			return true;
+		} catch (JenkinsException e) {
+			return false;
+		}
+	}
+
 	private void checkExistenceOfUsers(List<User> users) throws ServiceException {
 		for (User user : users) {
 			jenkinsClient.retrieveUser(user.getName());
+		}
+	}
+
+	@Override
+	public void addMembers(String projectId, List<ServiceUser> users) throws ServiceException {
+		try {
+			Job job = jenkinsClient.retrieveJob(projectId);
+			List<User> jenkinsUsers = job.getUsers();
+			for (ServiceUser user : users) {
+				User jenkinsUser = new UserImpl(user.getIdentifier(), user.getEmail());
+				if (!jenkinsUsers.contains(jenkinsUser)) {
+					jenkinsUsers.add(jenkinsUser);
+				}
+			}
+			jenkinsClient.updateJob(job);
+		} catch (Throwable e) {
+			throw new ServiceException("Could not add the following users to project: " + projectId + " - " + Joiner.on(", ").join(users), e);
 		}
 	}
 
