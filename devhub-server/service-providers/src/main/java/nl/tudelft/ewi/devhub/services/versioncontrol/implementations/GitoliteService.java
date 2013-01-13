@@ -1,6 +1,7 @@
 package nl.tudelft.ewi.devhub.services.versioncontrol.implementations;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -14,7 +15,6 @@ import nl.minicom.gitolite.manager.models.User;
 import nl.tudelft.ewi.devhub.services.ServiceException;
 import nl.tudelft.ewi.devhub.services.models.ServiceUser;
 import nl.tudelft.ewi.devhub.services.versioncontrol.VersionControlService;
-import nl.tudelft.ewi.devhub.services.versioncontrol.models.RepositoryIdentifier;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.RepositoryRepresentation;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.SshKeyIdentifier;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.SshKeyRepresentation;
@@ -52,7 +52,7 @@ public class GitoliteService extends VersionControlService {
 	public String createRepository(RepositoryRepresentation repository) throws ServiceException {
 		try {
 			Config config = configManager.getConfig();
-			String repositoryName = repository.getName();
+			String repositoryName = repository.getRepoName();
 
 			if (config.hasRepository(repositoryName)) {
 				throw new ServiceException("The repository '" + repositoryName + "' already exists!");
@@ -82,7 +82,31 @@ public class GitoliteService extends VersionControlService {
 	}
 
 	@Override
-	public void removeRepository(RepositoryIdentifier repository) throws ServiceException {}
+	public void removeRepository(String repoPath) throws ServiceException {}
+
+	@Override
+	public void addUsers(String repoPath, List<ServiceUser> users) throws ServiceException {
+		try {
+			Config config = configManager.getConfig();
+			if (!config.hasRepository(repoPath)) {
+				throw new ServiceException("The repository '" + repoPath + "' does not exists!");
+			}
+
+			Repository repository = config.getRepository(repoPath);
+			for (ServiceUser member : users) {
+				User user = config.ensureUserExists(member.getIdentifier());
+				repository.setPermission(user, Permission.ALL);
+			}
+
+			configManager.applyConfig();
+		} catch (IOException | ServiceUnavailable e) {
+			LOG.error(e.getMessage(), e);
+			throw new ServiceException("The Gitolite service seems to be offline.", e);
+		} catch (Throwable e) {
+			LOG.error(e.getMessage(), e);
+			throw new ServiceException("Failed to create the specified repository!", e);
+		}
+	}
 
 	@Override
 	public void addSshKey(SshKeyRepresentation sshKey) throws ServiceException {

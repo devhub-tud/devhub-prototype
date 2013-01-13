@@ -1,23 +1,25 @@
 package nl.tudelft.ewi.dea.jaxrs.api.projects.provisioner;
 
 import java.net.URL;
+import java.util.Set;
 
 import javax.inject.Inject;
 
 import nl.tudelft.ewi.dea.dao.ProjectDao;
 import nl.tudelft.ewi.dea.dao.ProjectMembershipDao;
+import nl.tudelft.ewi.dea.jaxrs.api.projects.InviteException;
 import nl.tudelft.ewi.dea.jaxrs.api.projects.InviteManager;
+import nl.tudelft.ewi.dea.jaxrs.api.projects.services.ServicesBackend;
 import nl.tudelft.ewi.dea.model.Project;
-import nl.tudelft.ewi.dea.model.ProjectInvitation;
 import nl.tudelft.ewi.dea.model.ProjectMembership;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.devhub.services.ServiceException;
+import nl.tudelft.ewi.devhub.services.ServiceProvider;
 import nl.tudelft.ewi.devhub.services.continuousintegration.ContinuousIntegrationService;
 import nl.tudelft.ewi.devhub.services.continuousintegration.models.BuildIdentifier;
 import nl.tudelft.ewi.devhub.services.continuousintegration.models.BuildProject;
 import nl.tudelft.ewi.devhub.services.models.ServiceUser;
 import nl.tudelft.ewi.devhub.services.versioncontrol.VersionControlService;
-import nl.tudelft.ewi.devhub.services.versioncontrol.models.RepositoryIdentifier;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.RepositoryRepresentation;
 
 import org.slf4j.Logger;
@@ -31,29 +33,36 @@ public class ProvisionTask implements Runnable {
 	private static final Logger LOG = LoggerFactory.getLogger(ProvisionTask.class);
 
 	private final long projectId;
-	private final VersionControlService versioningService;
-	private final ContinuousIntegrationService buildService;
 	private final Provisioner provisioner;
 	private final ProjectDao projectDao;
+	private final ServicesBackend backend;
 	private final ProjectMembershipDao membershipDao;
 	private final InviteManager inviteManager;
+	private final ServiceProvider services;
+
+	private final Set<String> invited;
+
+	private VersionControlService versioningService;
+	private ContinuousIntegrationService buildService;
 
 	@Inject
 	public ProvisionTask(ProjectDao projectDao,
 			ProjectMembershipDao membershipDao,
 			InviteManager inviteManager,
+			ServiceProvider services,
+			ServicesBackend backend,
 			@Assisted Provisioner provisioner,
-			@Assisted VersionControlService versioningService,
-			@Assisted ContinuousIntegrationService buildService,
-			@Assisted long projectId) {
+			@Assisted long projectId,
+			@Assisted Set<String> invited) {
 
 		this.projectDao = projectDao;
 		this.membershipDao = membershipDao;
 		this.inviteManager = inviteManager;
+		this.backend = backend;
 		this.provisioner = provisioner;
-		this.versioningService = versioningService;
-		this.buildService = buildService;
+		this.services = services;
 		this.projectId = projectId;
+		this.invited = invited;
 	}
 
 	@Override
@@ -68,6 +77,8 @@ public class ProvisionTask implements Runnable {
 			provisioner.updateProjectState(projectId, new State(false, false, "Preparing to provision project..."));
 			project = projectDao.findById(projectId);
 			creator = membershipDao.findByProjectId(projectId).get(0);
+			versioningService = services.getVersionControlService(project.getVersionControlService());
+			buildService = services.getContinuousIntegrationService(project.getContinuousIntegrationService());
 		} catch (Throwable e) {
 			LOG.error(e.getMessage(), e);
 			if (project != null) {
@@ -106,16 +117,16 @@ public class ProvisionTask implements Runnable {
 		project.setDeployed(true);
 		projectDao.persist(project);
 
-		if (project.getInvitations().size() > 0) {
+		if (!invited.isEmpty()) {
 			LOG.debug("Inviting project members");
 			provisioner.updateProjectState(projectId, new State(false, false, "Inviting project members..."));
 
-			try {
-				for (ProjectInvitation invite : project.getInvitations()) {
-					inviteManager.inviteUser(creator, invite.getEmail(), project);
+			for (String invite : invited) {
+				try {
+					inviteManager.inviteUser(creator, invite, project);
+				} catch (InviteException e) {
+					LOG.warn(e.getMessage(), e);
 				}
-			} catch (Throwable e) {
-				LOG.warn(e.getMessage(), e);
 			}
 		}
 
@@ -124,16 +135,15 @@ public class ProvisionTask implements Runnable {
 
 	private String createVersionControlRepository(Project project, User creator) throws ServiceException {
 		LOG.debug("Creating source code repository");
-		ServiceUser serviceUser = new ServiceUser(creator.getNetId(), creator.getEmail());
-		RepositoryIdentifier repositoryId = new RepositoryIdentifier(project.getSafeName(), serviceUser);
-		RepositoryRepresentation request = new RepositoryRepresentation(repositoryId, project.getSafeName());
+		ServiceUser serviceUser = new ServiceUser(creator.getNetId(), creator.getDisplayName(), creator.getEmail());
+		RepositoryRepresentation request = new RepositoryRepresentation(project.getProjectId(), serviceUser);
 		for (ProjectMembership membership : project.getMembers()) {
 			User member = membership.getUser();
-			request.addMember(new ServiceUser(member.getNetId(), member.getEmail()));
+			request.addMember(new ServiceUser(member.getNetId(), member.getEmail(), member.getDisplayName()));
 		}
 
 		// Grant access to the Git user.
-		request.addMember(new ServiceUser("git", null));
+		request.addMember(new ServiceUser("git", null, "git"));
 		if (project.getCourse().hasTemplateUrl()) {
 			String templateUrl = project.getCourse().getTemplateUrl();
 			return versioningService.createRepository(request, templateUrl);
@@ -145,9 +155,7 @@ public class ProvisionTask implements Runnable {
 	private void removeVersionControlRepository(Project project, User creator) {
 		LOG.debug("Removing repository for project {}", project.getId());
 		try {
-			ServiceUser serviceUser = new ServiceUser(creator.getNetId(), creator.getEmail());
-			RepositoryIdentifier repositoryId = new RepositoryIdentifier(project.getSafeName(), serviceUser);
-			versioningService.removeRepository(repositoryId);
+			versioningService.removeRepository(project.getProjectId());
 		} catch (Throwable e) {
 			LOG.error(e.getMessage(), e);
 		}
@@ -155,21 +163,27 @@ public class ProvisionTask implements Runnable {
 
 	private void createContinuousIntegrationJob(Project project, User creator) throws ServiceException {
 		LOG.debug("Creating CI job for project {}", project.getId());
-		ServiceUser serviceUser = new ServiceUser(creator.getNetId(), creator.getEmail());
-		BuildIdentifier buildId = new BuildIdentifier(project.getSafeName(), serviceUser);
+
+		ServiceUser serviceUser = new ServiceUser(creator.getNetId(), creator.getDisplayName(), creator.getEmail());
+		backend.ensureUserExists(buildService, serviceUser);
+
+		BuildIdentifier buildId = new BuildIdentifier(project.getProjectId(), serviceUser);
 		BuildProject request = new BuildProject(buildId, project.getSourceCodeUrl());
 		for (ProjectMembership membership : project.getMembers()) {
 			User member = membership.getUser();
-			request.addMember(new ServiceUser(member.getNetId(), member.getEmail()));
+			ServiceUser user = new ServiceUser(member.getNetId(), member.getEmail(), member.getDisplayName());
+			backend.ensureUserExists(buildService, user);
+			request.addMember(user);
 		}
+
 		URL url = buildService.createBuildProject(request);
 		project.setContinuousIntegrationUrl(url);
 	}
 
 	private void removeContinuousIntegrationJob(Project project, User creator) {
 		try {
-			ServiceUser serviceUser = new ServiceUser(creator.getNetId(), creator.getEmail());
-			BuildIdentifier buildId = new BuildIdentifier(project.getSafeName(), serviceUser);
+			ServiceUser serviceUser = new ServiceUser(creator.getNetId(), creator.getDisplayName(), creator.getEmail());
+			BuildIdentifier buildId = new BuildIdentifier(project.getProjectId(), serviceUser);
 			buildService.removeBuildProject(buildId);
 		} catch (Throwable e) {
 			LOG.error(e.getMessage(), e);

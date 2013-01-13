@@ -11,17 +11,16 @@ import nl.tudelft.ewi.devhub.services.models.ServiceUser;
 import com.google.common.collect.Sets;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class RepositoryRepresentation extends RepositoryIdentifier {
+@EqualsAndHashCode
+public class RepositoryRepresentation {
 
-	private final String groupName;
+	private final String repoName;
 
 	@Setter(AccessLevel.NONE) private final Collection<ServiceUser> members;
 
-	public RepositoryRepresentation(RepositoryIdentifier id, String groupName) {
-		super(id.getName(), id.getCreator());
-		this.groupName = groupName;
-		this.members = Sets.newHashSet(id.getCreator());
+	public RepositoryRepresentation(String repoName, ServiceUser... members) {
+		this.repoName = repoName;
+		this.members = Sets.newHashSet(members);
 	}
 
 	public void addMember(ServiceUser user) {

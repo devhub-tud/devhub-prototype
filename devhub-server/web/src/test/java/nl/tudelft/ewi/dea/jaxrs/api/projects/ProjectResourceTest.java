@@ -20,6 +20,7 @@ import nl.tudelft.ewi.dea.dao.ProjectInvitationDao;
 import nl.tudelft.ewi.dea.dao.ProjectMembershipDao;
 import nl.tudelft.ewi.dea.dao.RegistrationTokenDao;
 import nl.tudelft.ewi.dea.dao.UserDao;
+import nl.tudelft.ewi.dea.jaxrs.api.projects.services.ServicesBackend;
 import nl.tudelft.ewi.dea.mail.DevHubMail;
 import nl.tudelft.ewi.dea.model.Project;
 import nl.tudelft.ewi.dea.model.ProjectInvitation;
@@ -44,6 +45,7 @@ public class ProjectResourceTest {
 	@Mock private UserDao userDao;
 	@Mock private ProjectInvitationDao invitationDao;
 	@Mock private ProjectMembershipDao membershipDao;
+	@Mock private ServicesBackend servicesBackend;
 	@Mock private DevHubMail mail;
 	@Mock private Project project;
 	@Mock private User invitedUser;
@@ -56,7 +58,7 @@ public class ProjectResourceTest {
 	@Before
 	public void setup() {
 		inviteManager = new InviteManager(projectDao, invitationDao, tokenDao, userDao, mail, TestResources.SERVER_CONFIG);
-		projectResource = new ProjectResource(securityProvider, projectDao, invitationDao, membershipDao, inviteManager);
+		projectResource = new ProjectResource(securityProvider, projectDao, invitationDao, membershipDao, servicesBackend, inviteManager);
 		when(invitedUser.getEmail()).thenReturn(EMAIL);
 		when(invitedUser.getDisplayName()).thenReturn("username");
 		when(project.getName()).thenReturn("projectname");
