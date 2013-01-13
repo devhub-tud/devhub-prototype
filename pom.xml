@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>nl.tudelft.ewi</groupId>
-	<version>1.0</version>
+	<version>1.1-SNAPSHOT</version>
 	<name>DevHub - Parent project</name>
 	<artifactId>devhub</artifactId>
 	<packaging>pom</packaging>
@@ -41,7 +41,7 @@
 		<connection>scm:git:git@bitbucket.org:alexnederlof/devhub.git</connection>
 		<developerConnection>scm:git:git@bitbucket.org:alexnederlof/devhub.git</developerConnection>
 		<url>https://bitbucket.org/alexnederlof/devhub</url>
-	  <tag>devhub-1.0</tag>
+	  <tag>HEAD</tag>
   </scm>
 
 	<distributionManagement>
