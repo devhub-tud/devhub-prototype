@@ -13,3 +13,6 @@ serverconfig.json
 *.db
 web/env/**.xml
 web/env/**.json
+
+pom.xml.releaseBackup
+release.properties
