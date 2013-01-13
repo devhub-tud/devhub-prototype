@@ -3,11 +3,12 @@ package nl.tudelft.ewi.devhub.services.versioncontrol;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import nl.tudelft.ewi.dea.DevHubException;
 import nl.tudelft.ewi.devhub.services.Service;
 import nl.tudelft.ewi.devhub.services.ServiceException;
-import nl.tudelft.ewi.devhub.services.versioncontrol.models.RepositoryIdentifier;
+import nl.tudelft.ewi.devhub.services.models.ServiceUser;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.RepositoryRepresentation;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.SshKeyIdentifier;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.SshKeyRepresentation;
@@ -106,9 +107,12 @@ public abstract class VersionControlService implements Service {
 
 	protected abstract String createRemoteRepository(RepositoryRepresentation repository) throws ServiceException;
 
-	public abstract void removeRepository(RepositoryIdentifier repository) throws ServiceException;
+	public abstract void removeRepository(String repoPath) throws ServiceException;
 
 	public abstract void addSshKey(SshKeyRepresentation sshKey) throws ServiceException;
 
 	public abstract void removeSshKeys(SshKeyIdentifier... sshKeys) throws ServiceException;
+
+	public abstract void addUsers(String repoPath, List<ServiceUser> usersToAdd) throws ServiceException;
+
 }

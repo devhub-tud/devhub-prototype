@@ -36,4 +36,13 @@ public interface DevHubMail {
 	 */
 	void sendFeedbackEmail(String from, String to, String title, String content);
 
+	/**
+	 * @param serviceName The name of the service the user has been registered
+	 *           for.
+	 * @param userName The user name of the user.
+	 * @param password The (generated) password of the user for this service.
+	 * @param email The email address of the user.
+	 */
+	void sendServiceRegistrationEmail(String continuousIntegrationServiceName, String userName, String password, String email);
+
 }

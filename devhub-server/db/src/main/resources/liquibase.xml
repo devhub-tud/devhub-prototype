@@ -232,4 +232,12 @@
 			</column>
 		</addColumn>
 	</changeSet>
+	
+	<changeSet id="22" author="michaelj">
+		<addColumn tableName="project">
+			<column name="version_control_service" type="varchar(255)" />
+			<column name="continuous_integration_service" type="varchar(255)" />
+		</addColumn>
+	</changeSet>
+	
 </databaseChangeLog>

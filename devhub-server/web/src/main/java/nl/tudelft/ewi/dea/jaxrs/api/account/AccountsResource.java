@@ -26,14 +26,9 @@ import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.model.RegistrationToken;
 import nl.tudelft.ewi.dea.model.User;
 import nl.tudelft.ewi.dea.security.UserFactory;
-import nl.tudelft.ewi.devhub.services.ServiceException;
-import nl.tudelft.ewi.devhub.services.ServiceProvider;
-import nl.tudelft.ewi.devhub.services.continuousintegration.ContinuousIntegrationService;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.persist.Transactional;
@@ -45,22 +40,19 @@ import com.google.inject.servlet.RequestScoped;
 @Produces(MediaType.APPLICATION_JSON)
 public class AccountsResource {
 
-	private static final Logger LOG = LoggerFactory.getLogger(AccountsResource.class);
-
 	private final UserDao userDao;
 	private final RegistrationTokenDao registrationTokenDao;
 	private final UserFactory userFactory;
 	private final ProjectInvitationDao projectInviteDao;
-	private final ServiceProvider serviceProvider;
 
 	@Inject
-	public AccountsResource(UserDao userDao, RegistrationTokenDao registrationTokenDao, UserFactory userFactory,
-			ProjectInvitationDao projectInviteDao, ServiceProvider serviceProvider) {
+	public AccountsResource(UserDao userDao, RegistrationTokenDao registrationTokenDao,
+			UserFactory userFactory, ProjectInvitationDao projectInviteDao) {
+
 		this.userDao = userDao;
 		this.registrationTokenDao = registrationTokenDao;
 		this.userFactory = userFactory;
 		this.projectInviteDao = projectInviteDao;
-		this.serviceProvider = serviceProvider;
 	}
 
 	@GET
@@ -122,14 +114,6 @@ public class AccountsResource {
 		registrationTokenDao.remove(registrationToken);
 		userDao.persist(user);
 
-		try {
-			registerUserWithAllCIServices(user, password);
-		} catch (ServiceException e) {
-			String message = "Failed to register user with all CI services.";
-			LOG.error(message, e);
-			return Response.serverError().entity(message).build();
-		}
-
 		SecurityUtils.getSubject().login(new UsernamePasswordToken(email, password));
 
 		// TODO: send a confirmation email.
@@ -139,13 +123,6 @@ public class AccountsResource {
 		projectInviteDao.updateInvitesForNewUser(user);
 
 		return Response.ok(Long.toString(accountId)).build();
-	}
-
-	private void registerUserWithAllCIServices(User user, String plainTextPassword) throws ServiceException {
-		for (String ciSvcName : serviceProvider.getContinuousIntegrationServices()) {
-			ContinuousIntegrationService ciService = serviceProvider.getContinuousIntegrationService(ciSvcName);
-			ciService.registerUser(user, plainTextPassword);
-		}
 	}
 
 }
