@@ -17,8 +17,16 @@ public class UnsentMailAsJson {
 	@Column(name = "mail", nullable = false) private String mail;
 
 	public UnsentMailAsJson(String mailAsJson) {
-		this.mail = mailAsJson;
+		mail = mailAsJson;
 		id = 0L;
+	}
+
+	/**
+	 * Default constructor, required for Hibernate (and JPA?).
+	 */
+	@SuppressWarnings("unused")
+	private UnsentMailAsJson() {
+		this(null);
 	}
 
 	public long getId() {
