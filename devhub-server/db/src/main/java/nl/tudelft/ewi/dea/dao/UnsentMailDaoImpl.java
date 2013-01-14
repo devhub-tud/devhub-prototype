@@ -2,7 +2,7 @@ package nl.tudelft.ewi.dea.dao;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
+import javax.persistence.Query;
 
 import nl.tudelft.ewi.dea.model.UnsentMailAsJson;
 
@@ -34,9 +34,9 @@ public class UnsentMailDaoImpl extends AbstractDaoBase<UnsentMailAsJson> impleme
 	public void remove(long id) {
 		LOG.warn("Removing unsent message with id={}", id);
 		String query = "DELETE FROM UnsentMailAsJson m WHERE m.id = :id";
-		TypedQuery<UnsentMailAsJson> tq = super.createQuery(query);
-		tq.setParameter("id", id);
-		tq.executeUpdate();
+		Query q = super.createUntypedQuery(query);
+		q.setParameter("id", id);
+		q.executeUpdate();
 	}
 
 }
