@@ -63,7 +63,7 @@ class MailQueueTaker implements Runnable {
 		this.session = session;
 		this.unsentMailDao = unsentMailDao;
 		this.mapper = mapper;
-		this.mailCounter = metrics.newCounter(MetricGroup.Mail.newName("Mails sent"));
+		mailCounter = metrics.newCounter(MetricGroup.Mail.newName("Mails sent"));
 	}
 
 	@Override
@@ -89,7 +89,7 @@ class MailQueueTaker implements Runnable {
 
 	private void checkForUnsentMails() throws InterruptedException {
 		// Wait for the DB to have an activate connection.
-		List<UnsentMailAsJson> unsentMails = unsentMailDao.get().getUnsentMails();
+		List<UnsentMailAsJson> unsentMails = unsentMailDao.get().findAll();
 		LOG.info("Found {} unsent mails to send.", unsentMails.size());
 		ObjectMapper jsonMapper = mapper.get();
 		for (UnsentMailAsJson unsentMail : unsentMails) {
