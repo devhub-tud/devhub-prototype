@@ -1,6 +1,7 @@
 package nl.tudelft.ewi.dea.mail.internals;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
