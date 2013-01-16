@@ -67,7 +67,7 @@ $(document).ready(function() {
 	
 	function checkStudentNumberField() {
 		var email = emailField.val();
-		if (email.endsWith("@tudelft.nl") {
+		if (email.endsWith("@tudelft.nl")) {
 			return true;
 		}
 
