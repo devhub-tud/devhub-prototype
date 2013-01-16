@@ -1,5 +1,8 @@
 
 $(document).ready(function() {
+	String.prototype.endsWith = function(suffix) {
+		return this.indexOf(suffix, this.length - suffix.length) !== -1;
+	};
 
 	var emailField = $('input[name="email"]');
 	var netIdField = $('input[name="net-id"]');
@@ -63,6 +66,11 @@ $(document).ready(function() {
 	}
 	
 	function checkStudentNumberField() {
+		var email = emailField.val();
+		if (email.endsWith("@tudelft.nl")) {
+			return true;
+		}
+
 		var studentNumber = studentNumberField.val();
 		var isValid = studentNumber != undefined && studentNumber.match("^[0-9]{7}$");
 		setInputState(studentNumberField, isValid);
