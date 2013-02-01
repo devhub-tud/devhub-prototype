@@ -27,7 +27,7 @@ $(document).ready(function() {
 				} else if (jqXHR.status === 302) {
 					window.location.replace("/dashboard");
 				}  else {
-					showAlert("alert-error", "<strong>Uknown error</strong>");
+					showAlert("alert-error", "<strong>Unknown error</strong>");
 				}
 			}
 		});
