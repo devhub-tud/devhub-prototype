@@ -48,8 +48,6 @@ public class DashboardPage {
 	@Transactional
 	public String servePage() {
 		User me = securityProvider.getUser();
-		userDao.merge(me);
-
 		List<Project> projects = projectDao.findByUser(me);
 		List<ProjectInvitation> invitations = invitationDao.findByUser(me);
 

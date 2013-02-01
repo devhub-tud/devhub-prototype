@@ -69,7 +69,7 @@ public class AccountResource {
 	public Response promoteUserToTeacher(@PathParam("id") long id) {
 		User u = userDao.findById(id);
 		u.promoteToAdmin();
-		userDao.merge(u);
+		userDao.persist(u);
 
 		return Response.ok().build();
 	}
@@ -81,7 +81,7 @@ public class AccountResource {
 	public Response demoteTeacherToUser(@PathParam("id") long id) {
 		User u = userDao.findById(id);
 		u.demoteToUser();
-		userDao.merge(u);
+		userDao.persist(u);
 
 		return Response.ok().build();
 	}
@@ -105,6 +105,7 @@ public class AccountResource {
 		// persistence instance, not the cached instance.
 		final User subject = userDao.findById(id);
 		userFactory.resetUserPassword(subject, request.getPassword());
+		// TODO: Should we not persist the change?
 
 		return Response.ok(Long.toString(id)).build();
 	}

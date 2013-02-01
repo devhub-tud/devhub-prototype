@@ -58,7 +58,7 @@ public class PostgreSQLSmokeTest {
 		} catch (IOException e) {
 			throw new ConfigurationException("Could not read test config", e);
 		}
-		new DatabaseStructure(props, "", persistService);
+		new DatabaseStructure(props, "");
 
 		LOG.debug("Verifying database structure...");
 		Persistence.createEntityManagerFactory("test-postgresql", props.asJpaProperties()).close();
