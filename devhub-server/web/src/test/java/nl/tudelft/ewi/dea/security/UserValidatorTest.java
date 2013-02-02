@@ -10,8 +10,12 @@ import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class UserValidatorTest {
 
 	@Mock private UserDao userDao;
@@ -27,7 +31,7 @@ public class UserValidatorTest {
 	@Test(expected = UnknownAccountException.class)
 	public void whenUserCannotBeFoundTheCorrectShiroExceptionIsThrown() {
 		final String mailAdress = "test@test.com";
-		when(userDao.findByEmail(mailAdress)).thenReturn(null);
+		when(userDao.findByEmail(Mockito.eq(mailAdress))).thenReturn(null);
 		final AuthenticationToken token = new UsernamePasswordToken(mailAdress, "password");
 		userValidator.doGetAuthenticationInfo(token);
 	}

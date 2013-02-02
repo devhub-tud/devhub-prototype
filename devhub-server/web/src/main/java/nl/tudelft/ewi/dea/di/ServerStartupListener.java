@@ -23,7 +23,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.persist.PersistService;
 import com.google.inject.servlet.GuiceServletContextListener;
 
 /**
@@ -100,11 +99,6 @@ public class ServerStartupListener extends GuiceServletContextListener {
 		ExecutorService executor = injector.getInstance(ExecutorService.class);
 		executor.shutdownNow();
 
-		PersistService persist = injector.getInstance(PersistService.class);
-		if (persist != null) {
-			LOG.info("Stopping persistence service");
-			persist.stop();
-		}
 		try {
 			LOG.debug("Waiting for executor to shut down");
 			executor.awaitTermination(10, TimeUnit.SECONDS);
