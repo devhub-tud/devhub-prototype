@@ -10,7 +10,6 @@ import javax.ws.rs.core.MediaType;
 
 import nl.tudelft.ewi.dea.dao.ProjectDao;
 import nl.tudelft.ewi.dea.dao.ProjectInvitationDao;
-import nl.tudelft.ewi.dea.dao.UserDao;
 import nl.tudelft.ewi.dea.jaxrs.html.utils.Renderer;
 import nl.tudelft.ewi.dea.model.Project;
 import nl.tudelft.ewi.dea.model.ProjectInvitation;
@@ -26,17 +25,15 @@ import com.yammer.metrics.annotation.Timed;
 @Produces(MediaType.TEXT_HTML)
 public class DashboardPage {
 
-	private final UserDao userDao;
 	private final ProjectDao projectDao;
 	private final ProjectInvitationDao invitationDao;
 	private final SecurityProvider securityProvider;
 	private final Renderer renderer;
 
 	@Inject
-	public DashboardPage(Renderer renderer, UserDao userDao, ProjectDao projectDao,
+	public DashboardPage(Renderer renderer, ProjectDao projectDao,
 			ProjectInvitationDao invitationDao, SecurityProvider securityProvider) {
 
-		this.userDao = userDao;
 		this.projectDao = projectDao;
 		this.invitationDao = invitationDao;
 		this.securityProvider = securityProvider;

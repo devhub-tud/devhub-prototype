@@ -5,6 +5,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.persistence.NoResultException;
 
 import nl.tudelft.ewi.dea.dao.CourseDao;
@@ -24,24 +25,24 @@ import org.slf4j.LoggerFactory;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Sets;
-import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 
+@Singleton
 public class Provisioner {
 
 	public static final Logger LOG = LoggerFactory.getLogger(Provisioner.class);
 
 	private final ScheduledExecutorService executor;
 	private final Cache<Long, State> stateCache;
-	private final Provider<CourseDao> courseDao;
-	private final Provider<ProjectDao> projectDao;
-	private final Provider<ProjectMembershipDao> membershipDao;
+	private final CourseDao courseDao;
+	private final ProjectDao projectDao;
+	private final ProjectMembershipDao membershipDao;
 
 	private final ProvisionTaskFactory factory;
 
 	@Inject
-	public Provisioner(ProvisionTaskFactory factory, Provider<CourseDao> courseDao,
-			Provider<ProjectDao> projectDao, Provider<ProjectMembershipDao> membershipDao,
+	public Provisioner(ProvisionTaskFactory factory, CourseDao courseDao,
+			ProjectDao projectDao, ProjectMembershipDao membershipDao,
 			ScheduledExecutorService executor) {
 
 		this.factory = factory;
@@ -89,8 +90,8 @@ public class Provisioner {
 	synchronized Project persistToDatabase(CourseProjectRequest courseProject, User owner,
 			VersionControlService versioningService, ContinuousIntegrationService buildService) {
 
-		Course course = courseDao.get().findById(courseProject.getCourse());
-		int projectNumber = projectDao.get().findByCourse(course).size() + 1;
+		Course course = courseDao.findById(courseProject.getCourse());
+		int projectNumber = projectDao.findByCourse(course).size() + 1;
 		String projectName = course.getName() + " - Group " + projectNumber;
 
 		Project project = new Project(projectName, course);
@@ -99,15 +100,15 @@ public class Provisioner {
 
 		ProjectMembership membership = new ProjectMembership(owner, project);
 
-		projectDao.get().persist(project);
-		membershipDao.get().persist(membership);
+		projectDao.persist(project);
+		membershipDao.persist(membership);
 
 		return project;
 	}
 
 	@Transactional
 	boolean alreadyMemberOfCourseProject(User currentUser, Long course) {
-		return membershipDao.get().hasEnrolled(course, currentUser);
+		return membershipDao.hasEnrolled(course, currentUser);
 	}
 
 	void updateProjectState(long projectId, State state) {
@@ -118,7 +119,7 @@ public class Provisioner {
 		State state = stateCache.getIfPresent(projectId);
 		if (state == null) {
 			try {
-				projectDao.get().findById(projectId);
+				projectDao.findById(projectId);
 				return new State(true, false, "Project has been provisioned!");
 			} catch (NoResultException e) {
 				return new State(true, true, "Project was not provisioned!");

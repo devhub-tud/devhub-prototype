@@ -9,4 +9,6 @@ public interface MailSender {
 
 	void deliver(SimpleMessage message);
 
+	void initialize();
+
 }

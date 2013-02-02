@@ -6,6 +6,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.util.List;
 
+import javax.inject.Provider;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -22,14 +23,14 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractDaoBase.class);
 
-	private final EntityManager em;
+	private final Provider<EntityManager> emProvider;
 
 	private final Class<T> entityClass;
 	private final String entityName;
 
-	protected AbstractDaoBase(final EntityManager em, final Class<T> clazz) {
-
-		this.em = em;
+	protected AbstractDaoBase(final Provider<EntityManager> emProvider, final Class<T> clazz) {
+		LOG.warn("Initializing : " + getClass().getSimpleName());
+		this.emProvider = emProvider;
 
 		entityClass = clazz;
 		entityName = entityClass.getSimpleName();
@@ -54,7 +55,7 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 
 		LOG.trace("{}: Find by id: {}", getEntityName(), id);
 
-		final T result = em.find(entityClass, id);
+		final T result = emProvider.get().find(entityClass, id);
 
 		if (result == null) {
 			throw new NoResultException("No result found for id: " + id);
@@ -72,7 +73,7 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 
 		checkNotNull(object, "object must be non-null");
 
-		em.persist(object);
+		emProvider.get().persist(object);
 
 		LOG.trace("{}: Persisted: {}", getEntityName(), object);
 
@@ -87,7 +88,7 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 		checkNotNull(objects, "objects must be non-null");
 
 		for (final Object object : objects) {
-			em.persist(object);
+			emProvider.get().persist(object);
 		}
 
 	}
@@ -98,7 +99,7 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 
 		checkNotNull(entity, "entity must be non-null");
 
-		em.detach(entity);
+		emProvider.get().detach(entity);
 
 	}
 
@@ -108,7 +109,7 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 
 		checkNotNull(entity, "entity must be non-null");
 
-		return em.merge(entity);
+		return emProvider.get().merge(entity);
 
 	}
 
@@ -120,7 +121,7 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 
 		checkNotNull(object, "object must be non-null");
 
-		em.remove(object);
+		emProvider.get().remove(object);
 
 	}
 
@@ -133,31 +134,31 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 		checkNotNull(objects, "objects must be non-null");
 
 		for (final Object object : objects) {
-			em.remove(object);
+			emProvider.get().remove(object);
 		}
 	}
 
 	@Transactional
 	protected final CriteriaBuilder getCriteriaBuilder() {
-		return em.getCriteriaBuilder();
+		return emProvider.get().getCriteriaBuilder();
 	}
 
 	@Transactional
 	protected final TypedQuery<T> createQuery(final String query) {
 		checkArgument(isNotEmpty(query), "query must be non-empty");
-		return em.createQuery(query, entityClass);
+		return emProvider.get().createQuery(query, entityClass);
 	}
 
 	@Transactional
 	protected final TypedQuery<T> createQuery(CriteriaQuery<T> criteria) {
 		checkNotNull(criteria, "query must be non-empty");
-		return em.createQuery(criteria);
+		return emProvider.get().createQuery(criteria);
 	}
 
 	@Transactional
 	protected final Query createUntypedQuery(final String query) {
 		checkArgument(isNotEmpty(query), "query must be non-empty");
-		return em.createQuery(query);
+		return emProvider.get().createQuery(query);
 	}
 
 	public String getEntityName() {

@@ -13,6 +13,7 @@ import javax.servlet.ServletContextEvent;
 import nl.tudelft.ewi.dea.CommonModule;
 import nl.tudelft.ewi.dea.ConfigurationException;
 import nl.tudelft.ewi.dea.ServerConfig;
+import nl.tudelft.ewi.dea.mail.internals.MailSender;
 import nl.tudelft.ewi.dea.template.TemplateEngine;
 
 import org.slf4j.Logger;
@@ -87,6 +88,7 @@ public class ServerStartupListener extends GuiceServletContextListener {
 	private void startApplication() {
 		if (!inErrorMode) {
 			injector.getInstance(TemplateEngine.class).watchForChanges();
+			injector.getInstance(MailSender.class).initialize();
 		}
 		LOG.info("Application is now fully started");
 	}

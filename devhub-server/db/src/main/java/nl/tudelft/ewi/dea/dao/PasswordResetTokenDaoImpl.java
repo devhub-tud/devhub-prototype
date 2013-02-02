@@ -4,6 +4,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
@@ -14,13 +16,14 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.persist.Transactional;
 
+@Singleton
 public class PasswordResetTokenDaoImpl extends AbstractDaoBase<PasswordResetToken> implements PasswordResetTokenDao {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PasswordResetTokenDaoImpl.class);
 
 	@Inject
-	public PasswordResetTokenDaoImpl(final EntityManager em) {
-		super(em, PasswordResetToken.class);
+	public PasswordResetTokenDaoImpl(final Provider<EntityManager> emProvider) {
+		super(emProvider, PasswordResetToken.class);
 	}
 
 	@Override

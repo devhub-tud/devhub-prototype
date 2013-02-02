@@ -49,20 +49,23 @@ class MailQueueTaker implements Runnable {
 	private final MailProperties mailProps;
 	private final Transport transport;
 	private final Session session;
-	private final Provider<UnsentMailDao> unsentMailDao;
+	private final UnsentMailDao unsentMailDao;
 	private final Provider<ObjectMapper> mapper;
 
 	private final Counter mailCounter;
 
 	@Inject
 	MailQueueTaker(@MailQueue BlockingQueue<UnsentMail> mailQueue, @SMTP Transport transport,
-			MailProperties mailProps, Session session, Provider<UnsentMailDao> unsentMailDao, Provider<ObjectMapper> mapper, MetricsRegistry metrics) {
+			MailProperties mailProps, Session session, UnsentMailDao unsentMailDao,
+			Provider<ObjectMapper> mapper, MetricsRegistry metrics) {
+
 		this.mailQueue = mailQueue;
 		this.transport = transport;
 		this.mailProps = mailProps;
 		this.session = session;
 		this.unsentMailDao = unsentMailDao;
 		this.mapper = mapper;
+
 		mailCounter = metrics.newCounter(MetricGroup.Mail.newName("Mails sent"));
 	}
 
@@ -89,7 +92,7 @@ class MailQueueTaker implements Runnable {
 
 	private void checkForUnsentMails() throws InterruptedException {
 		// Wait for the DB to have an activate connection.
-		List<UnsentMailAsJson> unsentMails = unsentMailDao.get().findAll();
+		List<UnsentMailAsJson> unsentMails = unsentMailDao.findAll();
 		LOG.info("Found {} unsent mails to send.", unsentMails.size());
 		ObjectMapper jsonMapper = mapper.get();
 		for (UnsentMailAsJson unsentMail : unsentMails) {
@@ -98,7 +101,7 @@ class MailQueueTaker implements Runnable {
 				mailQueue.add(new UnsentMail(unsentMail.getId(), message));
 			} catch (IOException e) {
 				LOG.warn("Could not deserialized a message. It will be lost forever: {}", unsentMail);
-				unsentMailDao.get().remove(unsentMail.getId());
+				unsentMailDao.remove(unsentMail.getId());
 			}
 		}
 	}
@@ -133,7 +136,7 @@ class MailQueueTaker implements Runnable {
 		for (UnsentMail message : messagesToSend) {
 			MimeMessage mimeMessage = message.getMessage().asMimeMessage(session);
 			transport.sendMessage(message.getMessage().asMimeMessage(session), mimeMessage.getAllRecipients());
-			unsentMailDao.get().remove(message.getId());
+			unsentMailDao.remove(message.getId());
 			mailCounter.inc();
 		}
 

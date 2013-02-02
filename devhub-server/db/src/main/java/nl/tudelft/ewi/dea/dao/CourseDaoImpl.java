@@ -3,6 +3,8 @@ package nl.tudelft.ewi.dea.dao;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
@@ -13,13 +15,14 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.persist.Transactional;
 
+@Singleton
 public class CourseDaoImpl extends AbstractDaoBase<Course> implements CourseDao {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CourseDaoImpl.class);
 
 	@Inject
-	public CourseDaoImpl(final EntityManager em) {
-		super(em, Course.class);
+	public CourseDaoImpl(final Provider<EntityManager> emProvider) {
+		super(emProvider, Course.class);
 	}
 
 	@Override

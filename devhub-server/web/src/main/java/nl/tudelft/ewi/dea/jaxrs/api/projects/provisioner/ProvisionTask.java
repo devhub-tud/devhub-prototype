@@ -4,7 +4,6 @@ import java.net.URL;
 import java.util.Set;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import nl.tudelft.ewi.dea.dao.ProjectDao;
 import nl.tudelft.ewi.dea.dao.ProjectMembershipDao;
@@ -35,8 +34,8 @@ public class ProvisionTask implements Runnable {
 
 	private final long projectId;
 	private final Provisioner provisioner;
-	private final Provider<ProjectDao> projectDaoProvider;
-	private final Provider<ProjectMembershipDao> membershipDaoProvider;
+	private final ProjectDao projectDao;
+	private final ProjectMembershipDao membershipDao;
 	private final ServicesBackend backend;
 	private final InviteManager inviteManager;
 	private final ServiceProvider services;
@@ -48,8 +47,8 @@ public class ProvisionTask implements Runnable {
 
 	@Inject
 	public ProvisionTask(
-			Provider<ProjectDao> projectDaoProvider,
-			Provider<ProjectMembershipDao> membershipDaoProvider,
+			ProjectDao projectDao,
+			ProjectMembershipDao membershipDao,
 			InviteManager inviteManager,
 			ServiceProvider services,
 			ServicesBackend backend,
@@ -57,8 +56,8 @@ public class ProvisionTask implements Runnable {
 			@Assisted long projectId,
 			@Assisted Set<String> invited) {
 
-		this.projectDaoProvider = projectDaoProvider;
-		this.membershipDaoProvider = membershipDaoProvider;
+		this.projectDao = projectDao;
+		this.membershipDao = membershipDao;
 		this.inviteManager = inviteManager;
 		this.backend = backend;
 		this.provisioner = provisioner;
@@ -74,9 +73,6 @@ public class ProvisionTask implements Runnable {
 		User creator = null;
 
 		LOG.debug("Running Provision task for project id {}", projectId);
-
-		ProjectDao projectDao = projectDaoProvider.get();
-		ProjectMembershipDao membershipDao = membershipDaoProvider.get();
 
 		try {
 			provisioner.updateProjectState(projectId, new State(false, false, "Preparing to provision project..."));
