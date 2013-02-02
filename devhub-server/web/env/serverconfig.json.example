@@ -1,7 +1,7 @@
 {
 	"webUrl" : "http://localhost:8080",
 	
-	"feedbackEmailAddress" : "dea@hartveld.com", 
+	"feedbackEmailAddress" : "no-reply@example.com", 
 
 	"mailConfig" : {
 		"host" : "localhost",
