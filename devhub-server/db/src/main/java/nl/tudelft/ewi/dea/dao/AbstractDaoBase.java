@@ -29,7 +29,7 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 	private final String entityName;
 
 	protected AbstractDaoBase(final Provider<EntityManager> emProvider, final Class<T> clazz) {
-		LOG.warn("Initializing : " + getClass().getSimpleName());
+		LOG.trace("Initializing : " + getClass().getSimpleName());
 		this.emProvider = emProvider;
 
 		entityClass = clazz;
