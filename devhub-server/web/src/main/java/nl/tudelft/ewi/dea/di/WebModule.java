@@ -49,7 +49,7 @@ public class WebModule extends ServletModule {
 	public WebModule(final ServletContext servletContext, ServerConfig serverConfig) {
 		this.servletContext = servletContext;
 		this.serverConfig = serverConfig;
-		this.buildInfo = readBuildInfo();
+		buildInfo = readBuildInfo();
 	}
 
 	private BuildInfo readBuildInfo() {
@@ -84,7 +84,7 @@ public class WebModule extends ServletModule {
 
 		final Map<String, String> params = Maps.newHashMap();
 		params.put("com.sun.jersey.config.property.packages", "nl.tudelft.ewi.dea.jaxrs");
-		params.put(ServletContainer.PROPERTY_WEB_PAGE_CONTENT_REGEX, "/.*\\.(html|js|gif|png|css|ico)");
+		params.put(ServletContainer.PROPERTY_WEB_PAGE_CONTENT_REGEX, "/.*\\.(html|js|gif|png|jpg|jpeg|css|ico)");
 		filter("/*").through(GuiceContainer.class, params);
 	}
 
