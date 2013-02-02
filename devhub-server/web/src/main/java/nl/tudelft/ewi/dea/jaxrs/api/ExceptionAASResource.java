@@ -6,7 +6,7 @@ import javax.ws.rs.Path;
 import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
-@Path("exception")
+@Path("api/exception")
 public class ExceptionAASResource {
 
 	@GET
