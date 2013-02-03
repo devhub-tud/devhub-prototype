@@ -16,7 +16,6 @@ $(document).ready(function() {
 	var progressBar = $("#progress-bar");
 	
 	var provisionBtn = $("#provision-btn");
-	var doneBtn = $("#done-btn");
 	var closeBtn = $("#close-btn");
 	
 	var step1 = modal.find(".step-1");
@@ -37,7 +36,6 @@ $(document).ready(function() {
 		step1.show();
 		step2.hide();
 		
-		doneBtn.hide();
 		closeBtn.hide();
 		
 		courseSelector.empty().append("<option value='-1'></option>");
@@ -111,7 +109,8 @@ $(document).ready(function() {
 		var timer = setInterval(function() {
 			$.ajax({
 				type: "get",
-				url: "/api/projects/provisioning/" + projectId,
+				dataType: "json",
+				url: "/api/projects/provisioning",
 				success: function(data) {
 					updateDialog(data, timer);
 				},
@@ -126,23 +125,14 @@ $(document).ready(function() {
 			if (data.finished) {
 				if (data.failures) {
 					progressBar.removeClass("active").removeClass("progress-striped").addClass("progress-danger");
-					closeBtn.show();
 				}
 				else {
 					progressBar.removeClass("active").removeClass("progress-striped").addClass("progress-success");
-					wireDoneButton(projectId);
-					doneBtn.show();
 				}
 				clearInterval(timer);
+				closeBtn.show();
 			}
 		}
-	}
-	
-	function wireDoneButton(projectId) {
-		doneBtn.unbind().click(function(e) {
-			e.preventDefault();
-			window.location.replace("/project/" + projectId);
-		});
 	}
 	
 	function listInvites() {
