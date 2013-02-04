@@ -29,6 +29,7 @@ import com.google.inject.persist.Transactional;
 public class ProvisionTask implements Runnable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProvisionTask.class);
+	private static final Object groupAssigner = new Object();
 
 	private final Provisioner provisioner;
 	private final CourseDao courseDao;
@@ -196,21 +197,23 @@ public class ProvisionTask implements Runnable {
 		return project;
 	}
 
-	synchronized Project persistToDatabase() {
-		Course course = courseDao.findById(request.getCourseId());
-		int projectNumber = projectDao.findByCourse(course).size() + 1;
-		String projectName = course.getName() + " - Group " + projectNumber;
+	private Project persistToDatabase() {
+		synchronized (groupAssigner) {
+			Course course = courseDao.findById(request.getCourseId());
+			int projectNumber = projectDao.findByCourse(course).size() + 1;
+			String projectName = course.getName() + " - Group " + projectNumber;
 
-		Project project = new Project(projectName, course);
-		project.setContinuousIntegrationService(request.getContinuousIntegrationService().getName());
-		project.setVersionControlService(request.getVersionControlService().getName());
+			Project project = new Project(projectName, course);
+			project.setContinuousIntegrationService(request.getContinuousIntegrationService().getName());
+			project.setVersionControlService(request.getVersionControlService().getName());
 
-		ProjectMembership membership = new ProjectMembership(request.getCreator(), project);
+			ProjectMembership membership = new ProjectMembership(request.getCreator(), project);
 
-		projectDao.persist(project);
-		membershipDao.persist(membership);
+			projectDao.persist(project);
+			membershipDao.persist(membership);
 
-		return project;
+			return project;
+		}
 	}
 
 	boolean alreadyMemberOfCourseProject(User currentUser, Long course) {
