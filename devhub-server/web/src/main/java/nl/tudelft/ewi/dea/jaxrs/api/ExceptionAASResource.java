@@ -2,6 +2,7 @@ package nl.tudelft.ewi.dea.jaxrs.api;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
 
 import com.google.inject.servlet.RequestScoped;
 
@@ -10,7 +11,7 @@ import com.google.inject.servlet.RequestScoped;
 public class ExceptionAASResource {
 
 	@GET
-	public void throwException() {
+	public Response throwException() {
 		throw new RuntimeException("Your Exception-As-A-Service is served!");
 	}
 
