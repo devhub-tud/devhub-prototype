@@ -6,6 +6,8 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.util.List;
 
+import javax.inject.Provider;
+import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
@@ -18,13 +20,14 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
+@Singleton
 class UserDaoImpl extends AbstractDaoBase<User> implements UserDao {
 
 	private static final Logger LOG = LoggerFactory.getLogger(UserDaoImpl.class);
 
 	@Inject
-	public UserDaoImpl(final EntityManager em) {
-		super(em, User.class);
+	public UserDaoImpl(final Provider<EntityManager> emProvider) {
+		super(emProvider, User.class);
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package nl.tudelft.ewi.devhub.services.versioncontrol;
 
-import static org.hamcrest.collection.IsArrayWithSize.arrayWithSize;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -12,8 +11,6 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.hamcrest.collection.IsArrayWithSize;
-import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,7 +19,6 @@ import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 

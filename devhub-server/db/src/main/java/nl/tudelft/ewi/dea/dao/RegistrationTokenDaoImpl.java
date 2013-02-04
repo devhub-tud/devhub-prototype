@@ -4,6 +4,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
@@ -14,13 +16,14 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.persist.Transactional;
 
+@Singleton
 public class RegistrationTokenDaoImpl extends AbstractDaoBase<RegistrationToken> implements RegistrationTokenDao {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RegistrationTokenDaoImpl.class);
 
 	@Inject
-	public RegistrationTokenDaoImpl(final EntityManager em) {
-		super(em, RegistrationToken.class);
+	public RegistrationTokenDaoImpl(final Provider<EntityManager> emProvider) {
+		super(emProvider, RegistrationToken.class);
 	}
 
 	@Override

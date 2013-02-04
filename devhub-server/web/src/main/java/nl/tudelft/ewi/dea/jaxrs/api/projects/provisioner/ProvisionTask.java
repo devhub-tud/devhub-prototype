@@ -35,8 +35,8 @@ public class ProvisionTask implements Runnable {
 	private final long projectId;
 	private final Provisioner provisioner;
 	private final ProjectDao projectDao;
-	private final ServicesBackend backend;
 	private final ProjectMembershipDao membershipDao;
+	private final ServicesBackend backend;
 	private final InviteManager inviteManager;
 	private final ServiceProvider services;
 
@@ -46,7 +46,8 @@ public class ProvisionTask implements Runnable {
 	private ContinuousIntegrationService buildService;
 
 	@Inject
-	public ProvisionTask(ProjectDao projectDao,
+	public ProvisionTask(
+			ProjectDao projectDao,
 			ProjectMembershipDao membershipDao,
 			InviteManager inviteManager,
 			ServiceProvider services,

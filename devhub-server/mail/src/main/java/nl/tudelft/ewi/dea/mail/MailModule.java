@@ -11,7 +11,6 @@ import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Transport;
 
-import nl.tudelft.ewi.dea.mail.internals.MailSender;
 import nl.tudelft.ewi.dea.mail.internals.UnsentMail;
 
 import org.apache.velocity.app.VelocityEngine;
@@ -36,7 +35,9 @@ public class MailModule extends AbstractModule {
 	protected void configure() {
 		bind(MailProperties.class).toInstance(properties);
 		bind(Session.class).toInstance(Session.getDefaultInstance(rawMailProperties));
-		bind(MailSender.class).asEagerSingleton();
+
+		// bind(MailSender.class).asEagerSingleton();
+		// ^-- Problem, since DB layer is not initialized yet!
 	}
 
 	private Properties configure(MailProperties properties) {

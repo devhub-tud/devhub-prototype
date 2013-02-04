@@ -53,7 +53,7 @@ public class MailQueueTakerTest {
 	@Before
 	public void setup() {
 		Provider<ObjectMapper> mapperProv = SimpleProvider.forInstance(new CommonModule().objectMapper());
-		mQueueTaker = spy(new MailQueueTaker(mailQueue, transport, mailProps, session, SimpleProvider.forInstance(unsentMailDao), mapperProv, Metrics.defaultRegistry()));
+		mQueueTaker = spy(new MailQueueTaker(mailQueue, transport, mailProps, session, unsentMailDao, mapperProv, Metrics.defaultRegistry()));
 	}
 
 	@Test

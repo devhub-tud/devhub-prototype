@@ -5,6 +5,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
@@ -17,13 +19,14 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.persist.Transactional;
 
+@Singleton
 public class ProjectDaoImpl extends AbstractDaoBase<Project> implements ProjectDao {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProjectDaoImpl.class);
 
 	@Inject
-	public ProjectDaoImpl(final EntityManager em) {
-		super(em, Project.class);
+	public ProjectDaoImpl(final Provider<EntityManager> emProvider) {
+		super(emProvider, Project.class);
 	}
 
 	@Override

@@ -43,6 +43,7 @@ public class DatabaseTest {
 		injector = createInjector(new PersistenceModule(props, ""));
 		structure = injector.getInstance(DatabaseStructure.class);
 		persistService = injector.getInstance(PersistService.class);
+		persistService.start();
 
 		em = injector.getInstance(EntityManager.class);
 

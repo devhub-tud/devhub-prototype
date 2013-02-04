@@ -1,9 +1,6 @@
 package nl.tudelft.ewi.dea.security;
 
 import static org.mockito.Mockito.when;
-
-import javax.inject.Provider;
-
 import nl.tudelft.ewi.dea.dao.UserDao;
 
 import org.apache.shiro.authc.AuthenticationToken;
@@ -15,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -27,18 +25,13 @@ public class UserValidatorTest {
 	@Before
 	public void setup() {
 		final HashedCredentialsMatcher matcher = new HashedCredentialsMatcher(Sha256Hash.ALGORITHM_NAME);
-		userValidator = new UserValidator(new Provider<UserDao>() {
-			@Override
-			public UserDao get() {
-				return userDao;
-			}
-		}, matcher);
+		userValidator = new UserValidator(userDao, matcher);
 	}
 
 	@Test(expected = UnknownAccountException.class)
 	public void whenUserCannotBeFoundTheCorrectShiroExceptionIsThrown() {
 		final String mailAdress = "test@test.com";
-		when(userDao.findByEmail(mailAdress)).thenReturn(null);
+		when(userDao.findByEmail(Mockito.eq(mailAdress))).thenReturn(null);
 		final AuthenticationToken token = new UsernamePasswordToken(mailAdress, "password");
 		userValidator.doGetAuthenticationInfo(token);
 	}

@@ -6,12 +6,11 @@ import static org.mockito.Mockito.when;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 
-import javax.inject.Provider;
-
 import nl.tudelft.ewi.dea.dao.UnsentMailDao;
 import nl.tudelft.ewi.dea.mail.SimpleMessage;
 import nl.tudelft.ewi.dea.model.UnsentMailAsJson;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -26,12 +25,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class QueuedMailSenderTest {
 
 	@Mock private BlockingQueue<UnsentMail> mailsToSend;
-	@Mock private Provider<UnsentMailDao> unsentMailDaoProv;
 	@Mock private UnsentMailDao unsentMailDao;
 	@Mock private ObjectMapper objectMapper;
 	@Mock private ExecutorService executorService;
 	@Mock private MailQueueTaker taker;
 	@InjectMocks private QueuedMailSender mailSender;
+
+	@Before
+	public void setUp() {
+		mailSender.initialize();
+	}
 
 	@Test
 	public void whenStartedTheTakerIsPutIntoTheExecutor() {
@@ -43,7 +46,6 @@ public class QueuedMailSenderTest {
 		SimpleMessage message = Mockito.mock(SimpleMessage.class);
 		String messageAsString = "jsonMessage";
 		when(objectMapper.writeValueAsString(message)).thenReturn(messageAsString);
-		when(unsentMailDaoProv.get()).thenReturn(unsentMailDao);
 		when(unsentMailDao.persist(messageAsString)).thenReturn(new UnsentMailAsJson(messageAsString));
 
 		mailSender.deliver(message);

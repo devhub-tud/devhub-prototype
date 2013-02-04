@@ -5,6 +5,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
@@ -18,13 +20,14 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.persist.Transactional;
 
+@Singleton
 public class ProjectInvitationDaoImpl extends AbstractDaoBase<ProjectInvitation> implements ProjectInvitationDao {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProjectInvitationDaoImpl.class);
 
 	@Inject
-	public ProjectInvitationDaoImpl(final EntityManager em) {
-		super(em, ProjectInvitation.class);
+	public ProjectInvitationDaoImpl(final Provider<EntityManager> emProvider) {
+		super(emProvider, ProjectInvitation.class);
 	}
 
 	@Override

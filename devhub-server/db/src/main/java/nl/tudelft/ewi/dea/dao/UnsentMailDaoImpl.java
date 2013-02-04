@@ -1,6 +1,8 @@
 package nl.tudelft.ewi.dea.dao;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -11,13 +13,14 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.persist.Transactional;
 
+@Singleton
 public class UnsentMailDaoImpl extends AbstractDaoBase<UnsentMailAsJson> implements UnsentMailDao {
 
 	private static final Logger LOG = LoggerFactory.getLogger(UnsentMailDaoImpl.class);
 
 	@Inject
-	UnsentMailDaoImpl(EntityManager em) {
-		super(em, UnsentMailAsJson.class);
+	UnsentMailDaoImpl(final Provider<EntityManager> emProvider) {
+		super(emProvider, UnsentMailAsJson.class);
 	}
 
 	@Override

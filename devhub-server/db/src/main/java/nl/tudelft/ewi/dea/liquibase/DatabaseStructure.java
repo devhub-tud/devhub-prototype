@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Maps;
-import com.google.inject.persist.PersistService;
 
 public class DatabaseStructure {
 
@@ -38,16 +37,12 @@ public class DatabaseStructure {
 	private final DatabaseProperties dbProps;
 
 	@Inject
-	public DatabaseStructure(DatabaseProperties dbProps, @Nullable @Named("liquibaseContext") String context
-			, PersistService service) {
+	public DatabaseStructure(DatabaseProperties dbProps, @Nullable @Named("liquibaseContext") String context) {
 		this.dbProps = dbProps;
 		this.persistenceUnit = dbProps.getPersistanceUnit();
 		this.context = context;
 
 		prepareStructure();
-
-		LOG.info("Starting persist service");
-		service.start();
 	}
 
 	private void prepareStructure() {
