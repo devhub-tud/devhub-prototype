@@ -39,7 +39,7 @@ public class CoursePage {
 	@Transactional
 	public String findCourse(@PathParam("id") final long id) {
 		final Course course = courseDao.findById(id);
-		final List<Project> projects = projectDao.findByCourse(course);
+		final List<Project> projects = projectDao.findByCourse(id);
 
 		return renderer
 				.setValue("course", course)

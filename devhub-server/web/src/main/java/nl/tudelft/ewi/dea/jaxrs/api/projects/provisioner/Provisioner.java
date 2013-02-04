@@ -35,7 +35,7 @@ public class Provisioner {
 		this.membershipDao = membershipDao;
 		this.executor = executor;
 
-		stateCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build();
+		stateCache = CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).build();
 	}
 
 	public void provision(ProvisioningRequest request) {

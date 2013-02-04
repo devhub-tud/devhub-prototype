@@ -89,7 +89,7 @@ public class ProjectDaoImplTest extends DatabaseTest {
 		persistAll(owner, course, otherCourse, p0, p1, p2);
 
 		// When
-		final List<Project> projects = dao.findByCourse(course);
+		final List<Project> projects = dao.findByCourse(course.getId());
 
 		// Then
 		assertThat(projects.size(), is(2));

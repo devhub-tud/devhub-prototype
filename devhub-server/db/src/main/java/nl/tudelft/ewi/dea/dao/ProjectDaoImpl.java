@@ -10,7 +10,6 @@ import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import nl.tudelft.ewi.dea.model.Course;
 import nl.tudelft.ewi.dea.model.Project;
 import nl.tudelft.ewi.dea.model.User;
 
@@ -47,16 +46,17 @@ public class ProjectDaoImpl extends AbstractDaoBase<Project> implements ProjectD
 	}
 
 	@Override
-	public final List<Project> findByCourse(final Course course) {
+	@Transactional
+	public final List<Project> findByCourse(final long courseId) {
 
-		LOG.trace("Find by course: {}", course);
+		LOG.trace("Find by courseId: {}", courseId);
 
-		checkNotNull(course, "course must be non-null");
+		checkNotNull(courseId, "courseId must be non-null");
 
-		final String query = "SELECT p FROM Project p WHERE p.deployed = true AND p.course.id = :id";
+		final String query = "SELECT p FROM Project p WHERE p.course.id = :id";
 
 		final TypedQuery<Project> tq = createQuery(query);
-		tq.setParameter("id", course.getId());
+		tq.setParameter("id", courseId);
 
 		return tq.getResultList();
 

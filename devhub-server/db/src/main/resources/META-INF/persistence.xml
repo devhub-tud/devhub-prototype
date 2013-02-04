@@ -48,7 +48,7 @@
 			<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
 			<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
 			<property name="hibernate.hbm2ddl.auto" value="validate" />
-			<property name="javax.persistence.jdbc.url" value="jdbc:h2:test;DB_CLOSE_DELAY=-1" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:h2:test;DB_CLOSE_DELAY=-1;MVCC=true;" />
 			<property name="liquibase.liquibase-strategy" value="drop-create" />
 
 			<!-- Auto detect annotated model classes -->
@@ -69,7 +69,7 @@
 			<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
 			<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
 			<property name="hibernate.hbm2ddl.auto" value="validate" />
-			<property name="javax.persistence.jdbc.url" value="jdbc:h2:production;DB_CLOSE_DELAY=-1" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:h2:production;DB_CLOSE_DELAY=-1;MVCC=true;" />
 			<property name="liquibase.liquibase-strategy" value="update" />
 
 			<!-- Auto detect annotated model classes -->

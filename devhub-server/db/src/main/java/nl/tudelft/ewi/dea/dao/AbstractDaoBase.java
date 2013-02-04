@@ -73,7 +73,9 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 
 		checkNotNull(object, "object must be non-null");
 
-		emProvider.get().persist(object);
+		EntityManager entityManager = emProvider.get();
+		entityManager.persist(object);
+		entityManager.flush();
 
 		LOG.trace("{}: Persisted: {}", getEntityName(), object);
 
@@ -87,9 +89,11 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 
 		checkNotNull(objects, "objects must be non-null");
 
+		EntityManager entityManager = emProvider.get();
 		for (final Object object : objects) {
-			emProvider.get().persist(object);
+			entityManager.persist(object);
 		}
+		entityManager.flush();
 
 	}
 
