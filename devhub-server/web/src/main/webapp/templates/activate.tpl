@@ -56,7 +56,7 @@ input[name="email"] {
 				<div class="control-group">
 					<label for="password1">Desired password</label>
 					<div class="controls">
-						<input type="password" name="password1" placeholder="Password" />
+						<input type="password" name="password1" placeholder="Password (8 characters minimum)" />
 					</div>
 				</div>
 				<div class="control-group">
