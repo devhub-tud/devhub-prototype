@@ -206,7 +206,7 @@ public class ProvisionTask implements Runnable {
 	@Transactional
 	long internalPersist() {
 		Course course = courseDao.findById(request.getCourseId());
-		int projectNumber = projectDao.findByCourse(request.getCourseId()).size() + 1;
+		int projectNumber = projectDao.findByCourse(course).size() + 1;
 		String projectName = course.getName() + " - Group " + projectNumber;
 
 		log.info("Preparing project: '" + projectName + "' for user: " + request.getCreator());
