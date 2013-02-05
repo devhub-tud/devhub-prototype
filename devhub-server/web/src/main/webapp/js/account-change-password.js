@@ -31,13 +31,13 @@ $(document).ready(function() {
 				data: JSON.stringify( { "password": passw }), 
 				success: function(data) {
 					$("#passwordUpdated").show('normal');
-					$("#unkownError").hide('normal');
+					$("#unknownError").hide('normal');
 					password.val("");
 					confirmPassword.val("");
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
 					$("#passwordUpdated").hide('normal');
-					$("#unkownError").show('normal');
+					$("#unknownError").show('normal');
 					password.val("");
 					confirmPassword.val("");
 				}

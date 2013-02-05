@@ -46,7 +46,7 @@ public class HtmlMetricProcessor implements MetricProcessor<StringBuilder> {
 			} else if (metric.getValue() instanceof Gauge) {
 				processGauge(metric.getKey(), (Gauge<?>) metric.getValue(), sb);
 			} else {
-				throw new IllegalStateException("Unkown metric " + metric);
+				throw new IllegalStateException("Unknown metric " + metric);
 			}
 		}
 		return sb.toString();

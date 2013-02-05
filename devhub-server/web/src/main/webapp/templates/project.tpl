@@ -56,7 +56,7 @@
 				#foreach($invitation in $invitations)
 				<tr>
 					#if(! $invitation.user )
-					<td class="attribute">Unkown user</td> #else
+					<td class="attribute">Unknown user</td> #else
 					<td class="attribute">$invitation.user.displayName</td> #end
 					<td>$invitation.email</td>
 				</tr>

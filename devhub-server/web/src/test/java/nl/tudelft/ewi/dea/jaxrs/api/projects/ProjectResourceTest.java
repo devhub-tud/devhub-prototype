@@ -105,15 +105,15 @@ public class ProjectResourceTest {
 	}
 
 	@Test
-	public void whenUserInvitedAndTargerUserUnkownSendHimDevHubInvite() {
-		String unkownUser = "unkown@example.com";
-		dontFindInvite(unkownUser);
-		Response response = projectResource.inviteUser(PROJECT_ID, unkownUser);
+	public void whenUserInvitedAndTargerUserUnknownSendHimDevHubInvite() {
+		String unknownUser = "unknown@example.com";
+		dontFindInvite(unknownUser);
+		Response response = projectResource.inviteUser(PROJECT_ID, unknownUser);
 
 		ArgumentCaptor<ProjectInvitation> inviteCapt = ArgumentCaptor.forClass(ProjectInvitation.class);
 		verify(invitationDao).persist(inviteCapt.capture());
 		ProjectInvitation invite = inviteCapt.getValue();
-		assertThat(invite.getEmail(), is(unkownUser));
+		assertThat(invite.getEmail(), is(unknownUser));
 		assertThat(invite.getUser(), is(nullValue()));
 		assertThat(invite.getProject(), is(project));
 		String url = TestResources.SERVER_CONFIG.getWebUrl();
@@ -121,7 +121,7 @@ public class ProjectResourceTest {
 		String projectName = project.getName();
 
 		verify(mail).sendDevHubInvite(
-				eq(unkownUser),
+				eq(unknownUser),
 				eq(myName),
 				eq(projectName),
 				startsWith(url));

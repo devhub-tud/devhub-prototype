@@ -62,12 +62,12 @@ public class InviteManager {
 		try {
 			invitation = inviteKnownUser(sessionUser, email, project);
 		} catch (NoResultException e) {
-			invitation = inviteUnkownuser(sessionUser, email, project);
+			invitation = inviteUnknownuser(sessionUser, email, project);
 		}
 		invitationDao.persist(invitation);
 	}
 
-	private ProjectInvitation inviteUnkownuser(User sessionUser, String email, Project project) {
+	private ProjectInvitation inviteUnknownuser(User sessionUser, String email, Project project) {
 		ProjectInvitation invitation;
 		LOG.trace("Invited user is unknown to DevHub, {}", email);
 		invitation = new ProjectInvitation(email, project);

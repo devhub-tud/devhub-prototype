@@ -1,7 +1,7 @@
 package nl.tudelft.ewi.dea;
 
 /**
- * Get's thrown when an unkown exception occurs.
+ * Get's thrown when an unknown exception occurs.
  * 
  */
 @SuppressWarnings("serial")
