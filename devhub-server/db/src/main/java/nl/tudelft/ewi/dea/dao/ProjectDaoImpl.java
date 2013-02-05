@@ -47,13 +47,14 @@ public class ProjectDaoImpl extends AbstractDaoBase<Project> implements ProjectD
 	}
 
 	@Override
+	@Transactional
 	public final List<Project> findByCourse(final Course course) {
 
 		LOG.trace("Find by course: {}", course);
 
 		checkNotNull(course, "course must be non-null");
 
-		final String query = "SELECT p FROM Project p WHERE p.deployed = true AND p.course.id = :id";
+		final String query = "SELECT p FROM Project p WHERE p.course.id = :id";
 
 		final TypedQuery<Project> tq = createQuery(query);
 		tq.setParameter("id", course.getId());
