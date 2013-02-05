@@ -12,6 +12,6 @@ public interface ProjectMembershipDao extends Dao<ProjectMembership> {
 
 	boolean hasEnrolled(long courseId, User user);
 
-	List<User> findByProjectId(long projectId);
+	List<ProjectMembership> findByProjectId(long projectId);
 
 }

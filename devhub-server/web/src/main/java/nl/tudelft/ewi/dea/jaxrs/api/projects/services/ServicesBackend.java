@@ -14,7 +14,7 @@ import nl.tudelft.ewi.dea.dao.ProjectDao;
 import nl.tudelft.ewi.dea.dao.ProjectMembershipDao;
 import nl.tudelft.ewi.dea.mail.DevHubMail;
 import nl.tudelft.ewi.dea.model.Project;
-import nl.tudelft.ewi.dea.model.User;
+import nl.tudelft.ewi.dea.model.ProjectMembership;
 import nl.tudelft.ewi.devhub.services.PasswordGenerator;
 import nl.tudelft.ewi.devhub.services.ServiceException;
 import nl.tudelft.ewi.devhub.services.ServiceProvider;
@@ -86,7 +86,7 @@ public class ServicesBackend {
 			ContinuousIntegrationService continuousIntegrationService = services.getContinuousIntegrationService(project.getContinuousIntegrationService());
 
 			List<ServiceUser> usersToAdd = Lists.newArrayList();
-			List<User> projectMembers = dao.findByProjectId(projectId);
+			List<ProjectMembership> projectMembers = dao.findByProjectId(projectId);
 			for (ServiceUser user : users) {
 				if (!alreadyMember(projectMembers, user)) {
 					usersToAdd.add(user);
@@ -106,9 +106,9 @@ public class ServicesBackend {
 			}
 		}
 
-		private boolean alreadyMember(List<User> currentMembers, ServiceUser user) {
-			for (User member : currentMembers) {
-				if (member.getNetId().equals(user.getIdentifier())) {
+		private boolean alreadyMember(List<ProjectMembership> currentMembers, ServiceUser user) {
+			for (ProjectMembership member : currentMembers) {
+				if (member.getUser().getNetId().equals(user.getIdentifier())) {
 					return true;
 				}
 			}

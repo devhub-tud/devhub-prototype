@@ -24,7 +24,6 @@ import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped
 @Path("api/projects")
-@Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class ProjectsResource {
 
@@ -40,6 +39,7 @@ public class ProjectsResource {
 	}
 
 	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
 	public Response createNewProject(CourseProjectRequest request) {
 		User currentUser = securityProvider.getUser();
 		VersionControlService versioningService = serviceProvider.getVersionControlService(request.getVersionControlService());
@@ -53,6 +53,7 @@ public class ProjectsResource {
 	public Response checkProvisioningState() {
 		User currentUser = securityProvider.getUser();
 		State state = provisioner.getState(currentUser.getNetId());
+
 		if (state.isFailures()) {
 			return Response.status(Status.CONFLICT).entity(state).build();
 		}

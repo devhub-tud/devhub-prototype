@@ -1,6 +1,7 @@
 package nl.tudelft.ewi.dea.jaxrs.api.projects.provisioner;
 
 import java.net.URL;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -64,20 +65,17 @@ public class ProvisionTask implements Runnable {
 
 	@Transactional
 	protected void provisionProject(long projectId) {
-		String netId = request.getCreator().getNetId();
+		User creator = request.getCreator();
+		String netId = creator.getNetId();
 
-		User creator;
 		Project project = projectDao.findById(projectId);
 		log.debug("Running Provision task for project: {}", project);
 
 		try {
 			provisioner.updateProjectState(netId, new State(false, false, "Preparing to provision project..."));
-			creator = membershipDao.findByProjectId(project.getId()).get(0);
 		} catch (Throwable e) {
 			log.error(e.getMessage(), e);
-			if (project != null) {
-				projectDao.remove(project);
-			}
+			deallocateProjectFromDatabase(project);
 			provisioner.updateProjectState(netId, new State(true, true, "Could not provision missing project!"));
 			return;
 		}
@@ -87,11 +85,10 @@ public class ProvisionTask implements Runnable {
 			provisioner.updateProjectState(netId, new State(false, false, "Provisioning source code repository..."));
 			String repositoryUrl = createVersionControlRepository(project, creator);
 			project.setSourceCodeUrl(repositoryUrl);
-			projectDao.persist(project);
 		} catch (Throwable e) {
 			log.error(e.getMessage(), e);
 			removeVersionControlRepository(project, creator);
-			projectDao.remove(project);
+			deallocateProjectFromDatabase(project);
 			provisioner.updateProjectState(netId, new State(true, true, "Could not provision source code repository!"));
 			return;
 		}
@@ -103,7 +100,7 @@ public class ProvisionTask implements Runnable {
 			log.error(e.getMessage(), e);
 			removeContinuousIntegrationJob(project, creator);
 			removeVersionControlRepository(project, creator);
-			projectDao.remove(project);
+			deallocateProjectFromDatabase(project);
 			provisioner.updateProjectState(netId, new State(true, true, "Could not configure build server project!"));
 			return;
 		}
@@ -125,6 +122,17 @@ public class ProvisionTask implements Runnable {
 		}
 
 		provisioner.updateProjectState(netId, new State(true, false, "Successfully provisioned project!"));
+	}
+
+	private void deallocateProjectFromDatabase(Project project) {
+		List<ProjectMembership> memberships = membershipDao.findByProjectId(project.getId());
+		membershipDao.remove(memberships.toArray());
+
+		// TODO: Because we can't remove Git repositories yet, we need to keep
+		// this project present in the database. This way we'll avoid project
+		// numbering conflicts.
+		//
+		// projectDao.remove(project);
 	}
 
 	private String createVersionControlRepository(Project project, User creator) throws ServiceException {
