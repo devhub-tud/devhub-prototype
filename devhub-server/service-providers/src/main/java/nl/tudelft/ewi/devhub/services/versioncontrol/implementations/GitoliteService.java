@@ -14,6 +14,7 @@ import nl.minicom.gitolite.manager.models.Repository;
 import nl.minicom.gitolite.manager.models.User;
 import nl.tudelft.ewi.devhub.services.ServiceException;
 import nl.tudelft.ewi.devhub.services.models.ServiceUser;
+import nl.tudelft.ewi.devhub.services.versioncontrol.RepositoryUtils;
 import nl.tudelft.ewi.devhub.services.versioncontrol.VersionControlService;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.RepositoryRepresentation;
 import nl.tudelft.ewi.devhub.services.versioncontrol.models.SshKeyIdentifier;
@@ -34,12 +35,13 @@ public class GitoliteService extends VersionControlService {
 	private final ConfigManager configManager;
 	private final String gitAddress;
 
-	public GitoliteService(Properties properties) {
+	public GitoliteService(Properties properties, RepositoryUtils repoUtils) {
 		this(properties.getProperty("user"), properties.getProperty("host"), properties.getProperty("admin-repo"),
-				new PassphraseCredentialsProvider(properties.getProperty("passphrase")));
+				new PassphraseCredentialsProvider(properties.getProperty("passphrase")), repoUtils);
 	}
 
-	public GitoliteService(String user, String gitHost, String adminRepo, CredentialsProvider credentials) {
+	public GitoliteService(String user, String gitHost, String adminRepo, CredentialsProvider credentials, RepositoryUtils repoUtils) {
+		super(repoUtils);
 		Preconditions.checkNotNull(user);
 		Preconditions.checkNotNull(gitHost);
 		Preconditions.checkNotNull(adminRepo);

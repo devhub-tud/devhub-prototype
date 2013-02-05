@@ -3,6 +3,7 @@ package nl.tudelft.ewi.devhub.services.versioncontrol;
 import java.util.Map;
 import java.util.Properties;
 
+import nl.tudelft.ewi.devhub.services.versioncontrol.implementations.GitRepositoryUtils;
 import nl.tudelft.ewi.devhub.services.versioncontrol.implementations.GitoliteService;
 
 import com.google.inject.AbstractModule;
@@ -18,11 +19,13 @@ public class VersionControlModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		GitoliteService gitoliteService = new GitoliteService(configuration.get("Gitolite"));
+		GitoliteService gitoliteService = new GitoliteService(configuration.get("Gitolite"),
+				new GitRepositoryUtils());
 
 		bind(GitoliteService.class).toInstance(gitoliteService);
 
 		Multibinder.newSetBinder(binder(), VersionControlService.class)
 				.addBinding().toInstance(gitoliteService);
 	}
+
 }
