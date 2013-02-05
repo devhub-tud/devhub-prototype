@@ -21,6 +21,10 @@ public class UserFactory {
 	 * Reset the password for the given {@link User}.
 	 */
 	public void resetUserPassword(final User user, final String plainTextPassword) {
+		if (plainTextPassword == null || plainTextPassword.length() < 8) {
+			throw new IllegalArgumentException("The minimum password length is 8!");
+		}
+
 		String hashedPassword = hashPassword(plainTextPassword, user.getSalt());
 		user.setPassword(hashedPassword);
 	}
