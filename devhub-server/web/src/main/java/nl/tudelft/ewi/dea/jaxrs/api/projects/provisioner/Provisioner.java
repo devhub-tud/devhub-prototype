@@ -57,4 +57,9 @@ public class Provisioner {
 	public State getState(String netId) {
 		return stateCache.getIfPresent(netId);
 	}
+
+	public void shutdown(int timeout) throws InterruptedException {
+		executor.shutdown();
+		executor.awaitTermination(timeout, TimeUnit.MILLISECONDS);
+	}
 }

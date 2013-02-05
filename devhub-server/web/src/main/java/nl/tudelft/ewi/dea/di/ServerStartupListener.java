@@ -4,8 +4,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -13,6 +11,7 @@ import javax.servlet.ServletContextEvent;
 import nl.tudelft.ewi.dea.CommonModule;
 import nl.tudelft.ewi.dea.ConfigurationException;
 import nl.tudelft.ewi.dea.ServerConfig;
+import nl.tudelft.ewi.dea.jaxrs.api.projects.provisioner.Provisioner;
 import nl.tudelft.ewi.dea.mail.internals.MailSender;
 import nl.tudelft.ewi.dea.template.TemplateEngine;
 
@@ -96,14 +95,11 @@ public class ServerStartupListener extends GuiceServletContextListener {
 	public void contextDestroyed(ServletContextEvent servletContextEvent) {
 		super.contextDestroyed(servletContextEvent);
 		LOG.info("Stopping application");
-		ExecutorService executor = injector.getInstance(ExecutorService.class);
-		executor.shutdownNow();
-
+		Provisioner executor = injector.getInstance(Provisioner.class);
 		try {
-			LOG.debug("Waiting for executor to shut down");
-			executor.awaitTermination(10, TimeUnit.SECONDS);
+			executor.shutdown(10000);
 		} catch (InterruptedException e) {
-			LOG.info("Thread stopped while waiting for executor to stop. Things might be lost now...");
+			LOG.warn("Failed to shutdown Provisioner in 10 seconds...", e);
 		}
 		LOG.info("DevHub is shut down");
 	}
