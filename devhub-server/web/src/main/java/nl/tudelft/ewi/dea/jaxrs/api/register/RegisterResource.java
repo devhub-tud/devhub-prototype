@@ -74,12 +74,16 @@ public class RegisterResource {
 		if (emailAlreadyRegistered(request.getEmail())) {
 			return Response.status(Status.CONFLICT).entity("This e-mail address is already registered!").build();
 		}
-		if (registrationTokenAlreadyRequested(request.getEmail())) {
-			return Response.status(Status.CONFLICT).entity("This e-mail address is already registered!").build();
-		}
 
 		String token = UUID.randomUUID().toString();
-		tokenDao.persist(new RegistrationToken(request.getEmail(), token));
+		if (registrationTokenAlreadyRequested(request.getEmail())) {
+			RegistrationToken registrationToken = tokenDao.findByEmail(request.getEmail());
+			registrationToken.setToken(token);
+			tokenDao.persist(registrationToken);
+		}
+		else {
+			tokenDao.persist(new RegistrationToken(request.getEmail(), token));
+		}
 
 		String verifyUrl = publicUrl + "/account/activate/" + token;
 		mailer.sendVerifyRegistrationMail(request.getEmail(), verifyUrl);

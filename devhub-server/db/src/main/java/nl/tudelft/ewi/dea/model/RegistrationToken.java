@@ -15,7 +15,7 @@ public class RegistrationToken {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
 
 	@Column(nullable = false, unique = true, updatable = false) private String email;
-	@Column(nullable = false, unique = true, updatable = false) private String token;
+	@Column(nullable = false, unique = true, updatable = true) private String token;
 
 	@SuppressWarnings("unused")
 	private RegistrationToken() {}
@@ -35,6 +35,10 @@ public class RegistrationToken {
 
 	public String getToken() {
 		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 	@Override
