@@ -52,7 +52,7 @@ public class ProjectDaoImpl extends AbstractDaoBase<Project> implements ProjectD
 
 		LOG.trace("Find by course: {}", course);
 
-		checkNotNull(course.getId(), "courseId must be non-null");
+		checkNotNull(course, "course must be non-null");
 
 		final String query = "SELECT p FROM Project p WHERE p.course.id = :id";
 
