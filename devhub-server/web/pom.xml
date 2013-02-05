@@ -83,7 +83,7 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-webapp</artifactId>
-			<version>9.0.0.M5</version>
+			<version>9.0.0.RC0</version>
 		</dependency>
 		<dependency>
 			<groupId>nl.tudelft.ewi</groupId>
