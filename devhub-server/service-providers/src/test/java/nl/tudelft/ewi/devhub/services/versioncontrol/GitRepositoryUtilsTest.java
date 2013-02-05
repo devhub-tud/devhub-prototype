@@ -8,6 +8,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+
+import nl.tudelft.ewi.devhub.services.versioncontrol.implementations.GitRepositoryUtils;
+
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -15,23 +19,19 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
-public class VersionControlServiceTest {
-
-	private static final Logger LOG = LoggerFactory.getLogger(VersionControlServiceTest.class);
+@Slf4j
+public class GitRepositoryUtilsTest {
 
 	private File repoDirToClone;
 	private Git repoToClone;
 	private File targetRepoDir;
 	private Git targetRepo;
 
-	private VersionControlService service;
+	private GitRepositoryUtils service;
 
 	@Before
 	public void setup() throws Exception {
@@ -42,7 +42,7 @@ public class VersionControlServiceTest {
 	private void setupEmptyTargetRepo() throws Exception {
 		targetRepoDir = Files.createTempDir();
 		targetRepo = Git.init().setBare(true).setDirectory(targetRepoDir).call();
-		service = Mockito.mock(VersionControlService.class, Mockito.CALLS_REAL_METHODS);
+		service = new GitRepositoryUtils();
 	}
 
 	private void setupRepoToClone() throws Exception {
@@ -59,7 +59,7 @@ public class VersionControlServiceTest {
 
 	@Test
 	public void testCloningAreRepo() throws Exception {
-		service.setTemplateInRepo("file:" + targetRepoDir.getAbsolutePath(),
+		service.setCustomTemplateInRepo("file:" + targetRepoDir.getAbsolutePath(),
 				repoDirToClone.getAbsolutePath());
 		List<RevCommit> targetCommit = Lists.newArrayList(targetRepo.log().all().call());
 		List<RevCommit> clonedCommit = Lists.newArrayList(repoToClone.log().all().call());
@@ -68,7 +68,7 @@ public class VersionControlServiceTest {
 
 	@Test
 	public void testDefaultTemplateRepo() throws Exception {
-		service.setTemplateInRepo("file:" + targetRepoDir.getAbsolutePath(), null);
+		service.setCustomTemplateInRepo("file:" + targetRepoDir.getAbsolutePath(), null);
 		List<RevCommit> targetCommit = Lists.newArrayList(targetRepo.log().all().call());
 		assertThat(targetCommit, hasSize(1));
 	}
@@ -79,7 +79,7 @@ public class VersionControlServiceTest {
 			FileUtils.deleteDirectory(repoDirToClone);
 			FileUtils.deleteDirectory(targetRepoDir);
 		} catch (IOException e) {
-			LOG.error("Could not clean up test directories", e);
+			log.error("Could not clean up test directories", e);
 		}
 	}
 }
