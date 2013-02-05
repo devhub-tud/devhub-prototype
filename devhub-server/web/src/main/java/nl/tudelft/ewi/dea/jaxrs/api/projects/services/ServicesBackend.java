@@ -21,6 +21,7 @@ import nl.tudelft.ewi.devhub.services.ServiceProvider;
 import nl.tudelft.ewi.devhub.services.continuousintegration.ContinuousIntegrationService;
 import nl.tudelft.ewi.devhub.services.models.ServiceUser;
 import nl.tudelft.ewi.devhub.services.versioncontrol.VersionControlService;
+import nl.tudelft.jenkins.client.exceptions.JenkinsException;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -63,10 +64,12 @@ public class ServicesBackend {
 	}
 
 	public void ensureUserExists(ContinuousIntegrationService service, ServiceUser user) throws ServiceException {
-		if (!service.userAlreadyRegistered(user)) {
+		try {
 			String password = PasswordGenerator.generate();
 			service.registerUser(user, password);
 			mailer.sendServiceRegistrationEmail(service.getName(), user.getIdentifier(), password, user.getEmail());
+		} catch (JenkinsException e) {
+			log.warn(e.getMessage(), e);
 		}
 	}
 
