@@ -16,7 +16,6 @@ import nl.tudelft.ewi.dea.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
 import com.google.inject.persist.Transactional;
 
 @Singleton
@@ -47,19 +46,13 @@ public class ProjectMembershipDaoImpl extends AbstractDaoBase<ProjectMembership>
 
 	@Override
 	@Transactional
-	public List<User> findByProjectId(long projectId) {
+	public List<ProjectMembership> findByProjectId(long projectId) {
 		final String query = "SELECT p FROM ProjectMembership p WHERE p.project.id = :projectId";
 		LOG.debug("Running {} with projectId={}", query, projectId);
 		final TypedQuery<ProjectMembership> tq = createQuery(query);
 		tq.setParameter("projectId", projectId);
 
-		List<ProjectMembership> resultList = tq.getResultList();
-		List<User> users = Lists.newArrayList();
-		for (ProjectMembership membership : resultList) {
-			users.add(membership.getUser());
-		}
-
-		return users;
+		return tq.getResultList();
 	}
 
 }

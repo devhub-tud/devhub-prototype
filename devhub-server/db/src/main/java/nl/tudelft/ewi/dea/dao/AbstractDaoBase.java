@@ -133,8 +133,9 @@ public abstract class AbstractDaoBase<T> implements Dao<T> {
 
 		checkNotNull(objects, "objects must be non-null");
 
+		EntityManager entityManager = emProvider.get();
 		for (final Object object : objects) {
-			emProvider.get().remove(object);
+			entityManager.remove(object);
 		}
 	}
 
