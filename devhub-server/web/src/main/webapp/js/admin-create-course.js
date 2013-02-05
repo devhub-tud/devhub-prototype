@@ -76,7 +76,7 @@ $(document).ready(function() {
 					showAlert("alert-error", "This is not a valid course code and/or name!");
 				}
 				else if (result == "could-not-clone-repo") {
-					showAlert("alert-error", "Could not clone from the template Git repository!", "Either the Git service hosting the repository is inaccessible or the repository is not public");
+					showAlert("alert-error", "Could not clone from the template Git repository!", "Either the Git service hosting the repository is down or the repository is not public");
 				}
 				else {
 					showAlert("alert-error", result);
