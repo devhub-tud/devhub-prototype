@@ -38,10 +38,9 @@
 	</developers>
 
 	<scm>
-		<connection>scm:git:git@bitbucket.org:alexnederlof/devhub.git</connection>
-		<developerConnection>scm:git:git@bitbucket.org:alexnederlof/devhub.git</developerConnection>
-		<url>https://bitbucket.org/alexnederlof/devhub</url>
-	  <tag>devhub-1.2</tag>
+		<connection>scm:git:git@github.com:devhub-tud/Devhub.git</connection>
+		<developerConnection>scm:git:git@github.com:devhub-tud/Devhub.git</developerConnection>
+		<url>https://github.com/devhub-tud/Devhub</url>
   </scm>
 
 	<distributionManagement>
