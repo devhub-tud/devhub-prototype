@@ -38,9 +38,9 @@
 	</developers>
 
 	<scm>
-		<connection>scm:git:git@github.com:devhub-tud/Devhub.git</connection>
-		<developerConnection>scm:git:git@github.com:devhub-tud/Devhub.git</developerConnection>
-		<url>https://github.com/devhub-tud/Devhub</url>
+		<connection>scm:git:git@github.com:devhub-tud/DevHub.git</connection>
+		<developerConnection>scm:git:git@github.com:devhub-tud/DevHub.git</developerConnection>
+		<url>https://github.com/devhub-tud/DevHub</url>
   </scm>
 
 	<distributionManagement>
