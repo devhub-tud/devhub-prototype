@@ -2,12 +2,9 @@ package nl.tudelft.ewi.dea.mail.internals;
 
 import static nl.tudelft.ewi.dea.mail.internals.CommonTestData.newMessageMock;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -17,7 +14,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.inject.Provider;
 import javax.mail.MessagingException;
-import javax.mail.SendFailedException;
 import javax.mail.Session;
 import javax.mail.Transport;
 
@@ -37,7 +33,6 @@ import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableList;
 import com.yammer.metrics.Metrics;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -103,31 +98,7 @@ public class MailQueueTakerTest {
 		order.verify(transport).close();
 
 		order.verify(mailQueue).take();
-		order.verify(mailQueue).size();
 		order.verifyNoMoreInteractions();
-
 	}
 
-	@Test(expected = MailException.class)
-	public void whenAnExceptionOccursInRunItIsCatchedAndWrapped() throws InterruptedException {
-		RuntimeException textExcp = new RuntimeException();
-		mailQueue.add(newMessageMock(1));
-		when(mailQueue.take()).thenThrow(textExcp);
-
-		mQueueTaker.run();
-
-	}
-
-	@Test
-	public void whenThereIsAProblemConnectingTheMessagesAreSentLater() throws MessagingException, InterruptedException {
-		UnsentMail message = newMessageMock(1);
-		mailQueue.add(message);
-		SendFailedException exc = new SendFailedException();
-		doThrow(exc).when(transport).connect(anyString(), anyString(), anyString());
-		doNothing().when(mQueueTaker).tryAgainAfterDelay(Matchers.<ImmutableList<UnsentMail>> any(), eq(exc));
-
-		mQueueTaker.sendMessages(ImmutableList.of(message));
-
-		verify(mQueueTaker).tryAgainAfterDelay(Matchers.<ImmutableList<UnsentMail>> any(), eq(exc));
-	}
 }

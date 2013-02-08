@@ -4,7 +4,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
 
 import nl.tudelft.ewi.dea.dao.UnsentMailDao;
 import nl.tudelft.ewi.dea.mail.SimpleMessage;
@@ -27,18 +26,12 @@ public class QueuedMailSenderTest {
 	@Mock private BlockingQueue<UnsentMail> mailsToSend;
 	@Mock private UnsentMailDao unsentMailDao;
 	@Mock private ObjectMapper objectMapper;
-	@Mock private ExecutorService executorService;
 	@Mock private MailQueueTaker taker;
 	@InjectMocks private QueuedMailSender mailSender;
 
 	@Before
 	public void setUp() {
 		mailSender.initialize();
-	}
-
-	@Test
-	public void whenStartedTheTakerIsPutIntoTheExecutor() {
-		verify(executorService).execute(taker);
 	}
 
 	@Test

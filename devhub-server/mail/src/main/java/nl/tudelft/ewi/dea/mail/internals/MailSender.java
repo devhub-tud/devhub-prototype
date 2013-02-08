@@ -11,4 +11,6 @@ public interface MailSender {
 
 	void initialize();
 
+	void shutdown();
+
 }

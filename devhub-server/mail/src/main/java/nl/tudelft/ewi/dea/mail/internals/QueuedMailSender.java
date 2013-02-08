@@ -1,7 +1,8 @@
 package nl.tudelft.ewi.dea.mail.internals;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
@@ -24,20 +25,21 @@ class QueuedMailSender implements MailSender {
 	private final BlockingQueue<UnsentMail> mailsToSend;
 	private final UnsentMailDao unsentMailDao;
 	private final ObjectMapper objectMapper;
-	private final ExecutorService executor;
+	private final ScheduledThreadPoolExecutor executor;
 	private final MailQueueTaker taker;
 
 	private final AtomicBoolean initialized = new AtomicBoolean(false);
 
 	@Inject
-	QueuedMailSender(ExecutorService executor, MailQueueTaker taker, @MailQueue BlockingQueue<UnsentMail> mailqueue
+	QueuedMailSender(MailQueueTaker taker, @MailQueue BlockingQueue<UnsentMail> mailqueue
 			, UnsentMailDao unsentMailDao, ObjectMapper objectMapper) {
 
 		this.taker = taker;
 		this.mailsToSend = mailqueue;
-		this.executor = executor;
 		this.unsentMailDao = unsentMailDao;
 		this.objectMapper = objectMapper;
+
+		this.executor = new ScheduledThreadPoolExecutor(1);
 	}
 
 	@Override
@@ -48,9 +50,14 @@ class QueuedMailSender implements MailSender {
 			}
 
 			LOG.info("Scheduling the thread comsumer for excecutions.");
-			executor.execute(taker);
+			executor.scheduleWithFixedDelay(taker, 1, 1, TimeUnit.MINUTES);
 			initialized.set(true);
 		}
+	}
+
+	@Override
+	public void shutdown() {
+		executor.shutdown();
 	}
 
 	@Override

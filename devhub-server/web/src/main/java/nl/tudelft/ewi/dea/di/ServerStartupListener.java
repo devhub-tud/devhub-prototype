@@ -94,13 +94,21 @@ public class ServerStartupListener extends GuiceServletContextListener {
 	@Override
 	public void contextDestroyed(ServletContextEvent servletContextEvent) {
 		super.contextDestroyed(servletContextEvent);
+
 		LOG.info("Stopping application");
 		Provisioner executor = injector.getInstance(Provisioner.class);
+		MailSender mailer = injector.getInstance(MailSender.class);
+
 		try {
+			LOG.info("Shutting down provisioner...");
 			executor.shutdown(10000);
 		} catch (InterruptedException e) {
 			LOG.warn("Failed to shutdown Provisioner in 10 seconds...", e);
 		}
+
+		LOG.info("Shutting down mailer...");
+		mailer.shutdown();
+
 		LOG.info("DevHub is shut down");
 	}
 
