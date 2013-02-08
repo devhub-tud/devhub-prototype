@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>nl.tudelft.ewi</groupId>
-	<version>1.3-SNAPSHOT</version>
+	<version>1.3</version>
 	<name>DevHub - Parent project</name>
 	<artifactId>devhub</artifactId>
 	<packaging>pom</packaging>
@@ -41,6 +41,7 @@
 		<connection>scm:git:git@github.com:devhub-tud/DevHub.git</connection>
 		<developerConnection>scm:git:git@github.com:devhub-tud/DevHub.git</developerConnection>
 		<url>https://github.com/devhub-tud/DevHub</url>
+    <tag>devhub-1.3</tag>
   </scm>
 
 	<distributionManagement>
