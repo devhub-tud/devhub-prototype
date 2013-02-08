@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>devhub-server</artifactId>
 		<groupId>nl.tudelft.ewi</groupId>
-		<version>1.3</version>
+		<version>1.4-SNAPSHOT</version>
 	</parent>
 
 	<name>DevHub Server - Web interface</name>
@@ -72,7 +72,7 @@
 		<dependency>
 			<groupId>nl.tudelft.ewi</groupId>
 			<artifactId>devhub-mail</artifactId>
-			<version>1.3</version>
+			<version>1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.reflections</groupId>
@@ -88,7 +88,7 @@
 		<dependency>
 			<groupId>nl.tudelft.ewi</groupId>
 			<artifactId>devhub-service-providers</artifactId>
-			<version>1.3</version>
+			<version>1.4-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

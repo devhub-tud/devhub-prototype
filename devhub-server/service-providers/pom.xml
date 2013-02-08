@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>nl.tudelft.ewi</groupId>
 		<artifactId>devhub-server</artifactId>
-		<version>1.3</version>
+		<version>1.4-SNAPSHOT</version>
 	</parent>
 	<artifactId>devhub-service-providers</artifactId>
 	<name>DevHub Server - Service Providers</name>
@@ -26,12 +26,12 @@
 		<dependency>
 			<groupId>nl.tudelft.ewi</groupId>
 			<artifactId>devhub-commons</artifactId>
-			<version>1.3</version>
+			<version>1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>nl.tudelft.ewi</groupId>
 			<artifactId>devhub-db</artifactId>
-			<version>1.3</version>
+			<version>1.4-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
