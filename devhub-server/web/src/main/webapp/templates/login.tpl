@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<title>Login</title>
+<title>DevHub (BETA) - Login</title>
 <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.1.0/css/bootstrap-combined.min.css" rel="stylesheet">
 <link rel="shortcut icon" href="/img/favicon.ico">
 <style>
@@ -23,7 +23,7 @@ footer {
 </head>
 <body>
 	<div class="hero-unit">
-		<h1>DevHub</h1>
+		<h1>DevHub <span class="muted" style="font-size: 18px;">BETA</span></h1>
 		<div style="margin-top: 20px; height: 260px;">
 			<div class="alerts" style="height: 60px;"></div>
 			<div class="pull-left" style="width: 334px; border-right: 1px solid #999;">

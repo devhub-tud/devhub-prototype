@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<title>Login</title>
+<title>DevHub (BETA) - Login</title>
 <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.1.0/css/bootstrap-combined.min.css" rel="stylesheet">
 <style>
 .hero-unit {
@@ -16,7 +16,7 @@ input {
 </head>
 <body>
 	<div class="hero-unit">
-		<h1>DevHub</h1>
+		<h1>DevHub <span class="muted" style="font-size: 18px;">BETA</span></h1>
 		<div class="alerts" style="margin-top: 10px;"></div>
 		<div style="margin-top: 20px; height: 150px;">
 			<div class="pull-left" style="width: 334px">

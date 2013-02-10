@@ -1,7 +1,7 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
 	<div class="navbar-inner">
 		<div class="container">
-			<a class="brand" href="/">DevHub</a>
+			<a class="brand" href="/">DevHub <span class="muted" style="font-size: 12px;">(BETA)</span></a>
 
 #if ($user) 
 			<div class="pull-right">
