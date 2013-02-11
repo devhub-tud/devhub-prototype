@@ -173,7 +173,7 @@ public class ProvisionTask implements Runnable {
 		BuildProject buildRequest = new BuildProject(buildId, project.getSourceCodeUrl());
 		for (ProjectMembership membership : project.getMembers()) {
 			User member = membership.getUser();
-			ServiceUser user = new ServiceUser(member.getNetId(), member.getEmail(), member.getDisplayName());
+			ServiceUser user = new ServiceUser(member.getNetId(), member.getDisplayName(), member.getEmail());
 			backend.ensureUserExists(request.getContinuousIntegrationService(), user);
 			buildRequest.addMember(user);
 		}

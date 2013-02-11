@@ -58,7 +58,7 @@ public class JenkinsService implements ContinuousIntegrationService {
 
 	@Override
 	public void registerUser(ServiceUser user, String plainTextPassword) {
-		LOG.trace("Registering user: {}" + user);
+		LOG.trace("Registering user: {}", user);
 
 		checkNotNull(user, "user must be non-null");
 
@@ -67,8 +67,11 @@ public class JenkinsService implements ContinuousIntegrationService {
 
 	@Override
 	public URL createBuildProject(BuildProject project) throws ServiceException {
+		LOG.trace("Creating build project: {}", project);
+
 		List<User> users = Lists.newArrayList();
 		for (ServiceUser member : project.getMembers()) {
+			LOG.trace("Project member: name: {} - email: {}", member.getFullName(), member.getEmail());
 			users.add(new UserImpl(member.getIdentifier(), member.getEmail()));
 		}
 
