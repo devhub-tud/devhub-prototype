@@ -44,7 +44,7 @@ public class ServicesBackend {
 		this.services = services;
 		this.projects = projects;
 		this.mailer = mailer;
-		this.dao = memberships;
+		dao = memberships;
 	}
 
 	public void addMembers(long projectId, ServiceUser... users) {
@@ -102,7 +102,7 @@ public class ServicesBackend {
 				versionControlService.addUsers(project.getProjectId(), usersToAdd);
 				continuousIntegrationService.addMembers(project.getProjectId(), usersToAdd);
 			} catch (ServiceException e) {
-				log.error("Could not register users for Version Control Service: " + Joiner.on(", ").join(usersToAdd));
+				log.error("Could not register users for Version Control Service: " + Joiner.on(", ").join(usersToAdd), e);
 			}
 		}
 
