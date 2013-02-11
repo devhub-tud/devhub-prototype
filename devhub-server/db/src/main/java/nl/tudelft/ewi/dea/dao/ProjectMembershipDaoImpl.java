@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
 import nl.tudelft.ewi.dea.model.ProjectMembership;
@@ -53,6 +54,27 @@ public class ProjectMembershipDaoImpl extends AbstractDaoBase<ProjectMembership>
 		tq.setParameter("projectId", projectId);
 
 		return tq.getResultList();
+	}
+
+	@Override
+	@Transactional
+	public ProjectMembership find(long projectId, User user) {
+		final String query = "SELECT p FROM ProjectMembership p WHERE p.project.id = :projectId AND p.user.id = :userId";
+		LOG.debug("Running {} with args={}", query, new Object[] {projectId, user.getId()});
+		final TypedQuery<ProjectMembership> tq = createQuery(query);
+		tq.setParameter("projectId", projectId);
+		tq.setParameter("userId", user.getId());
+
+		return tq.getSingleResult();
+	}
+
+	@Override
+	public boolean isMemberOf(long projectId, User user) {
+		try {
+			return find(projectId, user) != null;
+		} catch (NoResultException e) {
+			return false;
+		}
 	}
 
 }

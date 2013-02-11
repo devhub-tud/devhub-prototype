@@ -63,6 +63,20 @@ public class ServicesBackend {
 		}
 	}
 
+	public void removeMembers(long projectId, ServiceUser... users) {
+		removeMembers(projectId, Lists.newArrayList(users));
+	}
+
+	public void removeMembers(long projectId, Collection<ServiceUser> users) {
+		Future<?> future = executor.submit(new RemoveMembers(projectId, Lists.newArrayList(users)));
+
+		try {
+			future.get();
+		} catch (InterruptedException | ExecutionException e) {
+			log.error(e.getMessage(), e);
+		}
+	}
+
 	public void ensureUserExists(ContinuousIntegrationService service, ServiceUser user) throws ServiceException {
 		try {
 			String password = PasswordGenerator.generate();
@@ -102,7 +116,45 @@ public class ServicesBackend {
 				versionControlService.addUsers(project.getProjectId(), usersToAdd);
 				continuousIntegrationService.addMembers(project.getProjectId(), usersToAdd);
 			} catch (ServiceException e) {
-				log.error("Could not register users for Version Control Service: " + Joiner.on(", ").join(usersToAdd), e);
+				log.error("Could not register users for background services: " + Joiner.on(", ").join(usersToAdd), e);
+			}
+		}
+
+		private boolean alreadyMember(List<ProjectMembership> currentMembers, ServiceUser user) {
+			for (ProjectMembership member : currentMembers) {
+				if (member.getUser().getNetId().equals(user.getIdentifier())) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
+	@AllArgsConstructor
+	private class RemoveMembers implements Runnable {
+
+		private final long projectId;
+		private final List<ServiceUser> users;
+
+		@Override
+		public void run() {
+			Project project = projects.findById(projectId);
+			VersionControlService versionControlService = services.getVersionControlService(project.getVersionControlService());
+			ContinuousIntegrationService continuousIntegrationService = services.getContinuousIntegrationService(project.getContinuousIntegrationService());
+
+			List<ServiceUser> usersToRemove = Lists.newArrayList();
+			List<ProjectMembership> projectMembers = dao.findByProjectId(projectId);
+			for (ServiceUser user : users) {
+				if (alreadyMember(projectMembers, user)) {
+					usersToRemove.add(user);
+				}
+			}
+
+			try {
+				versionControlService.removeMembers(project.getProjectId(), usersToRemove);
+				continuousIntegrationService.removeMembers(project.getProjectId(), usersToRemove);
+			} catch (ServiceException e) {
+				log.error("Could not deregister users for background services: " + Joiner.on(", ").join(usersToRemove), e);
 			}
 		}
 

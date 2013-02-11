@@ -149,6 +149,25 @@ public class GitoliteService extends VersionControlService {
 	}
 
 	@Override
+	public void removeMembers(String repoPath, List<ServiceUser> usersToRemove) throws ServiceException {
+		try {
+			Config config = configManager.getConfig();
+			Repository repository = config.getRepository(repoPath);
+			for (ServiceUser serviceUser : usersToRemove) {
+				User user = config.getUser(serviceUser.getIdentifier());
+				repository.revokePermissions(user);
+			}
+			configManager.applyConfig();
+		} catch (IOException | ServiceUnavailable e) {
+			LOG.error(e.getMessage(), e);
+			throw new ServiceException("The Gitolite service seems to be unavailable...", e);
+		} catch (Throwable e) {
+			LOG.error(e.getMessage(), e);
+			throw new ServiceException("Failed remove member from repository!", e);
+		}
+	}
+
+	@Override
 	public String getName() {
 		return "Gitolite";
 	}

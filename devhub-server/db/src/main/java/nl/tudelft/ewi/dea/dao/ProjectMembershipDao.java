@@ -14,4 +14,8 @@ public interface ProjectMembershipDao extends Dao<ProjectMembership> {
 
 	List<ProjectMembership> findByProjectId(long projectId);
 
+	ProjectMembership find(long projectId, User user);
+
+	boolean isMemberOf(long projectId, User user);
+
 }

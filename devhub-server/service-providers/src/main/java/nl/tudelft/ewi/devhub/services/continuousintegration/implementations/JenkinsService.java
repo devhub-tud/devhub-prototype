@@ -127,6 +127,23 @@ public class JenkinsService implements ContinuousIntegrationService {
 	}
 
 	@Override
+	public void removeMembers(String projectId, List<ServiceUser> users) throws ServiceException {
+		try {
+			Job job = jenkinsClient.retrieveJob(projectId);
+			List<User> jenkinsUsers = job.getUsers();
+			for (ServiceUser user : users) {
+				User jenkinsUser = new UserImpl(user.getIdentifier(), user.getEmail());
+				if (jenkinsUsers.contains(jenkinsUser)) {
+					// TODO: Remove users from job!
+				}
+			}
+			jenkinsClient.updateJob(job);
+		} catch (Throwable e) {
+			throw new ServiceException("Could not remove the following users from project: " + projectId + " - " + Joiner.on(", ").join(users), e);
+		}
+	}
+
+	@Override
 	public String getName() {
 		return "Jenkins";
 	}

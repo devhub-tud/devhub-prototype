@@ -24,4 +24,6 @@ public interface ContinuousIntegrationService extends Service {
 
 	void addMembers(String projectId, List<ServiceUser> users) throws ServiceException;
 
+	void removeMembers(String projectId, List<ServiceUser> usersToRemove) throws ServiceException;
+
 }
