@@ -137,11 +137,11 @@ public class ProvisionTask implements Runnable {
 
 	private String createVersionControlRepository(Project project, User creator) throws ServiceException {
 		log.debug("Creating source code repository");
-		ServiceUser serviceUser = newServiceUser(creator);
+		ServiceUser serviceUser = ServiceUser.fromUser(creator);
 		RepositoryRepresentation repo = new RepositoryRepresentation(project.getProjectId(), serviceUser);
 		for (ProjectMembership membership : project.getMembers()) {
 			User member = membership.getUser();
-			repo.addMember(newServiceUser(member));
+			repo.addMember(ServiceUser.fromUser(member));
 		}
 
 		// Grant access to the Git user.
@@ -166,14 +166,14 @@ public class ProvisionTask implements Runnable {
 	private void createContinuousIntegrationJob(Project project, User creator) throws ServiceException {
 		log.debug("Creating CI job for project {}", project.getId());
 
-		ServiceUser serviceUser = newServiceUser(creator);
+		ServiceUser serviceUser = ServiceUser.fromUser(creator);
 		backend.ensureUserExists(request.getContinuousIntegrationService(), serviceUser);
 
 		BuildIdentifier buildId = new BuildIdentifier(project.getProjectId(), serviceUser);
 		BuildProject buildRequest = new BuildProject(buildId, project.getSourceCodeUrl());
 		for (ProjectMembership membership : project.getMembers()) {
 			User member = membership.getUser();
-			ServiceUser user = newServiceUser(member);
+			ServiceUser user = ServiceUser.fromUser(member);
 			backend.ensureUserExists(request.getContinuousIntegrationService(), user);
 			buildRequest.addMember(user);
 		}
@@ -184,7 +184,7 @@ public class ProvisionTask implements Runnable {
 
 	private void removeContinuousIntegrationJob(Project project, User creator) {
 		try {
-			ServiceUser serviceUser = newServiceUser(creator);
+			ServiceUser serviceUser = ServiceUser.fromUser(creator);
 			BuildIdentifier buildId = new BuildIdentifier(project.getProjectId(), serviceUser);
 			request.getContinuousIntegrationService().removeBuildProject(buildId);
 		} catch (Throwable e) {
@@ -231,9 +231,5 @@ public class ProvisionTask implements Runnable {
 
 	boolean alreadyMemberOfCourseProject(User currentUser, Long course) {
 		return membershipDao.hasEnrolled(course, currentUser);
-	}
-
-	private ServiceUser newServiceUser(User user) {
-		return new ServiceUser(user.getNetId(), user.getDisplayName(), user.getEmail());
 	}
 }

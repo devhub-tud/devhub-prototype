@@ -87,7 +87,7 @@ public class ProjectResource {
 		final ProjectInvitation invitation = invitationDao.findByProjectAndEMail(project, user.getEmail());
 
 		if (accept) {
-			ServiceUser serviceUser = new ServiceUser(user.getNetId(), user.getDisplayName(), user.getEmail());
+			ServiceUser serviceUser = ServiceUser.fromUser(user);
 			backend.addMembers(project.getId(), serviceUser);
 
 			final ProjectMembership membership = new ProjectMembership(user, project);
