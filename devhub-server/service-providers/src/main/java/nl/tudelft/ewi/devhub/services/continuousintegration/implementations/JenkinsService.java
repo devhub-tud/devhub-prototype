@@ -107,7 +107,7 @@ public class JenkinsService implements ContinuousIntegrationService {
 			for (ServiceUser user : users) {
 				User jenkinsUser = new UserImpl(user.getIdentifier(), user.getEmail());
 				if (!jenkinsUsers.contains(jenkinsUser)) {
-					job.addUser(jenkinsUser);
+					job.addPermissionsForUser(jenkinsUser);
 					job.addNotificationRecipient(jenkinsUser);
 				}
 			}
@@ -134,7 +134,8 @@ public class JenkinsService implements ContinuousIntegrationService {
 			for (ServiceUser user : users) {
 				User jenkinsUser = new UserImpl(user.getIdentifier(), user.getEmail());
 				if (jenkinsUsers.contains(jenkinsUser)) {
-					// TODO: Remove users from job!
+					job.removePermissionsForUser(jenkinsUser);
+					job.removeNotificationRecipient(jenkinsUser);
 				}
 			}
 			jenkinsClient.updateJob(job);
