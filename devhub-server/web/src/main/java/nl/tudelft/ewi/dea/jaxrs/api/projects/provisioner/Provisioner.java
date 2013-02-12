@@ -23,15 +23,18 @@ public class Provisioner {
 	private final ScheduledExecutorService executor;
 	private final Cache<String, State> stateCache;
 	private final ProjectMembershipDao membershipDao;
-
-	private final ProvisionTaskFactory factory;
+	private final ProvisionTaskFactory provisionTaskFactory;
+	private final LeaveProjectTaskFactory leaveProjectTaskFactory;
 
 	@Inject
-	public Provisioner(ProvisionTaskFactory factory,
+	public Provisioner(
+			ProvisionTaskFactory provisionTaskFactory,
+			LeaveProjectTaskFactory leaveProjectTaskFactory,
 			ProjectMembershipDao membershipDao,
 			ScheduledExecutorService executor) {
 
-		this.factory = factory;
+		this.provisionTaskFactory = provisionTaskFactory;
+		this.leaveProjectTaskFactory = leaveProjectTaskFactory;
 		this.membershipDao = membershipDao;
 		this.executor = executor;
 		this.stateCache = CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).build();
@@ -43,7 +46,16 @@ public class Provisioner {
 		}
 
 		updateProjectState(request.getCreator().getNetId(), new State(false, false, "Preparing to provision project..."));
-		executor.submit(factory.create(request));
+		executor.submit(provisionTaskFactory.create(request));
+	}
+
+	public void leave(LeaveRequest request) {
+		if (!membershipDao.isMemberOf(request.getProjectId(), request.getUser())) {
+			throw new ProvisioningException("You're not a member of the project!");
+		}
+
+		updateProjectState(request.getUser().getNetId(), new State(false, false, "Preparing to leave project..."));
+		executor.submit(leaveProjectTaskFactory.create(request));
 	}
 
 	boolean alreadyMemberOfCourseProject(User currentUser, Long course) {

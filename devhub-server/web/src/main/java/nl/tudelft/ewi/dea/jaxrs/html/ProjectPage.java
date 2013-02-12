@@ -63,6 +63,7 @@ public class ProjectPage {
 				.setValue("members", members)
 				.setValue("invitations", invitations)
 				.addJS("invite-user.js")
+				.addJS("leave-project.js")
 				.render("project.tpl");
 	}
 

@@ -11,7 +11,7 @@ import nl.tudelft.ewi.devhub.services.versioncontrol.models.SshKeyRepresentation
 
 public abstract class VersionControlService implements Service {
 
-	private RepositoryUtils repoUtils;
+	private final RepositoryUtils repoUtils;
 
 	public VersionControlService(RepositoryUtils repoUtils) {
 		this.repoUtils = repoUtils;
@@ -41,5 +41,7 @@ public abstract class VersionControlService implements Service {
 	public abstract void removeSshKeys(SshKeyIdentifier... sshKeys) throws ServiceException;
 
 	public abstract void addUsers(String repoPath, List<ServiceUser> usersToAdd) throws ServiceException;
+
+	public abstract void removeMembers(String repoPath, List<ServiceUser> usersToRemove) throws ServiceException;
 
 }

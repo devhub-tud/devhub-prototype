@@ -14,6 +14,8 @@ import javax.ws.rs.core.Response.Status;
 import nl.tudelft.ewi.dea.dao.ProjectDao;
 import nl.tudelft.ewi.dea.dao.ProjectInvitationDao;
 import nl.tudelft.ewi.dea.dao.ProjectMembershipDao;
+import nl.tudelft.ewi.dea.jaxrs.api.projects.provisioner.LeaveRequest;
+import nl.tudelft.ewi.dea.jaxrs.api.projects.provisioner.Provisioner;
 import nl.tudelft.ewi.dea.jaxrs.api.projects.services.ServicesBackend;
 import nl.tudelft.ewi.dea.model.Project;
 import nl.tudelft.ewi.dea.model.ProjectInvitation;
@@ -39,17 +41,19 @@ public class ProjectResource {
 	private final ProjectInvitationDao invitationDao;
 	private final ProjectMembershipDao membershipDao;
 	private final InviteManager invateMngr;
+	private final Provisioner provisioner;
 	private final ServicesBackend backend;
 
 	@Inject
 	public ProjectResource(SecurityProvider securityProvider, ProjectDao projectDao,
 			ProjectInvitationDao invitationDao, ProjectMembershipDao membershipDao,
-			ServicesBackend backend, InviteManager invateMngr) {
+			ServicesBackend backend, Provisioner provisioner, InviteManager invateMngr) {
 
 		this.projectDao = projectDao;
 		this.invitationDao = invitationDao;
 		this.membershipDao = membershipDao;
 		this.securityProvider = securityProvider;
+		this.provisioner = provisioner;
 		this.invateMngr = invateMngr;
 		this.backend = backend;
 	}
@@ -71,7 +75,17 @@ public class ProjectResource {
 		}
 
 		return Response.ok().build();
+	}
 
+	@POST
+	@Path("{projectId}/unenroll")
+	@Transactional
+	public Response unenroll(@PathParam("projectId") final long projectId) {
+		User user = securityProvider.getUser();
+		if (membershipDao.isMemberOf(projectId, user)) {
+			provisioner.leave(new LeaveRequest(user, projectId));
+		}
+		return Response.ok().build();
 	}
 
 	@POST

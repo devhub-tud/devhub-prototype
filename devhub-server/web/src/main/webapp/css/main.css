@@ -196,6 +196,18 @@ table .attribute {
 	float: left;
 }
 
+.suppressed {
+	zoom: 1;
+	filter: alpha(opacity=30);
+	opacity: 0.3;
+}
+
+.suppressed:hover {
+	zoom: 1;
+	filter: alpha(opacity=100);
+	opacity: 1.0;
+}
+
 .well h3, .well h2, .well h1 {
 	margin-top: 0px;
 }
