@@ -57,7 +57,7 @@ public class AccountResource {
 
 		this.userDao = userDao;
 		this.userFactory = userFactory;
-		this.securityProvider = subjectProvider;
+		securityProvider = subjectProvider;
 		this.keyDao = keyDao;
 		this.localVersioningService = localVersioningService;
 	}
@@ -117,7 +117,7 @@ public class AccountResource {
 		User user = securityProvider.getUser();
 		SshKey sshKey = new SshKey(user, sshKeyObject.getName(), sshKeyObject.getKey());
 
-		ServiceUser serviceUser = new ServiceUser(user.getNetId(), user.getDisplayName(), user.getEmail());
+		ServiceUser serviceUser = ServiceUser.fromUser(user);
 		SshKeyIdentifier keyId = new SshKeyIdentifier(sshKey.getKeyName(), serviceUser);
 		SshKeyRepresentation key = new SshKeyRepresentation(keyId, sshKey.getKeyContents());
 
@@ -149,7 +149,7 @@ public class AccountResource {
 			}
 		}
 
-		ServiceUser serviceUser = new ServiceUser(user.getNetId(), user.getDisplayName(), user.getEmail());
+		ServiceUser serviceUser = ServiceUser.fromUser(user);
 		SshKeyIdentifier[] keyArray = new SshKeyIdentifier[remove.size()];
 		for (int i = 0; i < remove.size(); i++) {
 			SshKey key = remove.get(i);
