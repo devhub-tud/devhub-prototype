@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>nl.tudelft.ewi</groupId>
 		<artifactId>devhub-server</artifactId>
-		<version>1.4-SNAPSHOT</version>
+		<version>1.5-SNAPSHOT</version>
 	</parent>
 	<artifactId>devhub-service-providers</artifactId>
 	<name>DevHub Server - Service Providers</name>
@@ -21,17 +21,17 @@
 		<dependency>
 			<groupId>nl.tudelft</groupId>
 			<artifactId>jenkins-ws-client</artifactId>
-			<version>0.7</version>
+			<version>0.10</version>
 		</dependency>
 		<dependency>
 			<groupId>nl.tudelft.ewi</groupId>
 			<artifactId>devhub-commons</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>nl.tudelft.ewi</groupId>
 			<artifactId>devhub-db</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.5-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

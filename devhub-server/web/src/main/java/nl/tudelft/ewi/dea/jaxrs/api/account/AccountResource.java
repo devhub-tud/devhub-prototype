@@ -57,7 +57,7 @@ public class AccountResource {
 
 		this.userDao = userDao;
 		this.userFactory = userFactory;
-		this.securityProvider = subjectProvider;
+		securityProvider = subjectProvider;
 		this.keyDao = keyDao;
 		this.localVersioningService = localVersioningService;
 	}
@@ -124,7 +124,7 @@ public class AccountResource {
 			return Response.status(Status.CONFLICT).entity("This is not a valid SSH key!").build();
 		}
 
-		ServiceUser serviceUser = new ServiceUser(user.getNetId(), user.getDisplayName(), user.getEmail());
+		ServiceUser serviceUser = ServiceUser.fromUser(user);
 		SshKeyIdentifier keyId = new SshKeyIdentifier(sshKey.getKeyName(), serviceUser);
 		SshKeyRepresentation key = new SshKeyRepresentation(keyId, sshKey.getKeyContents());
 
@@ -156,7 +156,7 @@ public class AccountResource {
 			}
 		}
 
-		ServiceUser serviceUser = new ServiceUser(user.getNetId(), user.getDisplayName(), user.getEmail());
+		ServiceUser serviceUser = ServiceUser.fromUser(user);
 		SshKeyIdentifier[] keyArray = new SshKeyIdentifier[remove.size()];
 		for (int i = 0; i < remove.size(); i++) {
 			SshKey key = remove.get(i);

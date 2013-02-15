@@ -20,7 +20,7 @@ public class BuildProject extends BuildIdentifier {
 
 	public BuildProject(BuildIdentifier id, String sourceCodeUrl) {
 		super(id.getName(), id.getCreator());
-		this.members = Sets.newHashSet(id.getCreator());
+		members = Sets.newHashSet();
 		this.sourceCodeUrl = sourceCodeUrl;
 	}
 
