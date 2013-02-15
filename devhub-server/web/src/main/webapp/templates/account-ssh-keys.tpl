@@ -48,7 +48,7 @@
 					</div>
 					<div class="modal-footer">
 						<a href="#" class="btn" data-dismiss="modal">Cancel</a>
-						<a href="#" id="add-ssh-key-btn" class="btn btn-primary">Add key</a>
+						<button id="add-ssh-key-btn" class="btn btn-primary">Add key</button>
 					</div>
 				</div>
 			</section>
