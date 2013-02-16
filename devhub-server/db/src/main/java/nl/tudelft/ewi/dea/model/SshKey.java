@@ -1,5 +1,8 @@
 package nl.tudelft.ewi.dea.model;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -67,11 +70,13 @@ public class SshKey {
 	}
 
 	private final void validate() {
-		Preconditions.checkNotNull(user);
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(keyName));
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(keyContents));
-		Preconditions.checkArgument(keyName.matches("^[a-zA-Z0-9]+([-][a-zA-Z0-9]+)*$"));
-		Preconditions.checkArgument(keyContents.matches("^ssh\\-[a-z]{3}\\s\\S+(\\s\\S+)?$"));
+		checkNotNull(user);
+		checkArgument(!Strings.isNullOrEmpty(keyName));
+		checkArgument(!Strings.isNullOrEmpty(keyContents));
+
+		checkArgument(keyName.length() <= 25);
+		checkArgument(keyName.matches("^[a-zA-Z0-9]+([-][a-zA-Z0-9]+)*$"));
+		checkArgument(keyContents.matches("^ssh\\-[a-z]{3}\\s\\S+(\\s\\S+)?$"));
 	}
 
 }

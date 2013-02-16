@@ -99,7 +99,9 @@ $(document).ready(function() {
 	
 	function enableVerification() {
 		timers.push(
-			verify(nameField, "^[a-zA-Z0-9]+([-][a-zA-Z0-9]+)*$"),
+			verify(nameField, "^[a-zA-Z0-9]+([-][a-zA-Z0-9]+)*$", function(value, callback) {
+				callback.call(this, value.length <= 25);
+			}),
 			verify(keyField, "^ssh\\-[a-z]{3}\\s\\S+(\\s\\S+)?\\n?$"),
 			synchronize(addKeyBtn, [ nameField, keyField ])
 		);

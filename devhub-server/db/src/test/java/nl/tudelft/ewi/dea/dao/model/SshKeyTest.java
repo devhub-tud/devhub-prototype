@@ -1,4 +1,4 @@
-package nl.tudelft.ewi.dea.dao;
+package nl.tudelft.ewi.dea.dao.model;
 
 import nl.tudelft.ewi.dea.model.SshKey;
 import nl.tudelft.ewi.dea.model.User;
@@ -22,7 +22,7 @@ public class SshKeyTest {
 		new SshKey(null, VALID_NAME, VALID_CONTENT);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = NullPointerException.class)
 	public void testSshKeyWithNullAsKeyName() {
 		new SshKey(VALID_USER, null, VALID_CONTENT);
 	}
@@ -32,7 +32,7 @@ public class SshKeyTest {
 		new SshKey(VALID_USER, "", VALID_CONTENT);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = NullPointerException.class)
 	public void testSshKeyWithNullAsKeyContent() {
 		new SshKey(VALID_USER, VALID_NAME, null);
 	}
@@ -60,6 +60,11 @@ public class SshKeyTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testSshKeyThatDoesNotStartWithSshRSA() {
 		new SshKey(VALID_USER, VALID_NAME, "ssh- dskf");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testSshKeyWithTooLongKeyName() {
+		new SshKey(VALID_USER, "12345678901234567890123456", VALID_CONTENT);
 	}
 
 }
