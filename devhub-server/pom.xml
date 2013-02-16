@@ -5,7 +5,7 @@
 	<parent>
                 <groupId>nl.tudelft.ewi</groupId>
                 <artifactId>devhub</artifactId>
-                <version>1.6-SNAPSHOT</version>
+                <version>1.5-SNAPSHOT</version>
         </parent>
 
         <artifactId>devhub-server</artifactId>
