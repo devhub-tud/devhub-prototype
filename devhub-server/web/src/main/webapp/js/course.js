@@ -6,6 +6,18 @@ $(document).ready(function() {
 	var downloadHash = $('#download-hash');
 	var downloadLink = $('#download-link');
 	
+	var projects = $("#projects");
+	
+	projects.find("tr").click(function() {
+		var subPanel = $(this).find(".toggle");
+		if (subPanel.is(":visible")) {
+			subPanel.hide();
+		}
+		else {
+			subPanel.show();
+		}
+	});
+	
 	if (hasNoProjects) {
 		$("#download-btn").attr("disabled", "disabled");
 	}

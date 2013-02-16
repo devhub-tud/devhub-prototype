@@ -115,7 +115,14 @@ public class AccountResource {
 	@Transactional
 	public Response addSshKey(SshKeyObject sshKeyObject) {
 		User user = securityProvider.getUser();
-		SshKey sshKey = new SshKey(user, sshKeyObject.getName(), sshKeyObject.getKey());
+		SshKey sshKey = null;
+
+		try {
+			sshKey = new SshKey(user, sshKeyObject.getName(), sshKeyObject.getKey());
+		} catch (IllegalArgumentException e) {
+			LOG.error("Invalid SSH key", e);
+			return Response.status(Status.CONFLICT).entity("This is not a valid SSH key!").build();
+		}
 
 		ServiceUser serviceUser = ServiceUser.fromUser(user);
 		SshKeyIdentifier keyId = new SshKeyIdentifier(sshKey.getKeyName(), serviceUser);

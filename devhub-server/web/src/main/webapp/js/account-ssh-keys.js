@@ -3,6 +3,7 @@ $(document).ready(function() {
 	var modal = $("#add-new-ssh-key");
 	var nameField = $("#ssh-key-name");
 	var keyField = $("#ssh-key-content");
+	var sshKeyForm = $("#add-new-ssh-key-form");
 	
 	var addKeyBtn = $("#add-ssh-key-btn");
 	var deleteKeyBtn = $("#delete-ssh-keys-btn");
@@ -28,6 +29,15 @@ $(document).ready(function() {
 	
 	addKeyBtn.click(function(e) {
 		e.preventDefault();
+		sshKeyForm.submit();
+	});
+	
+	sshKeyForm.submit(function(e) {
+		e.preventDefault();
+		if (addKeyBtn.attr("disabled") == "disabled") {
+			return;
+		}
+		
 		var name = nameField.val();
 		var key = keyField.val();
 		
@@ -89,8 +99,10 @@ $(document).ready(function() {
 	
 	function enableVerification() {
 		timers.push(
-			verify(nameField, "^[a-zA-Z0-9]+([-][a-zA-Z0-9]+)*$"),
-			verify(keyField, "^[ssh\-](.){64,}$"),
+			verify(nameField, "^[a-zA-Z0-9]+([-][a-zA-Z0-9]+)*$", function(value, callback) {
+				callback.call(this, value.length <= 25);
+			}),
+			verify(keyField, "^ssh\\-[a-z]{3}\\s\\S+(\\s\\S+)?\\n?$"),
 			synchronize(addKeyBtn, [ nameField, keyField ])
 		);
 	}
